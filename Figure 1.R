@@ -103,6 +103,7 @@ names(dd) <- c("Source", "Flow", "count")
 d <- ggplot(dd, aes(Source, factor(Flow, level = c("n.s.", "continuous, constant", "continuous, variable", 
                                               "intermittent, constant", "intermittent, variable")), fill = count)) +
   geom_tile() +
+  geom_text(aes(label=count), size = 3.5, color = "white") +
   scale_fill_gradient(low="#41448777", high ="#414487ff") +
   theme_classic()+
   labs(title = "(d) Wetland inflow charactersistics", y = " ", x = " ") +
