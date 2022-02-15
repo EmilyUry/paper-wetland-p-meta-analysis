@@ -32,7 +32,7 @@ pal
 ## (a) - world map + study sites
 
 
-world <- borders("world", colour="#414487bb", fill="#414487bb") # create a layer of borders
+world <- borders("world", colour="#8a8cb5", fill="#414487bb") # create a layer of borders
 map <- ggplot() + world + ylim(-55,85) + theme_void() +
   geom_point(aes(x=x$Long, y = x$Lat), color = "black", size = 1) +
   labs(title="(a) Location of studied wetlands ")+
