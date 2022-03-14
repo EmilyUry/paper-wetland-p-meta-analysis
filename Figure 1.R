@@ -21,7 +21,7 @@ library(gridExtra)
 
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
-x <- read.csv("Wetland_P_Toy_Data2.csv", header = T)
+#x <- read.csv("Wetland_P_Toy_Data2.csv", header = T)
 x <- read.csv("Wetland_P_Clean.csv", header = T)
 head(x)
 
