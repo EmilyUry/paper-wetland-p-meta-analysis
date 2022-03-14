@@ -1,17 +1,18 @@
 
 
 #' ---
-#' title: "Wetland-P-Meta-analysis"
+#' title: "Wetland-P-Meta-analysis Figure 1"
 #' author: "Emily Ury"
-#' date: "Feb 15, 2021"
+#' last update: "March 14, 2022"
 #' output: github_document
 #' ---
 #' 
 #' Figure 1. Description of the data included in the meta-analysis
 #'   (a) map
 #'   (b) histogram of size distribution
-#'   (c) inflow source/flow regime
-#'   (d) source sink behavior
+#'   (c) source/sink behavior
+#'   (d) flow regime by wetland type
+#'   (e) study publication year and catchment type
 
 
 library(ggplot2)
