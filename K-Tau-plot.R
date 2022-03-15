@@ -1,8 +1,8 @@
 
 #' ---
-#' title: "Wetland-P-Meta-analysis scratch figures"
+#' title: "Wetland-P-Meta-analysis K~Tau plot
 #' author: "Emily Ury"
-#' date: "Feb 15, 2021"
+#' date: "March 15, 2022"
 #' output: github_document
 #' ---
 #' 
