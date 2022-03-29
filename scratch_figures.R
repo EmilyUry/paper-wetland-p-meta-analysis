@@ -2,7 +2,7 @@
 #' ---
 #' title: "Wetland-P-Meta-analysis scratch figures"
 #' author: "Emily Ury"
-#' date: "Feb 15, 2021"
+#' date: "March 14, 2022"
 #' output: github_document
 #' ---
 #' 
@@ -41,46 +41,122 @@ x$SRP_retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
 }
 
 
-## K~Tau (Fred's equations)
-{
-x$Tau <- 1.51*x$Area_m2^0.23 ## using constants from Cheng and Basu 2017
-hist(x$Tau)
 
-## calculate k (rate constant) TP
-x$k2 <- -(log(1-(x$TP_Retention_percent/100))/x$Tau)
-fit <- lm(log(x$k2) ~ log(x$Tau))
-summary(fit)
+## flow regime
 
-x$k3 <- -(log(1-(x$SRP_Retention_percent/100))/x$Tau)
-fit <- lm(x$k3 ~ x$k2)
-summary(fit)
 
-### plot TP K~tau
+table(x$Water_regime)
+levels(x$Water_regime)
 
-plot((x$Tau), (x$k2), log = 'xy', pch = 16, 
-     xlab = expression(paste("Water Residence Time, ", tau, " (d)")), 
-     ylab = expression(paste("Rate Constant, k ( ", d^-1, ")")))
-x1 <- seq(0,120, by = 0.1)
-y1 <- exp(-1.1235)*x1^(-0.812)
-points(x1,y1, col = "black", type = 'l')
-text(4,0.001, expression(bold(paste("TP, k = 0.33", tau)^-0.81)), cex = 0.8)
-text(4,0.00055, expression(bold(paste(" ",R^2, " = 0.32, p < 0.001"))), cex = 0.8)
-text(4,0.0003, "(57 points omited)", cex = 0.8, font = 2)
+plot(x$Area_m2, x$TP_Retention_percent, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+     log = "x", 
+     ylim = c(-300, 105),
+     pch = 16, 
+     cex = 1.5,
+     xlab = "Wetland area (m2)", 
+     ylab = "TP % Retention")
+abline(h=0, lty = 2)
+legend("bottomleft", levels(x$Water_regime), 
+       pch = 16, pt.cex = 1.5,
+       ncol = 2,
+       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
 
-## Add srp on top
 
-points((x$Tau), (x$k3), pch = 16, cex = 0.8, col = "#FF0000aa")
-x1 <- seq(0,120, by = 0.1)
-y1 <- exp(-1.54)*x1^(-0.532)
-points(x1,y1, col = "red", type = 'l')
-text(48,0.5, expression(bold(paste("SRP, k = 0.21", tau)^-0.53)), cex = 0.8, col = 'red')
-text(48,0.3, expression(bold(paste(" ",R^2, " = 0.15, p < 0.001"))), cex = 0.8, col = 'red')
-text(48,0.2, "(87 points omited)", cex = 0.8, font = 2, col = "red")
-
-}
+plot(x$Area_m2, x$SRP_Retention_percent, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+     log = "x", 
+     ylim = c(-300, 105),
+     pch = 16, 
+     cex = 1.5,
+     xlab = "Wetland area (m2)", 
+     ylab = "SRP % Retention")
+abline(h=0, lty = 2)
+legend("bottomleft", levels(x$Water_regime), 
+       pch = 16, pt.cex = 1.5,
+       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
 
 
 
-nrow(x[which(x$TP_Retention_percent < 0),])
-nrow(x[which(x$SRP_Retention_percent < 0),])
+
+
+
+## normalize retention by looking at mass export over mass input
+
+x$TP_export_norm <- x$TP_load_out/x$TP_load_in_g_m2_yr
+hist(log(x$TP_export_norm))
+
+x$SRP_export_norm <- x$SRP_load_out/x$SRP_load_in_g_m2_yr
+hist(log(x$SRP_export_norm))
+
+plot(x$Area_m2, x$TP_export_norm, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+     log = "x", 
+     pch = 16, 
+     cex = 1.5,
+     xlab = "Wetland area (m2)", 
+     ylab = "TP Export/Input")
+abline(h=1, lty = 2)
+legend("topleft", levels(x$Water_regime), 
+       pch = 16, pt.cex = 1.5,
+       ncol = 1,
+       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
+
+
+plot(x$Area_m2, x$SRP_export_norm, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+     log = "xy", 
+     pch = 16, 
+     cex = 1.5,
+     xlab = "Wetland area (m2)", 
+     ylab = "SRP Export/Input")
+abline(h=1, lty = 2)
+legend("topleft", levels(x$Water_regime), 
+       pch = 16, pt.cex = 1.5,
+       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
+
+
+
+
+
+
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = "#515151bb",
+     col = c("#a1a1a1bb", "#bd4ad4bb", "#345bebbb", "#e34327bb","#2b821fbb")[x$Water_regime],
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", levels(x$Water_regime), pch = 16,
+       pt.cex = 2, col = c("#a1a1a1bb", "#bd4ad4bb", "#345bebbb", "#e34327bb","#2b821fbb"))
+
+
+## mean SRP retention
+summary(x$SRP_Retention_percent)
+
+summary(x$TP_Retention_percent)
+
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = c( "#e34327bb","#2b821fbb", "#345bebbb")[x$Catchment_Type],
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", levels(x$Catchment_Type), pch = 16,
+       pt.cex = 2, col = c(  "#e34327bb","#2b821fbb","#345bebbb"))
+
+
+
+
+
+
+
 
