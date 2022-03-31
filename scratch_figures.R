@@ -62,7 +62,7 @@ legend("bottomleft", levels(x$Water_regime),
        col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
 
 
-plot(x$Area_m2, x$SRP_Retention_percent, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+plot(x$Area_m2, x$SRP_Retention_percent, col = c("#2b821fbb", "#bd4ad4bb","#e34327bb", "#345bebbb","#a1a1a1bb" )[x$Water_regime],
      log = "x", 
      ylim = c(-300, 105),
      pch = 16, 
@@ -72,7 +72,7 @@ plot(x$Area_m2, x$SRP_Retention_percent, col = c("#a1a1a1bb", "#bd4ad4bb","#e343
 abline(h=0, lty = 2)
 legend("bottomleft", levels(x$Water_regime), 
        pch = 16, pt.cex = 1.5,
-       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
+       col = c("#2b821fbb", "#bd4ad4bb","#e34327bb", "#345bebbb","#a1a1a1bb" ))
 
 
 
@@ -87,7 +87,7 @@ hist(log(x$TP_export_norm))
 x$SRP_export_norm <- x$SRP_load_out/x$SRP_load_in_g_m2_yr
 hist(log(x$SRP_export_norm))
 
-plot(x$Area_m2, x$TP_export_norm, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+plot(x$Area_m2, x$TP_export_norm, col = c("#2b821fbb", "#bd4ad4bb","#e34327bb", "#345bebbb","#a1a1a1bb" )[x$Water_regime],
      log = "x", 
      pch = 16, 
      cex = 1.5,
@@ -97,10 +97,10 @@ abline(h=1, lty = 2)
 legend("topleft", levels(x$Water_regime), 
        pch = 16, pt.cex = 1.5,
        ncol = 1,
-       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
+       col =c("#2b821fbb", "#bd4ad4bb","#e34327bb", "#345bebbb","#a1a1a1bb" ))
 
 
-plot(x$Area_m2, x$SRP_export_norm, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb")[x$Water_regime],
+plot(x$Area_m2, x$SRP_export_norm, col =c("#2b821fbb", "#bd4ad4bb","#e34327bb", "#345bebbb","#a1a1a1bb" )[x$Water_regime],
      log = "xy", 
      pch = 16, 
      cex = 1.5,
@@ -109,7 +109,7 @@ plot(x$Area_m2, x$SRP_export_norm, col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb",
 abline(h=1, lty = 2)
 legend("topleft", levels(x$Water_regime), 
        pch = 16, pt.cex = 1.5,
-       col = c("#a1a1a1bb", "#bd4ad4bb","#e34327bb", "#345bebbb", "#2b821fbb"))
+       col = c("#2b821fbb", "#bd4ad4bb","#e34327bb", "#345bebbb","#a1a1a1bb" ))
 
 
 
@@ -121,7 +121,7 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      pch = 16,
      cex = 1.5,
      #col = "#515151bb",
-     col = c("#a1a1a1bb", "#bd4ad4bb", "#345bebbb", "#e34327bb","#2b821fbb")[x$Water_regime],
+     col = c("#2b821fbb", "#bd4ad4bb","#345bebbb", "#e34327bb", "#a1a1a1bb" )[x$Water_regime],
      xlim = c(-250, 105), 
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
@@ -130,7 +130,7 @@ abline(1,1)
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomleft", levels(x$Water_regime), pch = 16,
-       pt.cex = 2, col = c("#a1a1a1bb", "#bd4ad4bb", "#345bebbb", "#e34327bb","#2b821fbb"))
+       pt.cex = 2, col = c("#2b821fbb", "#bd4ad4bb","#345bebbb", "#e34327bb", "#a1a1a1bb" ))
 
 
 ## mean SRP retention
@@ -204,6 +204,35 @@ abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomleft", c(" low", "med", " high"), pch = 16,
        pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
+
+
+
+
+##
+#### influent concentration
+## 
+
+hist(x$TP_Inflow_mg_L)
+rbPal <- colorRampPalette(c('red','blue'))
+x$col <- rbPal(3)[as.numeric(cut(x$TP_Inflow_mg_L, breaks = c(0, 0.2, 2,  Inf)))]
+x$alpha <- rep(99, 279)
+x$col2 <- paste(x$col, x$alpha, sep = "")
+x$col2[which(x$col2 == "NA99" )] <- "#99999999"
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = x$col2,
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", c(" < 0.2 mg/L", "0.2 - 2", " > 2 mg/L"), pch = 16,
+       pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
+
 
 
 
