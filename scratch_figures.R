@@ -120,7 +120,7 @@ legend("topleft", levels(x$Water_regime),
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
      pch = 16,
      cex = 1.5,
-     col = "#515151bb",
+     #col = "#515151bb",
      col = c("#a1a1a1bb", "#bd4ad4bb", "#345bebbb", "#e34327bb","#2b821fbb")[x$Water_regime],
      xlim = c(-250, 105), 
      ylim = c(-150, 105), 
@@ -156,6 +156,54 @@ legend("bottomleft", levels(x$Catchment_Type), pch = 16,
 
 
 
+### wetland size (sm, med, large)
+hist(log10(x$Area_m2))
+
+
+rbPal <- colorRampPalette(c('red','blue'))
+x$col <- rbPal(3)[as.numeric(cut(x$Area_m2, breaks = c(0, 100, 10000,  Inf)))]
+x$alpha <- rep(99, 279)
+x$col2 <- paste(x$col, x$alpha, sep = "")
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = x$col2,
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", c(" < 100 m2", "100 - 1000 m2", " > 1000 m2"), pch = 16,
+       pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
+
+
+### flow/area
+hist(log10(x$Inflow_m3_yr/x$Area_m2))
+x$flow.norm <- x$Inflow_m3_yr/x$Area_m2
+
+
+rbPal <- colorRampPalette(c('red','blue'))
+x$col <- rbPal(3)[as.numeric(cut(x$flow.norm, breaks = c(0, 8, 30,  Inf)))]
+x$alpha <- rep(99, 279)
+x$col2 <- paste(x$col, x$alpha, sep = "")
+x$col2[which(x$col2 == "NA99" )] <- "#99999999"
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = x$col2,
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", c(" low", "med", " high"), pch = 16,
+       pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
 
 
 
