@@ -18,7 +18,7 @@ library(viridis)
 library(gridExtra)
 
 ## Data set-up
-x <- read.csv("Wetland_P_Clean.csv", header = T)
+x <- read.csv("Wetland_P_Clean2.csv", header = T)
 {head(x)
 
 lX<-log(x[,c(11,13, 16,17)])
@@ -135,6 +135,9 @@ legend("bottomleft", levels(x$Water_regime), pch = 16,
 
 ### wetland type
 table(x$Wetland_Type)
+x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+x$Wetland_Type <- droplevels(x$Wetland_Type)
+
 
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
      pch = 16,
@@ -158,6 +161,7 @@ legend("bottomleft", levels(x$Wetland_Type), pch = 16,
 summary(x$SRP_Retention_percent)
 
 summary(x$TP_Retention_percent)
+table(x$Catchment_Type)
 
 
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
@@ -183,7 +187,7 @@ hist(log10(x$Area_m2))
 
 rbPal <- colorRampPalette(c('red','blue'))
 x$col <- rbPal(3)[as.numeric(cut(x$Area_m2, breaks = c(0, 100, 10000,  Inf)))]
-x$alpha <- rep(99, 279)
+x$alpha <- rep(99, 276)
 x$col2 <- paste(x$col, x$alpha, sep = "")
 
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
@@ -208,7 +212,7 @@ x$flow.norm <- x$Inflow_m3_yr/x$Area_m2
 
 rbPal <- colorRampPalette(c('red','blue'))
 x$col <- rbPal(3)[as.numeric(cut(x$flow.norm, breaks = c(0, 8, 30,  Inf)))]
-x$alpha <- rep(99, 279)
+x$alpha <- rep(99, 276)
 x$col2 <- paste(x$col, x$alpha, sep = "")
 x$col2[which(x$col2 == "NA99" )] <- "#99999999"
 
@@ -236,7 +240,7 @@ x$flow.norm <- x$Inflow_m3_yr/x$Area_m2
 
 rbPal <- colorRampPalette(c('red','blue'))
 x$col <- rbPal(3)[as.numeric(cut(x$Inflow_m3_yr, breaks = c(0, 1000, 10000,  Inf)))]
-x$alpha <- rep(99, 279)
+x$alpha <- rep(99, 276)
 x$col2 <- paste(x$col, x$alpha, sep = "")
 x$col2[which(x$col2 == "NA99" )] <- "#99999999"
 
@@ -320,7 +324,7 @@ legend("bottomright", c("High flow year", "Low flow year"), pch = 16,
 hist(x$TP_Inflow_mg_L)
 rbPal <- colorRampPalette(c('red','blue'))
 x$col <- rbPal(3)[as.numeric(cut(x$TP_Inflow_mg_L, breaks = c(0, 0.2, 2,  Inf)))]
-x$alpha <- rep(99, 279)
+x$alpha <- rep(99, nrow(x))
 x$col2 <- paste(x$col, x$alpha, sep = "")
 x$col2[which(x$col2 == "NA99" )] <- "#99999999"
 
