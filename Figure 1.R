@@ -23,7 +23,7 @@ library(gridExtra)
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
 #x <- read.csv("Wetland_P_Toy_Data2.csv", header = T)
-x <- read.csv("Wetland_P_Clean.csv", header = T)
+x <- read.csv("Wetland_P_Clean2.csv", header = T)
 head(x)
 
 
@@ -71,14 +71,14 @@ b
 
 x$ret <- ifelse(x$TP_Retention_percent > 0, "pos", "neg")
 table(x$ret)
-57/(57+223)
+45/(45+233)
 TP.source <- table(x$ret)[1]
 TP.sink <- table(x$ret)[2]
 TP.source.percent <- round(TP.source/(TP.sink+TP.source)*100,1)
 
 x$PO4ret <- ifelse(x$SRP_Retention_percent > 0, "pos", "neg")
 table(x$PO4ret)
-88/(88+191)
+72/(72+206)
 SRP.source <- table(x$PO4ret)[1]
 SRP.sink <- table(x$PO4ret)[2]
 SRP.source.percent <- round(SRP.source/(SRP.sink+SRP.source)*100,1)
@@ -87,7 +87,7 @@ behavior <- c("source", "sink", "source", "sink")
 species <- c("TP", "TP", "SRP", "SRP")
 num <- c(TP.sink, TP.source, SRP.sink, SRP.source)
 label_ypos <- c(200, 10, 200, 10)
-label_text <- c("source \n(20%)", "sink", "source \n(32%)", "sink")
+label_text <- c("source \n(16%)", "sink", "source \n(26%)", "sink")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
 c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
@@ -110,7 +110,10 @@ table(x$Catchment_Type)
 table(x$Water_regime)
 table(x$Wetland_Type)
 
-dd <- data.frame(table(x$Wetland_Type, x$Water_regime))
+xx <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+xx$Wetland_Type <- droplevels(xx$Wetland_Type)
+
+dd <- data.frame(table(xx$Wetland_Type, xx$Water_regime))
 names(dd) <- c("Source", "Flow", "count")
 
 d <- ggplot(dd, aes(Source, factor(Flow, level = c("n.s.", "continuous, constant", "continuous, variable", 
@@ -130,6 +133,8 @@ d <- ggplot(dd, aes(Source, factor(Flow, level = c("n.s.", "continuous, constant
 d
 
 ### (e) - number of studies in each year
+
+
 n <- x %>%
   filter(Catchment_Type == "ag") %>%
   group_by(Source) %>%
