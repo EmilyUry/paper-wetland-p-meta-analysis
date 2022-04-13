@@ -44,6 +44,51 @@ x$SRP.rem.conc <- (x$SRP_IN_mg_L - x$SRP_OUT_mg_L)
 x$SRP.rem.concP <- (x$SRP_IN_mg_L - x$SRP_OUT_mg_L)/x$SRP_IN_mg_L*100
 
 
+x$TP.rem<- (x$TP_IN_g_m2_mo - x$TP_OUT_g_m2_mo)
+x$SRP.rem<- (x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo)
+
+
+x <- x %>%                                ### reorder months in order
+  mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
+                             "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
+
+
+
+x$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
+
+
+y <- x[which(x$data_type == "both" | x$data_type == "load"),]
+y <- y %>%
+  select(Month, TP.rem, Short_ID, Short_Ref, Unique_ID )
+y <- na.omit(y)
+
+
+ggplot(y, aes(x = Month, y = TP.rem, group = Short_ID, color = Unique_ID)) +
+  geom_line() + 
+  theme(legend.position = "none") +
+  facet_wrap(.~ Short_Ref, scales = "free_y")
+  
+
+
+
+
+plot(x$TP.rem, x$TP_Retention_percent)
+
+plot(x$TP.rem, x$TP_Retention_percent,
+     ylim = c(-200,100),
+     xlim = c(-1,1))
+abline(0,-150)
+abline(h=0, col = "#0000FF77")
+abline(v=0, col = "#0000FF77")
+
+
+
+
+
+
+
+
+
 
 ggplot(x, aes(x=Month, y = TP.rem.concP )) +
   geom_boxplot() +
@@ -96,7 +141,7 @@ newd <- cbind(df.summary, df.summary2)
 ggplot(newd, aes(x=Month, y = TP.rem.conc, group = 1 )) +
   geom_bar(stat = "identity") +
   geom_errorbar(aes(ymin=TP.rem.conc-sd, ymax=TP.rem.conc+sd), width=.2,
-                position=position_dodge(.9)) #+
+                position=position_dodge(.9)) +
   geom_point(aes(x=Month, y = TP.rem.concP)) +
   geom_line(aes(x=Month, y = TP.rem.concP)) 
 
