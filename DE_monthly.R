@@ -79,7 +79,7 @@ df.summary <- x %>%
   group_by(Month) %>%
   summarise(
     sd = sd(TP.rem.conc, na.rm = TRUE),
-    TP.rem.conc = mean(TP.rem.conc, na.rm = TRUE)
+    TP.rem.conc = median(TP.rem.conc, na.rm = TRUE)
   )
 df.summary
 
@@ -87,7 +87,7 @@ df.summary2 <- x %>%
   group_by(Month) %>%
   summarise(
     sdP = sd(TP.rem.concP, na.rm = TRUE),
-    TP.rem.concP = mean(TP.rem.concP, na.rm = TRUE)
+    TP.rem.concP = median(TP.rem.concP, na.rm = TRUE)
   )
 df.summary2
 df.summary2[1] <- names("month")
@@ -96,7 +96,7 @@ newd <- cbind(df.summary, df.summary2)
 ggplot(newd, aes(x=Month, y = TP.rem.conc, group = 1 )) +
   geom_bar(stat = "identity") +
   geom_errorbar(aes(ymin=TP.rem.conc-sd, ymax=TP.rem.conc+sd), width=.2,
-                position=position_dodge(.9)) +
+                position=position_dodge(.9)) #+
   geom_point(aes(x=Month, y = TP.rem.concP)) +
   geom_line(aes(x=Month, y = TP.rem.concP)) 
 
@@ -145,10 +145,14 @@ dev.off()
 
 
 
+ggplot(x, aes(x=Month, y = TP.rem.conc )) +
+  geom_boxplot() +
+  ylim(-1, 15)
+
+ggplot(x, aes(x=TP_IN_mg_L, y = TP.rem.conc )) +
+  geom_point() +
+  ylim(-1, 15)
 
 
 
-
-
-
-
+load <- x[which(x$data_type == "both" | x$data_type == "load"),]
