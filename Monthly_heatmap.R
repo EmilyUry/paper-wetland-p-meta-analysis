@@ -43,6 +43,7 @@ table(df$Unique_ID, df$Month)
 ######## Plotting starts here#####################
 
 df <- df[which(df$Short_Ref !=  17),]
+df <- df[which(df$Short_year != "YN"),]
 df <- na.omit(df) 
 df <- df %>%
   mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
@@ -65,47 +66,75 @@ df <- df %>%
 
 
 rbPal <- colorRampPalette(c('red','blue'))
-pal <- rbPal(10)
-pal
-breaks <- c("<-0.5", "-0.5 - 0", "0-0.5", "0.5-1", "1+")
-df$col <- breaks[as.numeric(cut(df$TP_Retention, breaks = c(-Inf, -0.5, 0, 0.5, 1,  Inf)))]
-df <- df %>%
-  mutate(col = fct_relevel(col,"1+","0.5-1", "0-0.5","-0.5 - 0", "<-0.5"   )) 
+rbPal(10)
 
-pal6 <- c("#FF0000","#AA0055" , "#5500AA", "#3800C6", "#1C00E2", "#0000FF", "#0000FF")
+breaks <- c("<-0.1", "-0.1 - -0.05", "-0.05 - 0", "0", "0 - 0.05", "0.05 - 0.1", "0.1 - 1", "1+")
+df$col <- breaks[as.numeric(cut(df$TP_Retention, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
+df <- df %>%
+  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
+
+#pal6 <- c("#FF0000","#AA0055" , "#5500AA", "#3800C6", "#1C00E2", "#0000FF", "#0000FF")
 
 
 
 ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
   geom_tile(color= "white",size=0.1) +
-  scale_fill_manual(values = c("#0000FF","#1C00E2", "#3800C6", "#C60038" ,"#FF0000")) + 
-  theme_minimal(base_size = 8)
+  scale_fill_manual(name = "TP Retention \n (mg/m2/month)", values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0","#bababa" , "#f2b9b1","#f76752", "#b2182b" )) + 
+  theme_minimal(base_size = 8) +
+  ylab("Site ID") +
+  xlab(" ")
 
-ggplot(df,aes(x = Month, y = Unique_ID, fill=TP_Retention))+
+
+
+
+### add annual total
+
+head(df)
+head(df.sum)
+
+df.sum$col <- breaks[as.numeric(cut(df.sum$an_TP_rem, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
+df.sum <- df.sum %>%
+  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
+
+df.sum$Month <- "Total"
+
+df.sum <- df.sum %>%
+  separate(col = "Unique_ID", into = c("Short_Ref", "Short_ID", "Short_year"), sep = "_", remove = "FALSE")
+
+df.sum <- df.sum %>%
+  rename(TP_IN_g_m2_mo = an_TP_IN )%>%
+  rename(TP_Retention = an_TP_rem )%>%
+  rename(TP_Retention_percent = an_TP_rem_percent )
+
+names(df)
+names(df.sum)
+
+df2 <- rbind(df,  df.sum)
+
+
+df2 <- df2 %>%
+  mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
+                             "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Total")) %>%
+  mutate(Unique_ID = fct_relevel(Unique_ID, order)) 
+
+ggplot(df2,aes(x = Month, y = Unique_ID, fill=col))+
   geom_tile(color= "white",size=0.1) +
-  scale_fill_stepsn(n.breaks = 7, colours = pal6) + 
-  theme_minimal(base_size = 8)
+  scale_fill_manual(name = "TP Retention \n (g/m2/month)", 
+                    values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
+                               "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) + 
+  theme_minimal(base_size = 8) +
+  ylab("Site ID") +
+  xlab(" ") +
+  geom_text(data=df.sum, aes(x = 14, y=Unique_ID,label=round(TP_Retention,2)), size = 3, fontface = "bold") +
+  coord_cartesian(clip = "off") +
+  geom_rect(mapping=aes(xmin=12.5, xmax=14.6, ymin=0.5, ymax=36.5), color = "black", fill = NA, size = 1)
 
 
-  scale_fill_viridis(name="Hrly Temps C",option ="C")
-p <-p + facet_grid(year~month)
-p <-p + scale_y_continuous(trans = "reverse", breaks = unique(df$hour))
-p <-p + scale_x_continuous(breaks =c(1,10,20,31))
-p <-p + theme_minimal(base_size = 8)
-p <-p + labs(title= paste("Hourly Temps - Station",statno), x="Day", y="Hour Commencing")
-p <-p + theme(legend.position = "bottom")+
-  theme(plot.title=element_text(size = 14))+
-  theme(axis.text.y=element_text(size=6)) +
-  theme(strip.background = element_rect(colour="white"))+
-  theme(plot.title=element_text(hjust=0))+
-  theme(axis.ticks=element_blank())+
-  theme(axis.text=element_text(size=7))+
-  theme(legend.title=element_text(size=8))+
-  theme(legend.text=element_text(size=6))+
-  removeGrid()#ggExtra
 
-# you will want to expand your plot screen before this bit!
-p #awesomeness
+
+
+
+
 
 
 
