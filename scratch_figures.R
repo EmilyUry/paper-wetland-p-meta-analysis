@@ -40,6 +40,8 @@ x$TP_retention <- x$TP_load_in_g_m2_yr - x$TP_load_out
 x$SRP_retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
 }
 
+median(x$TP_retention)
+median(x$SRP_retention)
 
 
 ## flow regime
