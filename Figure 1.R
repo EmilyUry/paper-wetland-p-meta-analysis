@@ -18,7 +18,9 @@
 library(ggplot2)
 library(tidyverse)
 library(viridis)
-library(gridExtra)
+#library(patchwork)
+#library(gridExtra)
+library(ggpubr)
 
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
@@ -40,8 +42,8 @@ pal
 world <- borders("world", colour="#8a8cb5", fill="#414487bb") # create a layer of borders
 map <- ggplot() + world + ylim(-55,100) + theme_void() +
   geom_point(aes(x=x$Long, y = x$Lat), color = "black", pch = 21, fill = "white", size = 0.8) +
-  labs(title="(a) Location of studied wetlands ")+
-  theme(plot.margin = margin(t = 0, r = 1, b = 0.5, l = 1, unit = "cm")) +
+ # labs(title="(a) Location of studied wetlands ")+
+  theme(plot.margin = margin(t = 0.5, r = 0.0, b = 1, l = 0.5, unit = "cm")) +
   theme(plot.title = element_text(hjust = 1, size = 7, face = "bold"))
 
 map
@@ -59,7 +61,8 @@ b <- ggplot(n, aes(area)) +
                       mid = unit(0.0, "cm"), long = unit(0.1, "cm"))  +
   coord_cartesian(clip = "off") +
   theme_classic() +
-  labs(title = "(b) Wetland size distribution", x = expression(paste("Area (", m^2, ")")))+
+  labs(title = " ", x = expression(paste("Area (", m^2, ")")))+
+  #labs(title = "(b) Wetland size distribution", x = expression(paste("Area (", m^2, ")")))+
   theme(plot.margin = margin(t = 0.2, r = 0.3, b = 0.3, l = 0.2, unit = "cm")) +
   theme(plot.title = element_text(hjust = 0.1, size = 7, face = "bold"))
 
@@ -92,12 +95,13 @@ data <- data.frame(behavior, species, num, label_ypos, label_text)
 
 c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 2.5, face = "bold")+
+  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 2.5, fontface = "bold")+
   theme_classic() +
-  labs(title = "(c) Wetland sink/source behavior", x = " ", y = "n" ) +
+  labs(title = " ", x = " ", y = "n" ) +
+  #labs(title = "(c) Wetland sink/source behavior", x = " ", y = "n" ) +
   scale_fill_manual(values = c("#414487bb", "#414487ff")) + 
   theme(legend.position = "none") +
-  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 1, unit = "cm")) +
+  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 0.0, unit = "cm")) +
   theme(plot.title = element_text(hjust = 0.6, size = 7, face = "bold"))
   
 c
@@ -189,8 +193,9 @@ p <- ggplot(data = e, aes(fill = type, x=Year, y = num)) +
   geom_bar(position = "stack", stat = "identity") +
   theme_classic() +
   scale_fill_manual(values = c("#8a8cb588", "#41448799", "#414487")) +
-  labs(title = "(e) Study publication year", y = "n", x = " ") +
-  theme(plot.margin = margin(t = 0, r = 0.1, b = 0, l = 1, unit = "cm")) +
+  labs(title = " ", y = "n", x = " ") +
+  #labs(title = "(e) Study publication year", y = "n", x = " ") +
+  theme(plot.margin = margin(t = 0, r = 0.1, b = 0, l = 0.5, unit = "cm")) +
   theme(plot.title = element_text(hjust = -0.10 , size = 7, face = "bold")) +
   theme(legend.title = element_blank(), legend.text = element_text(size = 7),
         legend.key.size = unit(0.3, 'cm'))
@@ -269,12 +274,18 @@ p
 # p
 }
 
-tiff(filename = "figures/Figure1.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure1.tiff", height=2400, width=3600, units= "px", res=800, compression= "lzw")
 
-grid.arrange(map, b, c, d, p, nrow = 3, layout_matrix = rbind(c(1,2), c(3,4), c(5,5)))
+ggarrange(ggarrange(map, b, c, ncol = 3, labels = c("A", "B", "C")),   # First row with 3 plots
+          p, nrow = 2, labels = c(" ", "D"))                           # Second row, one long plot
 
 dev.off()
 
 
-
-
+# grid.arrange(map, b, c, p, nrow = 2, layout_matrix = rbind(c(1,2,3), c(4,4,4)), 
+#              name = c("A", "B", "C", "D"),)
+# 
+# library(ggpubr)
+ggarrange(map, b, c, p, ncol = 2, nrow = 2, #layout_matrix = rbind(c(1,2,3), c(4,4,4)), 
+        labels = c("A", "B", "C", "D"))
+#grid.arrange(map, b, c, d, p, nrow = 3, layout_matrix = rbind(c(1,2), c(3,4), c(5,5)))
