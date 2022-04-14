@@ -7,7 +7,7 @@
 #' date: "April 14, 2022"
 #' ---
 #' 
-#' Summary
+#' Reported in Table 1 of the manuscript
 #'   (a) mean, median, range: 
 #'           (i) loading rate
 #'           (ii) retention rate
@@ -59,7 +59,42 @@ TP_Retention_percent <- x %>%
 rownames(TP_Retention_percent) <- "TP Efficiency"
 
 
-summary <- rbind(TP_IN, TP_Retention, TP_Retention_percent)
+
+### SRP
+SRP_IN <- x %>%
+  summarise(mean = mean(SRP_load_in_g_m2_yr, na.rm = TRUE),
+            sd = sd(SRP_load_in_g_m2_yr, na.rm = TRUE),
+            median = median(SRP_load_in_g_m2_yr, na.rm = TRUE),
+            max = max(SRP_load_in_g_m2_yr, na.rm = TRUE),
+            min = min(SRP_load_in_g_m2_yr, na.rm = TRUE)) %>%
+  mutate(n = nrow(x)) %>%
+  mutate(se = sd/sqrt(n))
+rownames(SRP_IN) <- "SRP Loading"
+
+SRP_Retention <- x %>%
+  summarise(mean = mean(SRP_Retention, na.rm = TRUE),
+            sd = sd(SRP_Retention, na.rm = TRUE),
+            median = median(SRP_Retention, na.rm = TRUE),
+            max = max(SRP_Retention, na.rm = TRUE),
+            min = min(SRP_Retention, na.rm = TRUE)) %>%
+  mutate(n = nrow(x)) %>%
+  mutate(se = sd/sqrt(n))
+rownames(SRP_Retention) <- "SRP Retention"
+
+SRP_Retention_percent <- x %>%
+  summarise(mean = mean(SRP_Retention_percent, na.rm = TRUE),
+            sd = sd(SRP_Retention_percent, na.rm = TRUE),
+            median = median(SRP_Retention_percent, na.rm = TRUE),
+            max = max(SRP_Retention_percent, na.rm = TRUE),
+            min = min(SRP_Retention_percent, na.rm = TRUE)) %>%
+  mutate(n = nrow(x)) %>%
+  mutate(se = sd/sqrt(n))
+rownames(SRP_Retention_percent) <- "SRP Efficiency"
+
+
+
+
+summary <- rbind(TP_IN, TP_Retention, TP_Retention_percent, SRP_IN, SRP_Retention, SRP_Retention_percent)
 
 
 
