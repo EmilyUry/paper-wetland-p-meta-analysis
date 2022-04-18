@@ -81,7 +81,7 @@ TP.source.percent <- round(TP.source/(TP.sink+TP.source)*100,1)
 
 x$PO4ret <- ifelse(x$SRP_Retention_percent > 0, "pos", "neg")
 table(x$PO4ret)
-72/(72+206)
+72/(72+205)
 SRP.source <- table(x$PO4ret)[1]
 SRP.sink <- table(x$PO4ret)[2]
 SRP.source.percent <- round(SRP.source/(SRP.sink+SRP.source)*100,1)
@@ -89,7 +89,7 @@ SRP.source.percent <- round(SRP.source/(SRP.sink+SRP.source)*100,1)
 behavior <- c("source", "sink", "source", "sink")
 species <- c("TP", "TP", "SRP", "SRP")
 num <- c(TP.sink, TP.source, SRP.sink, SRP.source)
-label_ypos <- c(200, 10, 200, 10)
+label_ypos <- c(240, 10, 240, 10)
 label_text <- c("source \n(16%)", "sink", "source \n(26%)", "sink")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
@@ -117,21 +117,26 @@ table(x$Wetland_Type)
 xx <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
 xx$Wetland_Type <- droplevels(xx$Wetland_Type)
 
-dd <- data.frame(table(xx$Wetland_Type, xx$Water_regime))
-names(dd) <- c("Source", "Flow", "count")
+xx <- xx %>%
+  group_by(WetlandID) %>%
+  filter(Age_yr == min(Age_yr))
 
-d <- ggplot(dd, aes(Source, factor(Flow, level = c("n.s.", "continuous, constant", "continuous, variable", 
-                                              "intermittent, constant", "intermittent, variable")), fill = count)) +
+dd <- data.frame(table(xx$Wetland_Type, xx$Catchment_Type))
+names(dd) <- c("Type", "Catchment", "count")
+
+d <- ggplot(dd, aes(Catchment, factor(Type), fill = count)) +
   geom_tile() +
   geom_text(aes(label=count), size = 2.5, color = "white") +
   scale_fill_gradient(low="#41448777", high ="#414487ff") +
   theme_classic() +
-  scale_y_discrete(labels = c( "n.s.", "CC", "CV",  "IC", "IV")) +
-  scale_x_discrete(labels = c("Constr.", "Mesoc.", "Natural", "Rest.")) +
-  labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
-  theme(plot.margin = margin(t = 0, r = 0.2, b = 0, l = 0.2, unit = "cm"), legend.position = "none") +
+  xlab("Catchment Type ") +
+  ylab("Wetland Type")+
+  #scale_y_discrete(labels = c( "n.s.", "CC", "CV",  "IC", "IV")) +
+  scale_x_discrete(labels = c("Ag.", "Urban", "WTP")) +
+  #labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
+  theme(plot.margin = margin(t = 0, r = 0.2, b = 0.1, l = 0.2, unit = "cm"), legend.position = "none") +
   theme(plot.title = element_text(hjust = 1, size = 7, face = "bold")) +
-  theme(axis.text.x = element_text(hjust = 0.1, size = 8, angle = 335))
+  theme(axis.text.x = element_text(hjust = 0.1, size = 9, angle = 0))
 
 
 d
@@ -200,6 +205,21 @@ p <- ggplot(data = e, aes(fill = type, x=Year, y = num)) +
   theme(legend.title = element_blank(), legend.text = element_text(size = 7),
         legend.key.size = unit(0.3, 'cm'))
 p
+
+
+
+## plot z, number of sites vs number of years per study
+z2 <- x %>%
+  group_by(Source)  %>%
+  summarize(num = n())
+
+z <- x %>%
+  group_by(Source, cat = WetlandID) %>%
+  summarize(num = n())
+
+
+
+zz <- ggplot((data = z, (aes())
 
 
 ## panel E alternative
@@ -274,13 +294,15 @@ p
 # p
 }
 
-tiff(filename = "figures/Figure1.tiff", height=2400, width=3600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure1.tiff", height=1800, width=6000, units= "px", res=800, compression= "lzw")
 
-ggarrange(ggarrange(map, b, c, ncol = 3, labels = c("A", "B", "C")),   # First row with 3 plots
-          p, nrow = 2, labels = c(" ", "D"))                           # Second row, one long plot
+ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C"))                        
 
+                                   
 dev.off()
 
+ggarrange(ggarrange(map, b, d, ncol = 3, labels = c("A", "B", "C")),   # First row with 3 plots
+          p, nrow = 2, labels = c(" ", "D")) 
 
 # grid.arrange(map, b, c, p, nrow = 2, layout_matrix = rbind(c(1,2,3), c(4,4,4)), 
 #              name = c("A", "B", "C", "D"),)
