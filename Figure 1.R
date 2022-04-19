@@ -24,6 +24,8 @@ library(ggpubr)
 
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
+#setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")
+
 #x <- read.csv("Wetland_P_Toy_Data2.csv", header = T)
 x <- read.csv("Wetland_P_Clean2.csv", header = T)
 head(x)
@@ -124,19 +126,18 @@ xx <- xx %>%
 dd <- data.frame(table(xx$Wetland_Type, xx$Catchment_Type))
 names(dd) <- c("Type", "Catchment", "count")
 
-d <- ggplot(dd, aes(Catchment, factor(Type), fill = count)) +
+d <- ggplot(dd, aes(factor(Type), Catchment, fill = count)) +
   geom_tile() +
   geom_text(aes(label=count), size = 2.5, color = "white") +
   scale_fill_gradient(low="#41448777", high ="#414487ff") +
   theme_classic() +
-  xlab("Catchment Type ") +
-  ylab("Wetland Type")+
-  #scale_y_discrete(labels = c( "n.s.", "CC", "CV",  "IC", "IV")) +
-  scale_x_discrete(labels = c("Ag.", "Urban", "WTP")) +
+  ylab("Catchment Type          ") +
+  xlab("Wetland Type")+
+  scale_y_discrete(labels = c("Ag.", "Urban", "WTP")) +
   #labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
   theme(plot.margin = margin(t = 0, r = 0.2, b = 0.1, l = 0.2, unit = "cm"), legend.position = "none") +
   theme(plot.title = element_text(hjust = 1, size = 7, face = "bold")) +
-  theme(axis.text.x = element_text(hjust = 0.1, size = 9, angle = 0))
+  theme(axis.text.x = element_text(hjust = 1, size = 9, angle = 45))
 
 
 d
@@ -209,20 +210,25 @@ p
 
 
 ## plot z, number of sites vs number of years per study
-z2 <- x %>%
-  group_by(Source)  %>%
-  summarize(num = n())
-
 z <- x %>%
-  group_by(Source, cat = WetlandID) %>%
-  summarize(num = n())
+  group_by(Source)  %>%
+  summarize(num = n_distinct(WetlandID), yr = n_distinct(Data_Year))
+
+zz <- ggplot(data = z, (aes(x = num, y = yr ))) +
+  geom_jitter(width = 0.15, height = 0.15, color = "#414487ff", size = 2)+
+  xlab("Wetlands per study") +
+  ylab("Years per wetland") + 
+  theme(panel.background = element_rect(fill = "#41448733", colour = "white")) +
+  scale_y_continuous(breaks = c(0,2,4,6,8,10)) +
+  scale_x_continuous(breaks = c(0,2,4,6,8, 10,  12, 14, 16))
+
+zz
 
 
 
-zz <- ggplot((data = z, (aes())
 
-
-## panel E alternative
+       
+       ## panel E alternative
 {
 # 
 # n <- x %>%
@@ -294,12 +300,17 @@ zz <- ggplot((data = z, (aes())
 # p
 }
 
-tiff(filename = "figures/Figure1.tiff", height=1800, width=6000, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure1.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
 
-ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C"))                        
+#ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
+ggarrange(map, zz, d, b, ncol = 2, nrow = 2, labels = c("A", "B", "C", "D"))                        
 
-                                   
 dev.off()
+
+
+
+
+
 
 ggarrange(ggarrange(map, b, d, ncol = 3, labels = c("A", "B", "C")),   # First row with 3 plots
           p, nrow = 2, labels = c(" ", "D")) 
