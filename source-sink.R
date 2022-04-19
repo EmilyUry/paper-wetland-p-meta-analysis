@@ -15,6 +15,15 @@ setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_file
 x <- read.csv("Wetland_P_Clean2.csv", header = T)
 head(x)
 
+## mass at outflow
+x$TP_load_out <- x$TP_load_in_g_m2_yr*(1 - x$TP_Retention_percent/100)
+x$SRP_load_out <- x$SRP_load_in_g_m2_yr*(1- x$SRP_Retention_percent/100)
+### retention
+x$TP_Retention <- x$TP_load_in_g_m2_yr - x$TP_load_out
+x$SRP_Retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
+
+
+
 
 
 
@@ -62,22 +71,47 @@ dev.off()
 
 
 
+### release and retention by mass
+
+### absolute mass of P retention (adjusted for wetlands size)
+x$TP_Yield <- x$TP_Retention*x$Area_m2
+x$SRP_Yield <- x$SRP_Retention*x$Area_m2
+
+TPsummary <- x %>%
+  group_by(ret) %>%
+  summarise(sum = sum(TP_Yield))
+
+SRPsummary <- x %>%
+  group_by(PO4ret) %>%
+  summarise(sum = sum(SRP_Yield))
 
 
+num <- c(TPsummary[[2,2]], TPsummary[[1,2]], SRPsummary[[2,2]], SRPsummary[[1,2]])
+num <- num/1000
+behavior <- c("source", "sink", "source", "sink")
+species <- c("TP", "TP", "SRP", "SRP")
+label_ypos <- c(-1500, 230000, -10000, 150000)
+label_text <- c("released", "retained", "released", "retained")
+data <- data.frame(behavior, species, num, label_ypos, label_text)
 
 
+d <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 2.5, fontface = "bold")+
+  theme_classic() +
+  labs(title = " ", x = " ", y = "P (kg/year)" ) +
+  scale_fill_manual(values = c("#414487bb", "#414487ff")) + 
+  theme(legend.position = "none") +
+  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 0.0, unit = "cm")) +
+  theme(plot.title = element_text(hjust = 0.6, size = 7, face = "bold")) 
 
 
+d
 
 
-
-
-
-
-
-
-
-
+tiff(filename = "figures/Figure2b.tiff", height=1800, width=1800, units= "px", res=800, compression= "lzw")
+d
+dev.off()
 
 
 
