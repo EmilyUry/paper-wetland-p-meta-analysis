@@ -69,7 +69,7 @@ df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem)  ### reorde
 Unique <- df.sum$Unique_ID
 order <- levels(Unique)
 df <- df %>%
-  mutate(Unique_ID = fct_relevel(Unique_ID, order)) 
+  mutate(Unique_ID = fct_relevel(Unique_ID, order))
 
 
 
@@ -85,9 +85,9 @@ df <- df %>%
 
 # ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
 #   geom_tile(color= "white",size=0.1) +
-#   scale_fill_manual(name = "TP Retention \n (g/m2/month)", 
+#   scale_fill_manual(name = "TP Retention \n (g/m2/month)",
 #                     values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
-#                                "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) + 
+#                                "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
 #   theme_minimal(base_size = 8) +
 #   ylab("Site ID") +
 #   xlab(" ")
