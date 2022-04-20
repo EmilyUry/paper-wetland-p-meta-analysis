@@ -300,6 +300,19 @@ zz
 # p
 }
 
+
+
+hist(x$Age_yr, xlim = c(0,20), breaks = 100)
+nrow(x[which(x$Age_yr <= 5),])
+nrow(x[which(x$Age_yr <= 3),])
+nrow(x)
+
+22+26+42+58+62
+
+179/277
+
+210/277
+
 tiff(filename = "figures/Figure1.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
 
 #ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
