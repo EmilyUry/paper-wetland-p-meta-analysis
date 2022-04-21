@@ -10,7 +10,10 @@
 #'   (a) 
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
+<<<<<<< HEAD
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
+=======
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 
 library(ggplot2)
@@ -21,9 +24,12 @@ library(gridExtra)
 ## Data set-up
 x <- read.csv("Wetland_P_Clean2.csv", header = T)
 {head(x)
+<<<<<<< HEAD
         
         
 x$Water_regime <- as.factor(x$Water_regime)
+=======
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 lX<-log(x[,c(11,13, 16,17)])
 colnames(lX)<-paste("log",colnames(lX),sep="")
@@ -46,7 +52,11 @@ x$SRP_retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
 
 ####### Flow regime
 
+<<<<<<< HEAD
 par(mfrow = c(1,1), xpd = FALSE)
+=======
+par(mfrow = c(1,1), xpd = TRUE)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
@@ -58,7 +68,11 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomleft", levels(x$Water_regime), pch = 16,
@@ -68,7 +82,11 @@ legend("bottomleft", levels(x$Water_regime), pch = 16,
 ### wetland type
 table(x$Wetland_Type)
 x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+<<<<<<< HEAD
 x$Wetland_Type <- as.factor(x$Wetland_Type)
+=======
+x$Wetland_Type <- droplevels(x$Wetland_Type)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
@@ -80,7 +98,11 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomleft", levels(x$Wetland_Type), pch = 16,
@@ -89,10 +111,18 @@ legend("bottomleft", levels(x$Wetland_Type), pch = 16,
 
 
 
+<<<<<<< HEAD
 ## Catchment_Type
 
 table(x$Catchment_Type)
 x$Catchment_Type <- as.factor(x$Catchment_Type)
+=======
+## mean SRP retention
+summary(x$SRP_Retention_percent)
+
+summary(x$TP_Retention_percent)
+table(x$Catchment_Type)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 
 plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
@@ -103,7 +133,11 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomleft", levels(x$Catchment_Type), pch = 16,
@@ -112,6 +146,7 @@ legend("bottomleft", levels(x$Catchment_Type), pch = 16,
 
 
 
+<<<<<<< HEAD
 # ### wetland size (sm, med, large)
 # hist(log10(x$Area_m2))
 # 
@@ -162,6 +197,56 @@ legend("bottomleft", levels(x$Catchment_Type), pch = 16,
 # abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 # legend("bottomleft", c(" low", "med", " high"), pch = 16,
 #        pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
+=======
+### wetland size (sm, med, large)
+hist(log10(x$Area_m2))
+
+
+rbPal <- colorRampPalette(c('red','blue'))
+x$col <- rbPal(3)[as.numeric(cut(x$Area_m2, breaks = c(0, 100, 10000,  Inf)))]
+x$alpha <- rep(99, 276)
+x$col2 <- paste(x$col, x$alpha, sep = "")
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = x$col2,
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", c(" < 100 m2", "100 - 1000 m2", " > 1000 m2"), pch = 16,
+       pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
+
+
+### flow/area
+hist(log10(x$Inflow_m3_yr/x$Area_m2))
+x$flow.norm <- x$Inflow_m3_yr/x$Area_m2
+
+
+rbPal <- colorRampPalette(c('red','blue'))
+x$col <- rbPal(3)[as.numeric(cut(x$flow.norm, breaks = c(0, 8, 30,  Inf)))]
+x$alpha <- rep(99, 276)
+x$col2 <- paste(x$col, x$alpha, sep = "")
+x$col2[which(x$col2 == "NA99" )] <- "#99999999"
+
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = x$col2,
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("bottomleft", c(" low", "med", " high"), pch = 16,
+       pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 
 
@@ -185,7 +270,11 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomleft", c(" low", "med", " high"), pch = 16,
@@ -196,6 +285,10 @@ legend("bottomleft", c(" low", "med", " high"), pch = 16,
 
 
 ### flow anomally
+<<<<<<< HEAD
+=======
+library(tidyverse)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 Flow <- aggregate(Inflow_m3_yr ~ Source + WetlandID, data = x, FUN = mean) %>%
         mutate(Unique_ID = paste(Source, WetlandID))
 names(Flow)[3] <- "mean_flow"
@@ -235,13 +328,18 @@ plot(data$SRP_Retention_percent, data$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomright", c("High flow year", "Low flow year"), pch = 16,
        pt.cex = 2, col = c("#0000FF85","#FF000085"))
 
 
+<<<<<<< HEAD
 #######################################
 ### inflow load anomaly TP
 
@@ -530,6 +628,13 @@ legend("bottomright", c("High [SRP]", "Low [SRP]"), pch = 16,
        title = " ")
 
 ### just points, no color
+=======
+
+
+
+
+
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 
 
 
@@ -542,7 +647,11 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 
@@ -576,6 +685,7 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      col = x$col2,
      xlim = c(-250, 105), 
      ylim = c(-150, 105), 
+<<<<<<< HEAD
      xlab = "SRP % Retention ",
      ylab = "TP % Retention ")
 abline(0,1)
@@ -584,6 +694,15 @@ abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 par(xpd = TRUE)
 legend("top", inset=c(0,-0.1), 
        levels(x$bins), pch = 16,
+=======
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+par(xpd = TRUE)
+legend("top", inset=c(0,-0.2), levels(x$bins), pch = 16,
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
        pt.cex = 2, col = mypal3, title = "TP load (g/m2/yr)", 
        horiz=TRUE, box.lty=0 , cex = 0.8)
 
@@ -608,7 +727,11 @@ plot(x$SRP_Retention_percent, x$TP_Retention_percent,
      ylim = c(-150, 105), 
      xlab = "SRP % Retention",
      ylab = "TP % Retention")
+<<<<<<< HEAD
 abline(0,1)
+=======
+abline(1,1)
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 par(xpd = TRUE)
@@ -638,6 +761,7 @@ plot(x$SRP_retention, x$TP_retention,
      col = x$col2,
      xlim = c(-10, 40), 
      ylim = c(-10, 40), 
+<<<<<<< HEAD
      xlab = "SRP Retention (g/m2/year)",
      ylab = "TP Retention (g/m2/year)")
 abline(0,1)
@@ -645,6 +769,15 @@ abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 par(xpd = TRUE)
 legend("top", inset=c(0,-0.1), levels(x$bins), pch = 16,
+=======
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+par(xpd = TRUE)
+legend("top", inset=c(0,-0.2), levels(x$bins), pch = 16,
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
        pt.cex = 2, col = mypal3, title = "TP load (g/m2/yr)", 
        horiz=TRUE, box.lty=0 , cex = 0.8)
 
@@ -653,7 +786,11 @@ legend("top", inset=c(0,-0.1), levels(x$bins), pch = 16,
 ######  SRP
 
 
+<<<<<<< HEAD
 
+=======
+rbPal <- colorRampPalette(c('red','blue'))
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
 x$bins <- cut_number(x$SRP_load_in_g_m2_yr, 3)
 x$col <- rbPal(3)[as.numeric(cut_number(x$SRP_load_in_g_m2_yr, 3))]
 x$alpha <- rep(99, nrow(x))
@@ -667,6 +804,7 @@ plot(x$SRP_retention, x$TP_retention,
      col = x$col2,
      xlim = c(-10, 40), 
      ylim = c(-10, 40), 
+<<<<<<< HEAD
      xlab = "SRP Retention (g/m2/year)",
      ylab = "TP Retention (g/m2/year)")
 abline(0,1)
@@ -674,6 +812,15 @@ abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 par(xpd = TRUE)
 legend("top", inset=c(0,-0.1), levels(x$bins), pch = 16,
+=======
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+par(xpd = TRUE)
+legend("top", inset=c(0,-0.2), levels(x$bins), pch = 16,
+>>>>>>> 82a4dd3317c43dd9bbf778e074467a7d533d0496
        pt.cex = 2, col = mypal3, title = "SRP load (g/m2/yr)", 
        horiz=TRUE, box.lty=0 , cex = 0.8)
 
