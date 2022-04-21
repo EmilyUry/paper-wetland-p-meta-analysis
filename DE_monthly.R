@@ -81,14 +81,19 @@ abline(0,-150)
 abline(h=0, col = "#0000FF77")
 abline(v=0, col = "#0000FF77")
 
+ggplot(x, aes(x=Month, y = SRP_IN_mg_L )) +
+  geom_boxplot() +
+  ylim(0,2.)
 
 
+head(x)
 
+ggplot(x, aes(x=Month, y = SRP_IN_g_m2_mo )) +
+  geom_boxplot() +
+  ylim(0,2.)
 
-
-
-
-
+unique(x$Wetland_ID)
+table(x$Wetland_ID, x$Month)
 
 ggplot(x, aes(x=Month, y = TP.rem.concP )) +
   geom_boxplot() +
