@@ -9,6 +9,8 @@
 #' Source-sink behavior at the annual scale
 
 
+library(ggplot2)
+
 ## data setup:
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
@@ -81,6 +83,9 @@ x$SRPret <- ifelse(x$SRP_Retention_percent > 0, "pos", "neg")
 #### Inflow bins
 x$cutby <- x$TP_Inflow_mg_L
 xlab <- "Inflow TP concentration (mg/L)"
+
+x$cutby <- x$SRP_Inflow_mg_L
+xlab <- "Inflow SRP concentration (mg/L)"
 
 x$cutby <- x$TP_load_in_g_m2_yr
 xlab <- "Inflow TP load (g/m2/year)"
