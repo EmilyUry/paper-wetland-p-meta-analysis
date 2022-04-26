@@ -17,7 +17,9 @@ library(ggplot2)
 library(tidyverse)
 # library(viridis)
 # library(gridExtra)
+library(cowplot)
 library(ggExtra)
+library(ggpubr)
 
 ## Data set-up
 x <- read.csv("Wetland_P_Clean2.csv", header = T)
@@ -78,6 +80,48 @@ p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
         ylab("TP % Retention")
 p
 
+hist <- ggplot(x, (aes(x = SRP_retention))) +
+        geom_density() +
+        xlim(-11, 5) +
+        theme_classic() +
+        xlab(" ") +
+        theme(plot.margin = margin(t = 0, r = 0, b = -0.5, l = 1.4, unit = "cm"),
+              axis.title.y = element_blank(), axis.text.y = element_blank(), 
+              axis.ticks.y = element_blank(), panel.grid = element_blank(), 
+              axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
+              axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
+        
+
+hist2 <- ggplot(x, (aes(x = TP_retention))) +
+        geom_density() +
+        xlim(-18, 13) +
+        theme_classic() +
+        xlab(" ") +
+        coord_flip()  +
+        theme(plot.margin = margin(t = 0, r = 0, b = 1, l = -0.5, unit = "cm"),
+              axis.title.x = element_blank(), axis.text.x = element_blank(), 
+              axis.ticks.x = element_blank(), panel.grid = element_blank(), 
+              axis.line.y = element_line(size = 0.5, colour = "black", linetype=1),
+              axis.line.x = element_line(size = 0.5, colour = "white", linetype=1))
+
+lab <- ggplot(x, (aes(x = TP_retention))) +
+        annotate("text", 0,0, label = "Retention \n (g/m2/yr)") +
+        theme_void()
+
+plot_grid(hist, NULL, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
+plot_grid(hist, lab, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
+
+
+tiff(filename = "figures/scatter_w_distributions.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
+
+plot_grid(hist, lab, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
+
+dev.off()
+
+
+
+
+
 p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
         geom_point() + 
         theme(legend.position = "none") +
@@ -105,7 +149,7 @@ p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
 p
 
 
-p2 <- ggMarginal(p, type = "density")    
+p2 <- ggMarginal(data = x, x = "SRP_retention", y  = "TP_retention", type = "density")    
 p2
 
 
@@ -645,7 +689,7 @@ mypal5 = c("#FF000099", "#BF003F99", "#7F007F99", "#3F00BF99", "#0000FF99")
 
 rbPal <- colorRampPalette(c('blue','red'))
 x$bins <- cut_number(x$TP_load_in_g_m2_yr, 3)
-x$col <- rbPal(3)[as.numeric(cut_number(x$TP_load_in_g_m2_yr, 3))]
+x$col <- rbPal(3)[as.numeric(cut_number(x$TP_Inflow_mg_L, 3))]
 x$alpha <- rep(99, nrow(x))
 x$col2 <- paste(x$col, x$alpha, sep = "")
 x$col2[which(x$col2 == "NA99" )] <- "#99999999"
@@ -674,7 +718,7 @@ legend("top", inset=c(0,-0.1),
 
 
 x$bins <- cut_number(x$SRP_load_in_g_m2_yr, 3)
-x$col <- rbPal(3)[as.numeric(cut_number(x$SRP_load_in_g_m2_yr, 3))]
+x$col <- rbPal(3)[as.numeric(cut_number(x$SRP_Inflow_mg_L, 3))]
 x$alpha <- rep(99, nrow(x))
 x$col2 <- paste(x$col, x$alpha, sep = "")
 x$col2[which(x$col2 == "NA99" )] <- "#99999999"
@@ -693,7 +737,7 @@ abline(h=0, col = 'gray50', lwd =1, lty = 2)
 abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 par(xpd = TRUE)
 legend("top", inset=c(0,-0.2), levels(x$bins), pch = 16,
-       pt.cex = 2, col = mypal3, title = "SRP load (g/m2/yr)", 
+       pt.cex = 2, col = mypal3, title = "SRP inflow mg/L)", 
        horiz=TRUE, box.lty=0 , cex = 0.8)
 
 
