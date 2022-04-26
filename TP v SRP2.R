@@ -15,8 +15,9 @@ setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_file
 
 library(ggplot2)
 library(tidyverse)
-library(viridis)
-library(gridExtra)
+# library(viridis)
+# library(gridExtra)
+library(ggExtra)
 
 ## Data set-up
 x <- read.csv("Wetland_P_Clean2.csv", header = T)
@@ -43,6 +44,102 @@ x$HLR <- x$Inflow_m3_yr/x$Area_m2
 x$TP_retention <- x$TP_load_in_g_m2_yr - x$TP_load_out
 x$SRP_retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
 }
+
+
+### just points, no color
+
+
+
+par(xpd = FALSE)
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.3,
+     col = "black",
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(0,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+
+
+p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
+        geom_point() + 
+        theme(legend.position = "none") +
+        xlim(-250, 105) +
+        ylim(-150, 105) + 
+        theme_bw() +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+        geom_abline(slope = 1, intercept = 0) +
+        geom_hline(yintercept = 0, lty = 2) +
+        geom_vline(xintercept = 0, lty = 2) +
+        xlab("SRP % Retention") +
+        ylab("TP % Retention")
+p
+
+p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
+        geom_point() + 
+        theme(legend.position = "none") +
+        xlim(-250, 105) +
+        ylim(-150, 105) + 
+        theme_bw() +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+        geom_abline(slope = 1, intercept = 0) +
+        geom_hline(yintercept = 0, lty = 2) +
+        geom_vline(xintercept = 0, lty = 2) +
+        xlab("SRP % Retention") +
+        ylab("TP % Retention") +
+        geom_rect(mapping = aes(xmin = 1, xmax = 104, ymin = 1, ymax = 104), color = "#414487",  fill = "#414487", alpha = 0.01) +
+        geom_rect(mapping = aes(xmin = -250, xmax = -1, ymin = 1, ymax = 104), color = "#414487",  fill = "#414487", alpha = 0.005) +
+        geom_rect(mapping = aes(xmin = 1, xmax = 104, ymin = -150, ymax = -1), color = "#414487",  fill = "#414487", alpha = 0.005) +
+        geom_rect(mapping = aes(xmin = -250, xmax = -1, ymin = -150, ymax = -1), color = "#414487",  fill = "#414487", alpha = 0.001) +
+        annotate(geom = "text", x = 50, y = 95, label = "I", fontface = "bold", family = "serif", size = 10) +
+        annotate(geom = "text", x = -150, y = 95, label = "II", fontface = "bold", family = "serif", size = 10) +
+        annotate(geom = "text", x = -150, y = -140, label = "III", fontface = "bold", family = "serif", size = 10) +
+        annotate(geom = "text", x = 50, y = -140, label = "IV", fontface = "bold", family = "serif", size = 10) 
+        
+        
+        
+
+p
+
+
+p2 <- ggMarginal(p, type = "density")    
+p2
+
+
+
+p <- ggplot(x, aes(x = SRP_retention, y = TP_retention)) +
+        geom_point() + 
+        theme(legend.position = "none") +
+        xlim(-20, 120) +
+        ylim(-20, 120) +
+        theme_bw() +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+        geom_abline(slope = 1, intercept = 0) +
+        geom_hline(yintercept = 0, lty = 2) +
+        geom_vline(xintercept = 0, lty = 2) +
+        geom_rect(mapping = aes(xmin = -1, xmax = 2, ymin = -1, ymax = 2), color = "red", alpha = 0) 
+p
+p <- ggplot(x, aes(x = SRP_retention, y = TP_retention)) +
+        geom_point() + 
+        theme(legend.position = "none") +
+         xlim(-1, 2) +
+         ylim(-1, 2) + 
+        theme_bw() +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+        geom_abline(slope = 1, intercept = 0) +
+        geom_hline(yintercept = 0, lty = 2) +
+        geom_vline(xintercept = 0, lty = 2)
+p2 <- ggMarginal(p, type = "density")    
+p2
+
+
+
+
+
+
 
 ####### Flow regime
 
@@ -528,23 +625,6 @@ abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 legend("bottomright", c("High [SRP]", "Low [SRP]"), pch = 16,
        pt.cex = 2, col = c("#0000FF85","#FF000085"),
        title = " ")
-
-### just points, no color
-
-
-
-par(xpd = FALSE)
-plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
-     pch = 16,
-     cex = 1.3,
-     col = "black",
-     xlim = c(-250, 105), 
-     ylim = c(-150, 105), 
-     xlab = "SRP % Retention",
-     ylab = "TP % Retention")
-abline(0,1)
-abline(h=0, col = 'gray50', lwd =1, lty = 2)
-abline(v=0, col = 'gray30', lwd = 1, lty = 2)
 
 
 
