@@ -9,6 +9,7 @@
 #' Figure 1. Description of the data included in the meta-analysis
 
 library(ggplot2)
+library(forcats) ## need for fct_relevel
 library(dplyr) # easier data wrangling 
 library(viridis)
 library(gridExtra) # because remembering ggplot theme options is beyond me
@@ -348,6 +349,12 @@ ggplot(df2,aes(x = Month, y = Unique_ID, fill=col))+
   geom_text(data=df.sum2, aes(x = 14.1, y=Unique_ID,label=round(SRP_Retention_percent,1)), size = 3, fontface = "bold") +
   coord_cartesian(clip = "off") +
   geom_rect(mapping=aes(xmin=12.5, xmax=14.7, ymin=0.5, ymax=36.5), color = "black", fill = NA, size = 1)
+
+
+
+
+
+
 
 
 
