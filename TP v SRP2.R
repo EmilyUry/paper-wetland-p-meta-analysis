@@ -686,8 +686,8 @@ mypal5 = c("#FF000099", "#BF003F99", "#7F007F99", "#3F00BF99", "#0000FF99")
 ############# % retention
 
 ########  TP
-
 rbPal <- colorRampPalette(c('blue','red'))
+
 x$bins <- cut_number(x$TP_load_in_g_m2_yr, 3)
 x$col <- rbPal(3)[as.numeric(cut_number(x$TP_Inflow_mg_L, 3))]
 x$alpha <- rep(99, nrow(x))
