@@ -364,6 +364,11 @@ legend("bottomleft", c(" < 0.2 mg/L", "0.2 - 2", " > 2 mg/L"), pch = 16,
        pt.cex = 2, col = c("#FF000099",  "#7F007F99","#0000FF99"))
 
 
+x$ret <- ifelse(x$TP_Retention_percent > 0, "pos", "neg")
 
+plot(x$logInflow_m3_yr, x$logTP_Inflow_mg_L, pch = 16, col = as.factor(x$ret) )
 
+x$SRPret <- ifelse(x$SRP_Retention_percent > 0, "pos", "neg")
+
+plot(x$logInflow_m3_yr, x$logSRP_Inflow_mg_L, pch = 16, col = as.factor(x$SRPret) )
 
