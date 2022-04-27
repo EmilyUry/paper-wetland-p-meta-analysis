@@ -92,7 +92,7 @@ lab <- ggplot(x, (aes(x = TP_retention))) +
   theme_void()
 
 
-tiff(filename = "figures/scatter_w_distributions.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure 3 TP v SRP.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
 
 plot_grid(hist, lab, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
 
