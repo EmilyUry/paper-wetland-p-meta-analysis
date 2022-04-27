@@ -158,6 +158,25 @@ legend("bottomleft", levels(x$Wetland_Type), pch = 16,
 
 
 
+##
+rbPal <- colorRampPalette(c('pink' , 'red','orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'black', 'gray'))
+x$Source <- as.factor(x$Source)
+
+### STUDY
+plot(x$SRP_Retention_percent, x$TP_Retention_percent, 
+     pch = 16,
+     cex = 1.5,
+     col = rbPal(51)[x$Source],
+     xlim = c(-250, 105), 
+     ylim = c(-150, 105), 
+     xlab = "SRP % Retention",
+     ylab = "TP % Retention")
+abline(1,1)
+abline(h=0, col = 'gray50', lwd =1, lty = 2)
+abline(v=0, col = 'gray30', lwd = 1, lty = 2)
+legend("top", levels(x$Source), pch = 16,
+       pt.cex = 1, col = rbPal(51)[x$Source], ncol = 3, cex = 0.5)
+
 
 ## mean SRP retention
 summary(x$SRP_Retention_percent)
