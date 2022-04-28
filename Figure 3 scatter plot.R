@@ -100,3 +100,60 @@ dev.off()
 
 
 
+############# 8 histogram - mass retention for each quadrat
+
+I <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0),]
+nrow(I)/nrow(x)*100
+
+II <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent < 0),]
+nrow(II)/nrow(x)*100
+
+III <- x[which(x$TP_Retention_percent < 0 & x$SRP_Retention_percent < 0),]
+nrow(III)/nrow(x)*100
+
+IV <- x[which(x$TP_Retention_percent < 0 & x$SRP_Retention_percent > 0),]
+nrow(IV)/nrow(x)*100
+
+
+i <-  ggplot(I, (aes(x = SRP_retention))) +
+  geom_density(color = "red", fill = "#FF000033") + 
+  geom_density(aes(x = TP_retention), color = "blue", fill = "#0000FF33") +
+  xlim(-40, 30) +
+  xlab(" ") +
+  ylab(" ") +
+  theme_classic() 
+
+ii <-  ggplot(II, (aes(x = SRP_retention))) +
+  geom_density(color = "red", fill = "#FF000033") + 
+  geom_density(aes(x = TP_retention), color = "blue", fill = "#0000FF33") +
+  xlim(-40, 30) +
+  xlab(" ") +
+  theme_classic() +
+  annotate("rect", xmin = -40, xmax = -37, ymin = 0.3, ymax = 0.35, col = "red", fill = "#FF000033") +
+  annotate("rect", xmin = -40, xmax = -37, ymin = 0.36, ymax = 0.41, col = "blue", fill = "#0000FF33") +
+  annotate("text", x = -32, y = 0.325, label =  "SRP") +
+  annotate("text", x = -33, y = 0.3825, label =  "TP")
+
+iii <-  ggplot(III, (aes(x = SRP_retention))) +
+  geom_density(color = "red", fill = "#FF000033") + 
+  geom_density(aes(x = TP_retention), color = "blue", fill = "#0000FF33") +
+  xlim(-40, 30) +
+  xlab("Mass rentention (g/m2/yr)") +
+  theme_classic()    
+
+iv <-  ggplot(IV, (aes(x = SRP_retention))) +
+  geom_density(color = "red", fill = "#FF000033") + 
+  geom_density(aes(x = TP_retention), color = "blue", fill = "#0000FF33") +
+  xlim(-40, 30) +
+  xlab("Mass rentention (g/m2/yr)") +
+  ylab(" ") +
+  theme_classic() 
+
+plot_grid(ii, i, iii, iv, labels = c("II", "I", "III", "IV"), ncol = 2)
+    
+    
+    
+  
+  
+  
+
