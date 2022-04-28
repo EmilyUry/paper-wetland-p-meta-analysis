@@ -39,6 +39,8 @@ x <- read.csv("Wetland_P_Clean2.csv", header = T)
   ### mass removed
   x$TP_retention <- x$TP_load_in_g_m2_yr - x$TP_load_out
   x$SRP_retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
+  
+  
 }
 
 I <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0),]
@@ -64,21 +66,30 @@ table(x$quad)
 
 
 #### FLOW REGIME
+levels(x$Water_regime)
+
+x <- x %>%                                ### reorder flow regime
+  mutate(Water_regime = fct_relevel(Water_regime, "continuous, constant" , "intermittent, constant" ,
+                                    "continuous, variable", "intermittent, variable", 
+                                   "n.s.")) 
 table(x$quad, x$Water_regime)
 summary <- table(x$quad, x$Water_regime)
 m <- as.data.frame(summary)
 
 
-tiff(filename = "figures/Figure4s Flow regime.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure4s Flow regime.tiff", height=3600, width=4800, units= "px", res=800, compression= "lzw")
 
 ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
-  geom_bar(position = "stack", stat = "identity") +
+  geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
-  scale_fill_manual(labels = c("Continuous, constant", "Continuous, variable", "Intermittent, constant", "Intermittent, variable", "Not specified" ),
-                    values = c("#2b821fbb",  "#bd4ad4bb", "#345bebbb", "#e34327bb",  "#a1a1a1bb")) +
-  labs(x = " ", y = "n (site-years)", fill = "Inflow Regime") +
-  theme(legend.position= c(0.7,0.6), legend.text = element_text(size = 14),
-        legend.title = element_text(size = 16))
+  scale_fill_manual(labels = c("Continuous, constant", "Intermittent, constant", "Continuous, variable", "Intermittent, variable", "Not specified" ),
+                    values = c("#2b821fbb",   "#345bebbb", "#bd4ad4bb","#e34327bb",  "#a1a1a1bb")) +
+  labs(x = " ", y = "proportion of site-years", fill = "Inflow Regime") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12),
+        axis.text.x = element_text(size = 10, family = "serif")) +
+  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
+                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
 
 dev.off()
 
@@ -89,14 +100,17 @@ table(x$quad, x$Wetland_Type)
 summary <- table(x$quad, x$Wetland_Type)
 m <- as.data.frame(summary)
 
-tiff(filename = "figures/Figure4b Wetland Type.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure4b Wetland Type.tiff", height=3600, width=4800, units= "px", res=800, compression= "lzw")
 ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
-  geom_bar(position = "stack", stat = "identity") +
+  geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
   scale_fill_manual(values = c("#e34327bb", "#2b821fbb", "#a1a1a1bb",  "#345bebbb"  )) +
-  labs(x = " ", y = "n (site-years)", fill = "Wetland Type") +
-  theme(legend.position= c(0.7,0.6), legend.text = element_text(size = 18),
-        legend.title = element_text(size = 20))
+  labs(x = " ", y = "proportion of site-years", fill = "Wetland Type") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12),
+        axis.text.x = element_text(size = 10, family = "serif")) +
+  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
+                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
 dev.off()
 
 
@@ -161,41 +175,88 @@ plot_grid(histII, histI, histIII, histIV, labels = c("II", "I", "III", "IV"),
 
 
 #### INFLOW CONCENTRATION
+# rbPal <- colorRampPalette(c('blue','red'))
+# rbPal(4)
+# mypal4 = c("#0000FF99", "#5500AA99" , "#AA005599", "#FF000099")
+
 
 mypal3 = c("#0000FF99",  "#7F007F99",  "#FF000099")
 
-x$bins <- cut_number(x$TP_Inflow_mg_L, 3)
 
+x$bins <- cut_number(x$TP_Inflow_mg_L, 3)
 table(x$quad, x$bins)
 summary <- table(x$quad, x$bins)
 m <- as.data.frame(summary)
-
 TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
-  geom_bar(position = "stack", stat = "identity") +
+  geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
   scale_fill_manual(values = mypal3) +
-  labs(x = " ", y = "n (site-years)", fill = "Inflow TP (mg/L)") +
-  theme(legend.position= c(0.7,0.6), legend.text = element_text(size = 14),
-        legend.title = element_text(size = 16))
+  labs(x = " ", y = "proportion of site years", fill = "Inflow TP (mg/L)") +
+  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12)) +
+  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
+                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
 
 
 x$TPbins <- cut_number(x$SRP_Inflow_mg_L, 3)
-
 table(x$quad, x$TPbins)
 summary <- table(x$quad, x$TPbins)
 w <- as.data.frame(summary)
-
 SRP <- ggplot(w, aes(x = Var1, y = Freq, fill = Var2)) +
-  geom_bar(position = "stack", stat = "identity") +
+  geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
   scale_fill_manual(values = mypal3) +
-  labs(x = " ", y = "n (site-years)", fill = "Inflow SRP (mg/L)") +
-  theme(legend.position= c(0.7,0.6), legend.text = element_text(size = 14),
-        legend.title = element_text(size = 16))
+  labs(x = " ", y = "proportion of site years", fill = "Inflow SRP (mg/L)") +
+  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12))+
+  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
+                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
 
 
 tiff(filename = "figures/Figure4C Inflow concentration.tiff", height=3600, width=6000, units= "px", res=800, compression= "lzw")
 
 plot_grid(TP, SRP, labels = c("A", "B"), ncol = 2)
+
+dev.off()
+
+
+
+
+
+#### Inflow volume
+x$bins <- cut_number(x$Inflow_m3_yr, 3)
+table(x$quad, x$bins)
+summary <- table(x$quad, x$bins)
+m <- as.data.frame(summary)
+vol <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme_classic() +
+  scale_fill_manual(values = mypal3) +
+  labs(x = " ", y = "proportion of site-years", fill = "Inflow volume (m3/yr)") +
+  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12))+
+  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
+                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+
+#### HLR
+x$bins <- cut_number(x$HLR, 3)
+table(x$quad, x$bins)
+summary <- table(x$quad, x$bins)
+m <- as.data.frame(summary)
+hlr <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme_classic() +
+  scale_fill_manual(values = mypal3) +
+  labs(x = " ", y = "proportion of site-years", fill = "HLR (m/yr)") +
+  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12))+
+  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
+                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+
+
+
+tiff(filename = "figures/Figure4D Flow.tiff", height=3600, width=6000, units= "px", res=800, compression= "lzw")
+
+plot_grid(vol, hlr, labels = c("A", "B"), ncol = 2)
 
 dev.off()
