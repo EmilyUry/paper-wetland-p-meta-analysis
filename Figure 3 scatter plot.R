@@ -154,6 +154,50 @@ plot_grid(ii, i, iii, iv, labels = c("II", "I", "III", "IV"), ncol = 2)
     
     
   
-  
-  
 
+
+a <-  ggplot(II, (aes(x = SRP_retention))) +
+  geom_density() +
+  xlim(-13, 5) +
+  theme_classic() +
+  xlab(" ") +
+  theme(plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm"),
+        axis.title.y = element_blank(), axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
+        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
+        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
+a
+b <-  ggplot(I, (aes(x = SRP_retention))) +
+  geom_density() +
+  xlim(-5, 13) +
+  theme_classic() +
+  xlab(" ") +
+  theme(plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm"),
+        axis.title.y = element_blank(), axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
+        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
+        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
+b
+
+c <-  ggplot(III, (aes(x = SRP_retention))) +
+  geom_density() +
+  xlim(-13, 5) +
+  theme_classic() +
+  xlab(" ") +
+  theme(plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm"),
+        axis.title.y = element_blank(), axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
+        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
+        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
+c
+d <-  ggplot(IV, (aes(x = SRP_retention))) +
+  geom_density() +
+  xlim(-5, 13) +
+  theme_classic() +
+  xlab(" ") +
+  theme(plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm"),
+        axis.title.y = element_blank(), axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
+        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
+        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
+d
