@@ -15,6 +15,7 @@ setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_file
 
 library(ggplot2)
 library(tidyverse)
+library(cowplot)
 
 
 ## Data set-up
@@ -77,19 +78,19 @@ summary <- table(x$quad, x$Water_regime)
 m <- as.data.frame(summary)
 
 
-tiff(filename = "figures/Figure4s Flow regime.tiff", height=3600, width=4800, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure4s Flow regime.tiff", height=3600, width=5400, units= "px", res=800, compression= "lzw")
 
-ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
   scale_fill_manual(labels = c("Continuous, constant", "Intermittent, constant", "Continuous, variable", "Intermittent, variable", "Not specified" ),
                     values = c("#2b821fbb",   "#345bebbb", "#bd4ad4bb","#e34327bb",  "#a1a1a1bb")) +
-  labs(x = " ", y = "proportion of site-years", fill = "Inflow Regime") +
-  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 10),
-        legend.title = element_text(size = 12),
-        axis.text.x = element_text(size = 10, family = "serif")) +
-  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
-                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+  labs(x = " ", y = "proportion of site-years", fill = "Hydrologic Regime") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 12),
+        legend.title = element_text(size = 15),
+        axis.text.x = element_text(size = 12, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
+                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
 
 dev.off()
 
@@ -97,6 +98,7 @@ dev.off()
 #### Wetland TYPE
 x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
 table(x$quad, x$Wetland_Type)
+x$Wetland_Type <- droplevels(x$Wetland_Type)
 summary <- table(x$quad, x$Wetland_Type)
 m <- as.data.frame(summary)
 
@@ -104,13 +106,13 @@ tiff(filename = "figures/Figure4b Wetland Type.tiff", height=3600, width=4800, u
 ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
-  scale_fill_manual(values = c("#e34327bb", "#2b821fbb", "#a1a1a1bb",  "#345bebbb"  )) +
+  scale_fill_manual(values = c("#440154FF", "#FDE725ff", "#75d054FF",  "#2c728eFF"  )) +
   labs(x = " ", y = "proportion of site-years", fill = "Wetland Type") +
-  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 10),
-        legend.title = element_text(size = 12),
-        axis.text.x = element_text(size = 10, family = "serif")) +
-  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
-                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 12),
+        legend.title = element_text(size = 15),
+        axis.text.x = element_text(size = 12, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
+                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
 dev.off()
 
 
@@ -180,7 +182,7 @@ plot_grid(histII, histI, histIII, histIV, labels = c("II", "I", "III", "IV"),
 # mypal4 = c("#0000FF99", "#5500AA99" , "#AA005599", "#FF000099")
 
 
-mypal3 = c("#0000FF99",  "#7F007F99",  "#FF000099")
+mypal3 = c("#C7E020",  "#1F9A8A",  "#471164")
 
 
 x$bins <- cut_number(x$TP_Inflow_mg_L, 3)
@@ -192,11 +194,10 @@ TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   theme_classic() +
   scale_fill_manual(values = mypal3) +
   labs(x = " ", y = "proportion of site years", fill = "Inflow TP (mg/L)") +
-  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
-        legend.title = element_text(size = 12)) +
-  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
-                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
-
+  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 14),
+        legend.title = element_text(size = 18)) +
+  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
+                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
 
 x$TPbins <- cut_number(x$SRP_Inflow_mg_L, 3)
 table(x$quad, x$TPbins)
@@ -207,10 +208,10 @@ SRP <- ggplot(w, aes(x = Var1, y = Freq, fill = Var2)) +
   theme_classic() +
   scale_fill_manual(values = mypal3) +
   labs(x = " ", y = "proportion of site years", fill = "Inflow SRP (mg/L)") +
-  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
-        legend.title = element_text(size = 12))+
-  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
-                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 14),
+        legend.title = element_text(size = 18))+
+  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
+                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
 
 
 tiff(filename = "figures/Figure4C Inflow concentration.tiff", height=3600, width=6000, units= "px", res=800, compression= "lzw")
@@ -260,3 +261,36 @@ tiff(filename = "figures/Figure4D Flow.tiff", height=3600, width=6000, units= "p
 plot_grid(vol, hlr, labels = c("A", "B"), ncol = 2)
 
 dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### export editable version
+library(officer)
+library(rvg)
+
+doc <- read_pptx()
+doc <- add_slide(doc, 'Title and Content', 'Office Theme')
+dml <- dml(ggobj = FlowR)
+doc <- ph_with(doc, dml, location = ph_location_fullsize())
+print(doc, target = 'plot.pptx')
+
+
+
+
+
+
+
