@@ -41,9 +41,9 @@ pal
 ## (a) - world map + study sites
 
 
-world <- borders("world", colour="#8a8cb5", fill="#414487bb") # create a layer of borders
+world <- borders("world", colour="#B9D0D9", fill="#2c728eff") # create a layer of borders
 map <- ggplot() + world + ylim(-55,100) + theme_void() +
-  geom_point(aes(x=x$Long, y = x$Lat), color = "black", pch = 21, fill = "white", size = 0.8) +
+  geom_point(aes(x=x$Long, y = x$Lat), color = "black", pch = 21, fill = "white", size = 1) +
  # labs(title="(a) Location of studied wetlands ")+
   theme(plot.margin = margin(t = 0.5, r = 0.0, b = 1, l = 0.5, unit = "cm")) +
   theme(plot.title = element_text(hjust = 1, size = 7, face = "bold"))
@@ -57,7 +57,7 @@ n <- x %>%
   summarize(area = mean(Area_m2))
 
 b <- ggplot(n, aes(area)) +
-  geom_histogram(bins = 10, color = "#414487bb", fill = "#414487bb" ) +
+  geom_histogram(bins = 10, color = "#bee0ec", fill = "#2c728eff" ) +
   scale_x_log10(breaks=c(1, 100, 1000000)) + 
   annotation_logticks(base = 10, sides = "b", outside = TRUE, short = unit(0, "cm"), 
                       mid = unit(0.0, "cm"), long = unit(0.1, "cm"))  +
@@ -97,7 +97,7 @@ data <- data.frame(behavior, species, num, label_ypos, label_text)
 
 c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 2.5, fontface = "bold")+
+  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "black", size = 2.5, fontface = "bold")+
   theme_classic() +
   labs(title = " ", x = " ", y = "n" ) +
   #labs(title = "(c) Wetland sink/source behavior", x = " ", y = "n" ) +
@@ -128,15 +128,15 @@ names(dd) <- c("Type", "Catchment", "count")
 
 d <- ggplot(dd, aes(factor(Type), Catchment, fill = count)) +
   geom_tile() +
-  geom_text(aes(label=count), size = 2.5, color = "white") +
-  scale_fill_gradient(low="#41448777", high ="#414487ff") +
+  geom_text(aes(label=count), size = 4, color = "black") +
+  scale_fill_gradient(low="white", high ="#2c728e") +
   theme_classic() +
   ylab("Catchment Type          ") +
   xlab("Wetland Type")+
   scale_y_discrete(labels = c("Ag.", "Urban", "WTP")) +
   #labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
   theme(plot.margin = margin(t = 0, r = 0.2, b = 0.1, l = 0.2, unit = "cm"), legend.position = "none") +
-  theme(plot.title = element_text(hjust = 1, size = 7, face = "bold")) +
+  theme(plot.title = element_text(hjust = 1, size = 8, face = "bold")) +
   theme(axis.text.x = element_text(hjust = 1, size = 9, angle = 45))
 
 
@@ -215,10 +215,10 @@ z <- x %>%
   summarize(num = n_distinct(WetlandID), yr = n_distinct(Data_Year))
 
 zz <- ggplot(data = z, (aes(x = num, y = yr ))) +
-  geom_jitter(width = 0.15, height = 0.15, color = "#414487ff", size = 2)+
+  geom_jitter(width = 0.15, height = 0.15, color = "#2c728eff", size = 2)+
   xlab("Wetlands per study") +
   ylab("Years per wetland") + 
-  theme(panel.background = element_rect(fill = "#41448733", colour = "white")) +
+  theme(panel.background = element_rect(fill = "#2c728e22", colour = "white")) +
   scale_y_continuous(breaks = c(0,2,4,6,8,10)) +
   scale_x_continuous(breaks = c(0,2,4,6,8, 10,  12, 14, 16))
 
@@ -313,7 +313,7 @@ nrow(x)
 
 210/277
 
-tiff(filename = "figures/Figure1.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure1.tif", height=3600, width=3600, units= "px", res=800, compression= "lzw")
 
 #ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
 ggarrange(map, zz, d, b, ncol = 2, nrow = 2, labels = c("A", "B", "C", "D"))                        
