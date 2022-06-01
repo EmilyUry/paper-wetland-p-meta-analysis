@@ -2,9 +2,9 @@
 
 
 #' ---
-#' title: "Figure 4. Bar plots by behavior quadrats"
+#' title: "Figure 3. Bar plots by behavior quadrats"
 #' author: "Emily Ury"
-#' date: "April 27, 2022"
+#' date: "June 1, 2022"
 #' ---
 #' 
 
@@ -78,20 +78,24 @@ summary <- table(x$quad, x$Water_regime)
 m <- as.data.frame(summary)
 
 
-tiff(filename = "figures/Figure4s Flow regime.tiff", height=3600, width=5400, units= "px", res=800, compression= "lzw")
 
 FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
-  theme_classic() +
-  scale_fill_manual(labels = c("Continuous, constant", "Intermittent, constant", "Continuous, variable", "Intermittent, variable", "Not specified" ),
-                    values = c("#2b821fbb",   "#345bebbb", "#bd4ad4bb","#e34327bb",  "#a1a1a1bb")) +
-  labs(x = " ", y = "proportion of site-years", fill = "Hydrologic Regime") +
-  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 12),
-        legend.title = element_text(size = 15),
-        axis.text.x = element_text(size = 12, family = "serif", face = "bold")) +
-  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
-                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
+  theme_classic(base_size = 10) +
+  scale_fill_manual(labels = c("Continuous,\n constant\n", "Intermittent,\n constant\n", "Continuous,\n variable\n", "Intermittent,\n variable\n", "Not \nspecified\n" ),
+                    values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
+  labs(x = " ", y = "proportion of site-years", fill = "Hydrologic\n Regime") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))+
+  # scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
+  #                             "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))+
+  guides(fill=guide_legend(ncol=1))
 
+tiff(filename = "figures/Fig3b.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+FlowR
 dev.off()
 
 
