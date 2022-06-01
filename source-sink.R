@@ -10,6 +10,9 @@
 
 
 library(ggplot2)
+library(forcats) 
+library(dplyr)
+
 
 ## data setup:
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
