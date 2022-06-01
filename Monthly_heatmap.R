@@ -9,6 +9,7 @@
 #' Figure 1. Description of the data included in the meta-analysis
 
 library(ggplot2)
+library(cowplot)
 library(forcats) ## need for fct_relevel
 library(dplyr) # easier data wrangling 
 library(viridis)
@@ -19,6 +20,9 @@ library(tidyr)
 ## data setup
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
+setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
+
+
 x <- read.csv("Monthly_Wetland_P_Clean.csv", header = T)
 head(x)
 
@@ -66,11 +70,11 @@ df.sum$an_SRP_rem_percent <- df.sum$an_SRP_rem/df.sum$an_SRP_IN*100
 
 ########### Order the plots by total annual retention
 
-df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem)  ### reorder factor by total TP retention
-Unique <- df.sum$Unique_ID
-order <- levels(Unique)
-df <- df %>%
-  mutate(Unique_ID = fct_relevel(Unique_ID, order))
+# df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem)  ### reorder factor by total TP retention
+# Unique <- df.sum$Unique_ID
+# order <- levels(Unique)
+# df <- df %>%
+#   mutate(Unique_ID = fct_relevel(Unique_ID, order))
 
 
 
@@ -84,14 +88,52 @@ df <- df %>%
   mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
 
 
-# ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
-#   geom_tile(color= "white",size=0.1) +
-#   scale_fill_manual(name = "TP Retention \n (g/m2/month)",
-#                     values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
-#                                "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
-#   theme_minimal(base_size = 8) +
-#   ylab("Site ID") +
-#   xlab(" ")
+
+TP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
+  geom_tile(color= "white",size=0.1) +
+  scale_fill_manual(name = "TP Retention \n (g/m2/month)",
+                    values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
+                               "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
+  theme_minimal(base_size = 18) +
+  ylab("Site ID") +
+  xlab(" ") +
+  theme(legend.position = "none") +
+  ggtitle("TP")
+TP
+
+
+
+
+df$col <- breaks[as.numeric(cut(df$SRP_Retention, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
+df <- df %>%
+  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
+
+
+SRP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
+  geom_tile(color= "white",size=0.1) +
+  scale_fill_manual(name = "Retention \n (g/m2/month)",
+                    values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
+                               "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
+  theme_minimal(base_size = 18) +
+  ylab(" ") +
+  xlab(" ") + 
+  ggtitle("SRP") +
+  theme(axis.text.y = element_blank())
+
+tiff(filename = "figures/Heatmaps.tif", height=6000, width=11000, units= "px", res=800, compression= "lzw")
+plot_grid(TP, SRP, labels = c('A', 'B'), rel_widths = c(7,8), ncol = 2)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -121,6 +163,8 @@ df2 <- df2 %>%
                              "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Total")) %>%
   mutate(Unique_ID = fct_relevel(Unique_ID, order)) 
 
+tiff(filename = "figures/HeatmapTP.tiff", height=6000, width=6000, units= "px", res=800, compression= "lzw")
+
 ggplot(df2,aes(x = Month, y = Unique_ID, fill=col))+
   geom_tile(color= "white",size=0.1) +
   scale_fill_manual(name = "TP Retention \n (g/m2/month)", 
@@ -134,6 +178,7 @@ ggplot(df2,aes(x = Month, y = Unique_ID, fill=col))+
   geom_rect(mapping=aes(xmin=12.5, xmax=14.6, ymin=0.5, ymax=36.5), color = "black", fill = NA, size = 1)
 
 
+dev.off()
 
 
 
