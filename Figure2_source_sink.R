@@ -65,7 +65,7 @@ p
 
 hist <- ggplot(x, (aes(x = SRP_retention))) +
   geom_density() +
-  xlim(-11, 5) +
+  xlim(-11.7, 5) +
   theme_classic(base_size = 16) +
   xlab(" ") +
   theme(plot.margin = margin(t = 0, r = 0, b = -0.5, l = 1.4, unit = "cm"),
@@ -77,7 +77,7 @@ hist <- ggplot(x, (aes(x = SRP_retention))) +
 
 hist2 <- ggplot(x, (aes(x = TP_retention))) +
   geom_density() +
-  xlim(-18, 13) +
+  xlim(-18.9, 13) +
   theme_classic(base_size = 16) +
   xlab(" ") +
   coord_flip()  +
@@ -122,7 +122,7 @@ c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fi
   theme(legend.position = "right", legend.direction = "vertical", legend.text = element_text(size = 15), legend.key.size = unit(1,"cm"))+
   labs(title = " ", x = " ", y = "n (site-years)", fill = " " ) +
   #labs(title = "(c) Wetland sink/source behavior", x = " ", y = "n" ) +
-  scale_fill_manual(values = c("#414487bb", "#414487ff"), labels = c("source", "sink")) + 
+  scale_fill_manual(values = c("#2c728eFF", "#2c728e55"), labels = c("source", "sink")) + 
   theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, unit = "cm")) +
   theme(plot.title = element_text(hjust = 0.6, size = 7, face = "bold"))
 
