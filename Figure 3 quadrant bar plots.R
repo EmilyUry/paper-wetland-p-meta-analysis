@@ -41,228 +41,245 @@ x <- read.csv("Wetland_P_Clean2.csv", header = T)
   x$TP_retention <- x$TP_load_in_g_m2_yr - x$TP_load_out
   x$SRP_retention <- x$SRP_load_in_g_m2_yr - x$SRP_load_out
   
-  
+  I <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0),]
+  nrow(I)/nrow(x)*100
+  II <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent < 0),]
+  nrow(II)/nrow(x)*100
+  III <- x[which(x$TP_Retention_percent < 0 & x$SRP_Retention_percent < 0),]
+  nrow(III)/nrow(x)*100
+  IV <- x[which(x$TP_Retention_percent < 0 & x$SRP_Retention_percent > 0),]
+  nrow(IV)/nrow(x)*100
+  x$quad <- ifelse(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0, "I", 
+                   ifelse(x$TP_Retention_percent > 0 & x$SRP_Retention_percent < 0, "II",
+                          ifelse(x$TP_Retention_percent < 0 & x$SRP_Retention_percent < 0, "III", "IV")))
+  table(x$quad)  
 }
 
-I <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0),]
-nrow(I)/nrow(x)*100
-
-II <- x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent < 0),]
-nrow(II)/nrow(x)*100
-
-III <- x[which(x$TP_Retention_percent < 0 & x$SRP_Retention_percent < 0),]
-nrow(III)/nrow(x)*100
-
-IV <- x[which(x$TP_Retention_percent < 0 & x$SRP_Retention_percent > 0),]
-nrow(IV)/nrow(x)*100
 
 
 
-x$quad <- ifelse(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0, "I", 
-                 ifelse(x$TP_Retention_percent > 0 & x$SRP_Retention_percent < 0, "II",
-                        ifelse(x$TP_Retention_percent < 0 & x$SRP_Retention_percent < 0, "III", "IV")))
-
-table(x$quad)
-
-
-
-#### FLOW REGIME
-levels(x$Water_regime)
-
-x <- x %>%                                ### reorder flow regime
-  mutate(Water_regime = fct_relevel(Water_regime, "continuous, constant" , "intermittent, constant" ,
-                                    "continuous, variable", "intermittent, variable", 
-                                   "n.s.")) 
-table(x$quad, x$Water_regime)
-summary <- table(x$quad, x$Water_regime)
-m <- as.data.frame(summary)
-
-
-
-FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
-  geom_bar(position = "fill", stat = "identity") +
-  theme_classic(base_size = 10) +
-  scale_fill_manual(labels = c("Continuous,\n constant\n", "Intermittent,\n constant\n", "Continuous,\n variable\n", "Intermittent,\n variable\n", "Not \nspecified\n" ),
-                    values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
-  labs(x = " ", y = "proportion of site-years", fill = "Hydrologic\n Regime") +
-  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
-        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
-        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
-  scale_x_discrete(labels = c("Q1", "Q2",
-                              "Q3", "Q4"))+
-  # scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
-  #                             "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))+
-  guides(fill=guide_legend(ncol=1))
-
-tiff(filename = "figures/Fig3b.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
-FlowR
-dev.off()
-
-
-#### Wetland TYPE
-x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+#### WETLAND TYPE
+{x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
 table(x$quad, x$Wetland_Type)
 x$Wetland_Type <- droplevels(x$Wetland_Type)
 summary <- table(x$quad, x$Wetland_Type)
 m <- as.data.frame(summary)
 
-tiff(filename = "figures/Figure4b Wetland Type.tiff", height=3600, width=4800, units= "px", res=800, compression= "lzw")
-ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+
+WT <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
-  theme_classic() +
-  scale_fill_manual(values = c("#440154FF", "#FDE725ff", "#75d054FF",  "#2c728eFF"  )) +
-  labs(x = " ", y = "proportion of site-years", fill = "Wetland Type") +
-  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 12),
-        legend.title = element_text(size = 15),
-        axis.text.x = element_text(size = 12, family = "serif", face = "bold")) +
-  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
-                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
-dev.off()
+  theme_classic(base_size = 10) +
+  scale_fill_manual(labels = c("Constructed", "Mesocosm", "Natural", "Restored"), 
+                    values = c("#440154FF", "#44015477", "#2c728e55",  "#2c728eFF"  )) +
+  labs(x = " ", y = "Frequency ", fill = "Wetland \nType") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))
+WT
 
-
-### wetland size distributions
-{histI <- ggplot(I, (aes(x = Area_m2))) +
-  geom_density() +
-  xlim(-5000, 100000) +
-  ylim(0,0.00025) +
-  theme_classic() +
-  xlab("Wetland area (m2) ") +
-  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 0.5, unit = "cm"),
-        axis.title.y = element_blank(), axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
-        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
-        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
-histI
-
-histII <- ggplot(II, (aes(x = Area_m2))) +
-  geom_density() +
-  xlim(-5000, 100000) +
-  ylim(0,0.00025) +
-  theme_classic() +
-  xlab("Wetland area (m2) ") +
-  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 0.5, unit = "cm"),
-        axis.title.y = element_blank(), axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
-        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
-        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
-histII
-
-
-histIII <- ggplot(III, (aes(x = Area_m2))) +
-  geom_density() +
-  xlim(-5000, 100000) +
-  ylim(0,0.00025) +
-  theme_classic() +
-  xlab("Wetland area (m2) ") +
-  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 0.5, unit = "cm"),
-        axis.title.y = element_blank(), axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
-        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
-        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
-histIII
-
-histIV <- ggplot(IV, (aes(x = Area_m2))) +
-  geom_density() +
-  xlim(-5000, 100000) +
-  ylim(0,0.00025) +
-  theme_classic() +
-  xlab("Wetland area (m2) ") +
-  theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 0.5, unit = "cm"),
-        axis.title.y = element_blank(), axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
-        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
-        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) 
-histIV
+# tiff(filename = "figures/Fig3a.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+# WT
+# dev.off()
+}
 
 
 
-plot_grid(histII, histI, histIII, histIV, labels = c("II", "I", "III", "IV"), 
-          label_fontfamily = "serif", rel_widths = c(1,1),  ncol = 2)}
+#### FLOW REGIME
+{levels(x$Water_regime)
+  
+  x <- x %>%                                ### reorder flow regime
+    mutate(Water_regime = fct_relevel(Water_regime, "continuous, constant" , "intermittent, constant" ,
+                                      "continuous, variable", "intermittent, variable", 
+                                      "n.s.")) 
+  table(x$quad, x$Water_regime)
+  summary <- table(x$quad, x$Water_regime)
+  m <- as.data.frame(summary)
+  
+  FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar(position = "fill", stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("Continuous,\n  constant", "Intermittent,\n  constant", "Continuous,\n  variable", "Intermittent,\n  variable", "Not \n  specified" ),
+                      values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
+    labs(x = " ", y = " ", fill = "Hydrologic\n Regime") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+    scale_x_discrete(labels = c("Q1", "Q2",
+                                "Q3", "Q4"))+
+    # scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
+    #                             "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))+
+    guides(fill=guide_legend(ncol=1))
+  
+  #FlowR
+  
+  # tiff(filename = "figures/Fig3b.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+  # FlowR
+  # dev.off()
+}
 
 
-#### INFLOW CONCENTRATION
-# rbPal <- colorRampPalette(c('blue','red'))
-# rbPal(4)
-# mypal4 = c("#0000FF99", "#5500AA99" , "#AA005599", "#FF000099")
+
+#### INFLOW TP CONCENTRATION
 
 
-mypal3 = c("#C7E020",  "#1F9A8A",  "#471164")
-
-
-x$bins <- cut_number(x$TP_Inflow_mg_L, 3)
+{x$bins <- cut_number(x$TP_Inflow_mg_L, 4)
 table(x$quad, x$bins)
 summary <- table(x$quad, x$bins)
 m <- as.data.frame(summary)
 TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
-  scale_fill_manual(values = mypal3) +
-  labs(x = " ", y = "proportion of site years", fill = "Inflow TP (mg/L)") +
-  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 14),
-        legend.title = element_text(size = 18)) +
-  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
-                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
-
-x$TPbins <- cut_number(x$SRP_Inflow_mg_L, 3)
-table(x$quad, x$TPbins)
-summary <- table(x$quad, x$TPbins)
-w <- as.data.frame(summary)
-SRP <- ggplot(w, aes(x = Var1, y = Freq, fill = Var2)) +
-  geom_bar(position = "fill", stat = "identity") +
-  theme_classic() +
-  scale_fill_manual(values = mypal3) +
-  labs(x = " ", y = "proportion of site years", fill = "Inflow SRP (mg/L)") +
-  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 14),
-        legend.title = element_text(size = 18))+
-  scale_x_discrete(labels = c("Q1.\nTP sink\nSRP sink", "Q2.\nTP sink\n SRP source",
-                              "Q3.\nTP source\nSRP source", "Q4.\nTP source\nSRP sink"))
+  scale_fill_manual(labels = c(" < 0.11", "0.11 - 0.23", "0.23 - 1.6", "1.6+"),
+                    values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
+  labs(x = " ", y = " ", fill = "Inflow TP\n (mg/L)") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))
+#TP
+}
 
 
-tiff(filename = "figures/Figure4C Inflow concentration.tiff", height=3600, width=6000, units= "px", res=800, compression= "lzw")
-
-plot_grid(TP, SRP, labels = c("A", "B"), ncol = 2)
-
-dev.off()
-
-
-
-
-
-#### Inflow volume
-x$bins <- cut_number(x$Inflow_m3_yr, 3)
+#### INFLOW SRP CONCENTRATION
+{
+x$bins <- cut_number(x$SRP_Inflow_mg_L, 4)
 table(x$quad, x$bins)
 summary <- table(x$quad, x$bins)
 m <- as.data.frame(summary)
-vol <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+SRP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
   theme_classic() +
-  scale_fill_manual(values = mypal3) +
-  labs(x = " ", y = "proportion of site-years", fill = "Inflow volume (m3/yr)") +
-  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
-        legend.title = element_text(size = 12))+
-  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
-                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+  scale_fill_manual(labels = c(" < 0.44", "0.44 - 0.10", "0.10 - 0.53", "0.53+"),
+                    values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
+  labs(x = " ", y = " ", fill = "Inflow TP\n (mg/L)") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))
+#SRP
+}
+
+
+
+### WETLAND SIZE
+{x$bins <- cut_number(x$Area_m2, 4)
+table(x$quad, x$bins)
+summary <- table(x$quad, x$bins)
+m <- as.data.frame(summary)
+
+
+size <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme_classic(base_size = 10) +
+  scale_fill_manual(labels = c("smallest", " ", " ", "largest"),
+                    values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
+  labs(x = " ", y = "Frequency", fill = "Wetland \nSize") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))
+# size
+# 
+# tiff(filename = "figures/Fig3d.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+# size
+# dev.off()
+}
+
+
+
+### WETLAND AGE
+{table(x$quad, x$Age_yr)
+x$bins <- cut_number(x$Age_yr, 4)
+table(x$quad, x$bins)
+summary <- table(x$quad, x$bins)
+m <- as.data.frame(summary)
+
+
+age <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme_classic(base_size = 10) +
+  scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
+                    values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
+  labs(x = " ", y = " ", fill = "Wetland \nAge") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))
+# age
+# 
+# tiff(filename = "figures/Fig3e.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+# age
+# dev.off()
+}
+
+
 
 #### HLR
-x$bins <- cut_number(x$HLR, 3)
+{x$bins <- cut_number(x$HLR, 4)
 table(x$quad, x$bins)
 summary <- table(x$quad, x$bins)
 m <- as.data.frame(summary)
 hlr <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   geom_bar(position = "fill", stat = "identity") +
-  theme_classic() +
-  scale_fill_manual(values = mypal3) +
-  labs(x = " ", y = "proportion of site-years", fill = "HLR (m/yr)") +
-  theme(legend.position= "top", legend.direction = "vertical", legend.text = element_text(size = 10),
-        legend.title = element_text(size = 12))+
-  scale_x_discrete(labels = c("I. TP sink\nSRP sink", "II. TP sink\n SRP source",
-                              "III. TP source\nSRP source", "IV. TP source\nSRP sink"))
+  theme_classic(base_size = 10) +
+  scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
+                    values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
+  labs(x = " ", y = " ", fill = "HLR") +
+  theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+        axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+  scale_x_discrete(labels = c("Q1", "Q2",
+                              "Q3", "Q4"))
+
+#hlr
+}
 
 
 
-tiff(filename = "figures/Figure4D Flow.tiff", height=3600, width=6000, units= "px", res=800, compression= "lzw")
+### WETLAND:CATCHMENT ratio
+{
+  x$AreaRatio <- x$Area_m2/x$Catchment_area_ha/10000
+  x$bins <- cut_number(x$AreaRatio, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  
+  
+  ratio <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar(position = "fill", stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("< 0.004", "0.004 - 0.025", "0.025 - 0.05", "0.05+"),
+                      values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
+    labs(x = " ", y = " ", fill = "Wetland to \ncatchment\nratio") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+    scale_x_discrete(labels = c("Q1", "Q2",
+                                "Q3", "Q4"))
+   #ratio
+   #23+18+21+14+6+10+7
+  ## Note: n=99 
+   
+   
+  # tiff(filename = "figures/Fig3d.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+  # size
+  # dev.off()
+}
 
-plot_grid(vol, hlr, labels = c("A", "B"), ncol = 2)
+
+
+#### full plot
+
+
+tiff(filename = "figures/Figure3_All.tif", height=3600, width=9600, units= "px", res=800, compression= "lzw")
+
+plot_grid(WT, FlowR, TP, SRP, size, age, hlr, ratio, labels = c("A", "B", "C", "D", "E", "F", "G", "H"), ncol = 4)
 
 dev.off()
 
@@ -273,25 +290,16 @@ dev.off()
 
 
 
-
-
-
-
-
-
-
-
-
-### export editable version
-library(officer)
-library(rvg)
-
-doc <- read_pptx()
-doc <- add_slide(doc, 'Title and Content', 'Office Theme')
-dml <- dml(ggobj = FlowR)
-doc <- ph_with(doc, dml, location = ph_location_fullsize())
-print(doc, target = 'plot.pptx')
-
+# ### export editable version
+# library(officer)
+# library(rvg)
+# 
+# doc <- read_pptx()
+# doc <- add_slide(doc, 'Title and Content', 'Office Theme')
+# dml <- dml(ggobj = FlowR)
+# doc <- ph_with(doc, dml, location = ph_location_fullsize())
+# print(doc, target = 'plot.pptx')
+#
 
 
 
