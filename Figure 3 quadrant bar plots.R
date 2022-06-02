@@ -154,7 +154,7 @@ SRP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
   theme_classic() +
   scale_fill_manual(labels = c(" < 0.44", "0.44 - 0.10", "0.10 - 0.53", "0.53+"),
                     values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-  labs(x = " ", y = " ", fill = "Inflow TP\n (mg/L)") +
+  labs(x = " ", y = " ", fill = "Inflow SRP\n (mg/L)") +
   theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
         legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
         axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
