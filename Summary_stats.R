@@ -17,7 +17,11 @@ setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_
 
 
 ## Data set-up
-x <- read.csv("Wetland_P_Clean2.csv", header = T)
+x <- read.csv("Wetland_P_Clean3.csv", header = T)
+x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranberry farm"
+
+
 
 
 ## mass at outflow
