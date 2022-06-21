@@ -22,7 +22,12 @@ library(cowplot)
 #library(ggpubr)
 
 ## Data set-up
-x <- read.csv("Wetland_P_Clean2.csv", header = T)
+x <- read.csv("Wetland_P_Clean3.csv", header = T)
+
+x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranberry farm"
+
+
 {head(x)
   
   
@@ -60,7 +65,11 @@ p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   geom_hline(yintercept = 0, lty = 2) +
   geom_vline(xintercept = 0, lty = 2) +
   xlab("SRP % Retention") +
-  ylab("TP % Retention")
+  ylab("TP % Retention") +
+  annotate(geom = "text", x = 25, y = 105, label = "Q1", size = 6) + 
+  annotate(geom = "text", x = -240, y = 105, label = "Q2", size = 6) + 
+  annotate(geom = "text", x = -240, y = -147, label = "Q3", size = 6) + 
+  annotate(geom = "text", x = 25, y = -147, label = "Q4", size = 6) 
 p
 
 hist <- ggplot(x, (aes(x = SRP_retention))) +
@@ -93,6 +102,7 @@ lab <- ggplot(x, (aes(x = TP_retention))) +
 
 A <- plot_grid(hist, lab, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
 
+A
 
 
 
@@ -112,7 +122,7 @@ behavior <- c("source", "sink", "source", "sink")
 species <- c("TP", "TP", "SRP", "SRP")
 num <- c(TP.sink, TP.source, SRP.sink, SRP.source)
 label_ypos <- c(250, 10, 250, 10)
-label_text <- c("16%", " ", "26%", " ")
+label_text <- c("16%", " ", "25%", " ")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
 c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
@@ -136,3 +146,23 @@ tiff(filename = "figures/Source_sink.tif", height=3600, width=7200, units= "px",
 plot_grid(c, A, labels = c("A", "B"), ncol = 2)
 
 dev.off()
+
+unique(x$Source)
+unique(x$WetlandID)
+nrow(x[which(x$Age_yr < 4),])
+176/273
+
+
+mean(x$TP_load_in_g_m2_yr)
+range(x$TP_load_in_g_m2_yr)
+median(x$TP_load_in_g_m2_yr)
+
+mean(x$SRP_load_in_g_m2_yr)
+range(x$SRP_load_in_g_m2_yr)
+median(x$SRP_load_in_g_m2_yr)
+
+
+
+
+
+
