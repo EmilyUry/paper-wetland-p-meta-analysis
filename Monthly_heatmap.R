@@ -27,8 +27,6 @@ x <- read.csv("Monthly_Wetland_P_Clean.csv", header = T)
 head(x)
 
 x <- x[which(x$data_type == "both" | x$data_type == "load"),]
-x$Source <- droplevels(x$Source)
-x$Wetland_ID <- droplevels(x$Wetland_ID)
 
 table(x$Source)
 unique(x$Source)
@@ -41,8 +39,7 @@ x$SRP_Retention <- x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo
 ## subset data
 
 df <-x %>% select(Short_Ref, Short_ID,  Short_year, Month, TP_IN_g_m2_mo, TP_Retention, TP_Retention_percent, 
-                  SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent)
-df$Short_ID <- droplevels(df$Short_ID)
+                  SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent, TP_OUT_g_m2_mo, SRP_OUT_g_m2_mo)
 df$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
 site_year <-unique(df$Unique_ID)
 
@@ -68,16 +65,6 @@ df.sum$an_TP_rem_percent <- df.sum$an_TP_rem/df.sum$an_TP_IN*100
 df.sum$an_SRP_rem_percent <- df.sum$an_SRP_rem/df.sum$an_SRP_IN*100
 
 
-########### Order the plots by total annual retention
-
-# df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem)  ### reorder factor by total TP retention
-# Unique <- df.sum$Unique_ID
-# order <- levels(Unique)
-# df <- df %>%
-#   mutate(Unique_ID = fct_relevel(Unique_ID, order))
-
-
-
 
 ######## Basic Version  #####################
 
@@ -87,7 +74,14 @@ df$col <- breaks[as.numeric(cut(df$TP_Retention, breaks = c(-Inf, -0.1, -0.05, -
 df <- df %>%
   mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
 
-
+labs <- (c("Z2","Z1","Y2", "Y1", "X", "W", 
+           "V", "U",
+           "T2","T1","S2", "S1","R2", "R1","Q2", "Q1", 
+           "P2", "P1", "O2", "O1", "N2", "N1", "M2", "M1", 
+          "L", "K", "J","I", "H","G", "F", "E", 
+          "D", "C", "B", "A"))
+locs <- c("Denmark", "Denmark", "ON, Canada", "KY, USA", "Slovenia", "Denmark")
+los.pos <-c("10", "8", "5", "3","2","1")
 
 TP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
   geom_tile(color= "white",size=0.1) +
@@ -95,21 +89,23 @@ TP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
                     values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
                                "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
   theme_minimal(base_size = 18) +
-  ylab("Site ID") +
+  theme(plot.margin = margin(1, .3, 1, 3, "cm"),
+        axis.text.y = element_text(hjust = 0)) +
+  ylab(" ") +
   xlab(" ") +
-  theme(legend.position = "none") +
-  ggtitle("TP")
+  scale_y_discrete(labels = labs) +
+  scale_x_discrete(labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
+  theme(legend.position = "none")
 TP
 
 
+### set breaks for SRP
 
-
-df$col <- breaks[as.numeric(cut(df$SRP_Retention, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
+df$col2 <- breaks[as.numeric(cut(df$SRP_Retention, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
 df <- df %>%
-  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
+  mutate(col2 = fct_relevel(col2,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
 
-
-SRP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
+SRP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col2))+
   geom_tile(color= "white",size=0.1) +
   scale_fill_manual(name = "Retention \n (g/m2/month)",
                     values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
@@ -117,16 +113,64 @@ SRP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
   theme_minimal(base_size = 18) +
   ylab(" ") +
   xlab(" ") + 
-  ggtitle("SRP") +
-  theme(axis.text.y = element_blank())
+  scale_x_discrete(labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
+  theme(axis.text.y = element_blank(),
+        plot.margin = margin(1, 1, 1, 0.3, "cm"))
+SRP
 
-tiff(filename = "figures/Heatmaps.tif", height=6000, width=11000, units= "px", res=800, compression= "lzw")
-plot_grid(TP, SRP, labels = c('A', 'B'), rel_widths = c(7,8), ncol = 2)
 
+tiff(filename = "figures/Heatmaps.tif", height=7000, width=7000, units= "px", res=800, compression= "lzw")
+plot_grid(TP, SRP, labels = c('TP', 'SRP'), label_size = 16, rel_widths = c(6.5,8), ncol = 2)
 dev.off()
 
 
 
+
+
+
+
+df$SRP.TP.ratio <- (df$SRP_OUT_g_m2_mo/df$TP_OUT_g_m2_mo)/(df$SRP_IN_g_m2_mo/df$TP_IN_g_m2_mo)
+
+
+##df$SRP.TP.ratio <- df$SRP_IN_g_m2_mo/df$TP_IN_g_m2_mo - (df$SRP_IN_g_m2_mo - df$SRP_Retention)/(df$TP_IN_g_m2_mo-df$TP_Retention)
+breaks <- c("0-0.5", "0.5-1", "1-1.5", "1.5+" )
+
+df$col3 <- breaks[as.numeric(cut(df$SRP.TP.ratio, breaks = c(0, 0.5, 1, 1.5, Inf)))]
+df <- df %>%
+  mutate(col3 = fct_relevel(col3, "0-0.5", "0.5-1", "1-1.5", "1.5+"  ))
+
+ratio <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col3))+
+  geom_tile(color= "white",size=0.1) +
+  scale_fill_manual(name = "SRP:TP ratio",
+                    values = c("#2166ac", "#67a9cf" , "#f2b9b1" ,"#f76752")) +
+  theme_minimal(base_size = 18) +
+  ylab(" ") +
+  xlab(" ") + 
+    theme(axis.text.y = element_blank(),
+          plot.margin = margin(1, 1, 1, 0.3, "cm"))+
+  scale_x_discrete(labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) 
+  #scale_y_discrete(labels = labs)
+
+ratio 
+
+tiff(filename = "figures/Heatmaps2.tif", height=7000, width=10000, units= "px", res=800, compression= "lzw")
+plot_grid(TP, SRP, ratio, labels = c('TP', 'SRP', 'SRP:TP'), label_size = 16, rel_widths = c(6.5,8.1,8), ncol = 3)
+dev.off()
+
+
+summary(df$SRP.TP.ratio)
+
+hist(df$SRP.TP.ratio)
+
+
+
+########### Order the plots by total annual retention
+
+# df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem)  ### reorder factor by total TP retention
+# Unique <- df.sum$Unique_ID
+# order <- levels(Unique)
+# df <- df %>%
+#   mutate(Unique_ID = fct_relevel(Unique_ID, order))
 
 
 
