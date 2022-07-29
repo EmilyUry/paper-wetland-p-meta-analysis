@@ -9,10 +9,10 @@
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
 
-
 library(ggplot2)
 library(tidyverse)
 library(cowplot)
+
 
 
 ## Data set-up
@@ -53,7 +53,7 @@ scatter <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   theme(legend.position = "none") +
   xlim(-170, 120) +
   ylim(-150, 105) + 
-  theme_classic(base_size = 15) +
+  theme_classic(base_size = 16) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   geom_abline(slope = 1, intercept = 0) +
   #geom_hline(yintercept = 0, lty = 2) +
@@ -78,17 +78,105 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
 quad.sum <- table(x$quad)
 n <- as.data.frame(quad.sum)
 
-bar <- ggplot(n, aes(x = Var1, y = Freq, fill = as.factor(Var1))) + 
-  geom_bar(stat = "identity") + 
-  scale_fill_manual(values = c("#ffc8c2", "#ffe2c2", "#fffdc2", "#c5ffc2")) +
-  coord_flip() +
-  ylab("n (site-years)") +
-  xlab("Retention bins (%) ")+
-  ylim(0,90) +
+# bar <- ggplot(n, aes(x = Var1, y = Freq, fill = as.factor(Var1))) + 
+#   geom_bar(stat = "identity") + 
+#   scale_fill_manual(values = c("#ffc8c2", "#ffe2c2", "#fffdc2", "#c5ffc2")) +
+#   coord_flip() +
+#   ylab("n (site-years)") +
+#   xlab("Retention bins (%) ")+
+#   ylim(0,90) +
+#   theme_classic(base_size = 16) +
+#   theme(legend.position = "none")+
+#   annotate(geom = "text", y = n$Freq - 11, x = 1:4, label = paste("n = ", n$Freq, sep=""), size = 6, fontface = "bold")  
+
+x$ratio <- (x$SRP_outflow_mg_L / x$TP_outflow_mg_L) / (x$SRP_Inflow_mg_L / x$TP_Inflow_mg_L)
+hist(x$ratio, breaks = 50, xlim = c(0,5))
+abline(v=1, col = "red", lwd = 2)
+text(1.7,55, "SRP \nmagnification", col = "red")
+text(0.3, 55, "SRP \nretention", col = "red")
+arrows(1.3,51, 2.2, 51, length = 0.15, angle = 30, code = 2, col = "red")
+arrows(0.6,51, 0.0, 51, length = 0.15, angle = 30, code = 2, col = "red")
+
+
+x$source.sink <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "source", "sink")
+
+ggplot(x, aes(x = ratio))+
+  geom_density() +
+  xlim(0,5) +
+  theme_classic()+
+  geom_vline(aes(xintercept=1),
+             color="blue", linetype="dashed", size=1)
+
+mu <- x %>%
+  group_by(source.sink) %>%
+  summarise(mean = mean(ratio, na.rm = TRUE))
+
+ggplot(x, aes(x = ratio, color = source.sink)) +
+  geom_density() +
+  xlim(0,5) +
+  theme_classic() +
+  geom_vline(data = mu, aes(xintercept = mean, color = source.sink),
+              linetype="dashed", size=1)+
+  geom_vline(aes(xintercept=1),
+             color="black", linetype="solid", size=0.5)
+
+
+
+mu <- x %>%
+  group_by(quad) %>%
+  summarise(mean = mean(ratio, na.rm = TRUE))
+
+dist <- ggplot(x, aes(x = ratio, fill = quad)) +
+  geom_density(alpha = 0.3) +
+  xlim(0,5) +
+  xlab("SRP:TP ratio") +
   theme_classic(base_size = 16) +
-  theme(legend.position = "none")+
-  annotate(geom = "text", y = n$Freq - 11, x = 1:4, label = paste("n = ", n$Freq, sep=""), size = 6, fontface = "bold")  
-  
+  geom_vline(data = mu, aes(xintercept = mean, color = quad),
+             linetype="dashed", size=1)+
+  geom_vline(aes(xintercept=1),
+             color="black", linetype="solid", size=0.5) +
+  #scale_fill_manual(values = c("#ffc8c2", "#ffe2c2", "#fffdc2", "#c5ffc2" )) +
+  scale_fill_manual(values = c("#f5503d", "#f5b53d", "#f5e93d", "#3df580" )) +
+  scale_color_manual(values = c("#f5503d", "#f5b53d", "#f5e93d", "#3df580" )) +
+  theme(legend.position = c(0.8,0.5), legend.title = element_blank())
+dist
+
+
+source <- (x[which(x$source.sink == "source"),])
+unique(source$Source)
+unique(x$Source)
+22/50
+
+
+### test for sig diff between groups
+
+library(rstatix)
+library(ggpubr)
+
+x %>%
+  group_by(quad) %>%
+  get_summary_stats(ratio, type = "mean_sd")
+
+#pairwise comparison T-test with bonferroni adjustment
+pwc <- x %>%
+  pairwise_t_test(ratio ~ quad, p.adjust.method = "bonferroni")
+pwc ## the source group is significantly different from all other groups. sink groups not distinguishable from one another
+# Show adjusted p-values
+pwc <- pwc %>% add_xy_position(x = "quad")
+ggboxplot(x, x = "quad", y = "ratio") +
+  stat_pvalue_manual(pwc, hide.ns = TRUE, label = "p.adj.signif", tip.length = 0, step.increase = 0.1) +
+  labs(
+    subtitle = get_test_label(res.aov, detailed = TRUE),
+    caption = get_pwc_label(pwc)
+  )
+
+
+
+
+
+
+summary(x$ratio[x$source.sink == "source"])
+summary(x$ratio[x$source.sink == "sink"])
 
 x$ret <- ifelse(x$TP_Retention_percent > 0, "pos", "neg")
 TP.source <- table(x$ret)[1]
@@ -107,10 +195,10 @@ label_ypos <- c(245, 10, 245, 10)
 label_text <- c("16%", " ", "25%", " ")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
-c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
+A <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
   geom_bar(stat = "identity") +
   geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle",
-            color = "white", size = 5, fontface = "bold")+
+            color = "white", size = 4.5, fontface = "bold")+
   theme_classic(base_size = 16) +
   theme(legend.position = "right", legend.direction = "vertical", legend.text = element_text(size = 13), 
         legend.key.size = unit(0.5,"cm")) +
@@ -118,16 +206,17 @@ c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fi
   scale_fill_manual(values = c("#414547", "#9ba4a8"), labels = c("source", "sink"))  
 
 
-top <- plot_grid(c, bar, labels = c("A", "B"), ncol = 2)
-plot_grid(top, scatter, labels = c(" ", " ", "C "), ncol = 1, rel_heights = c(1,2))
 
 
-tiff(filename = "figures/Fig2_new.tif", height=7200, width=6000, units= "px", res=800, compression= "lzw")
-plot_grid(top, scatter, labels = c(" ", " ", "C "), ncol = 1, rel_heights = c(1,2))
+
+#### FINAL PLOT
+
+
+left <- plot_grid(A, dist, labels = c("A", "B"), ncol = 1, rel_heights = c(1,1.1))
+
+tiff(filename = "figures/Fig2_new.tif", height=4000, width=8000, units= "px", res=800, compression= "lzw")
+plot_grid(left, scatter, labels = c(" ", "C"), ncol = 2, rel_widths = c(1.1,2))
 dev.off()
-
-
-
 
 
 
@@ -288,4 +377,180 @@ tiff(filename = "figures/Figure3_NEW.tif", height=3600, width=9600, units= "px",
 plot_grid(WT, FlowR, TP, SRP, size, age, hlr, ratio, labels = c("A", "B", "C", "D", "E", "F", "G", "H"), ncol = 4)
 
 dev.off()
+
+
+
+
+
+
+
+
+#################### fig 3 not fixed to 100%
+
+
+#### WETLAND TYPE
+{ table(x$quad, x$Wetland_Type)
+  summary <- table(x$quad, x$Wetland_Type)
+  m <- as.data.frame(summary)
+  
+  WT <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("Constructed", "Mesocosm", "Natural", "Restored"), 
+                      values = c("#440154FF", "#44015477", "#2c728e55",  "#2c728eFF"  )) +
+    labs(x = "Retention bins (%) ", y = "Frequency ", fill = "Wetland \nType") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
+  WT
+}
+
+#### FLOW REGIME
+{levels(x$Water_regime)
+  x <- x %>%                                ### reorder flow regime
+    mutate(Water_regime = fct_relevel(Water_regime, "continuous, constant" , "intermittent, constant" ,
+                                      "continuous, variable", "intermittent, variable", "n.s.")) 
+  table(x$quad, x$Water_regime)
+  summary <- table(x$quad, x$Water_regime)
+  m <- as.data.frame(summary)
+  
+  FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar(stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("Continuous,\n  regulated", "Intermittent,\n  regulated", "Continuous,\n  variable", "Intermittent,\n  variable", "Not \n  specified" ),
+                      values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
+    labs(x = "Retention bins (%)", y = " ", fill = "Hydrologic\n Regime") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
+    guides(fill=guide_legend(ncol=1))
+  FlowR
+}
+
+#### INFLOW TP CONCENTRATION
+{x$bins <- cut_number(x$TP_Inflow_mg_L, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic() +
+    scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
+                      values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Inflow TP\n (mg/L)") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
+  TP
+}
+
+#### INFLOW SRP CONCENTRATION
+{
+  x$bins <- cut_number(x$SRP_Inflow_mg_L, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  SRP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic() +
+    scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
+                      values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Inflow SRP\n (mg/L)") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
+  SRP
+}
+
+### WETLAND SIZE
+{x$bins <- cut_number(x$Area_m2, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  size <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("smallest", " ", " ", "largest"),
+                      values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
+    labs(x = "Retention bins (%) ", y = "Frequency", fill = "Wetland \nSize") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold"))
+  size
+}
+
+### WETLAND AGE
+{table(x$quad, x$Age_yr)
+  x$bins <- cut_number(x$Age_yr, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  
+  age <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
+                      values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Wetland \nAge") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
+  age
+}
+
+#### HLR
+{x$bins <- cut_number(x$HLR, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  hlr <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
+                      values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
+    labs(x = "Retention bins (%) ", y = " ", fill = "HLR") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
+  hlr
+}
+
+#### WETLAND:CATCHMENT ratio
+{ x$CWRatio <- x$Catchment_area_ha/x$Area_m2*10000
+  x$bins <- cut_number(x$CWRatio, 4)
+  table(x$quad, x$bins)
+  summary <- table(x$quad, x$bins)
+  m <- as.data.frame(summary)
+  
+  ratio <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
+    geom_bar( stat = "identity") +
+    theme_classic(base_size = 10) +
+    scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
+                      values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto wetland\narea ratio") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
+  ratio
+}
+
+
+#### full plot
+
+tiff(filename = "figures/Figure3_NEW_supp.tif", height=3600, width=9600, units= "px", res=800, compression= "lzw")
+
+plot_grid(WT, FlowR, TP, SRP, size, age, hlr, ratio, labels = c("A", "B", "C", "D", "E", "F", "G", "H"), ncol = 4)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
 
