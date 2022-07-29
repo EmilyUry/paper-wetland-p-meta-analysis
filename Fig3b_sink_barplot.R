@@ -59,6 +59,36 @@ x <- read.csv("Wetland_P_Clean3.csv", header = T)
   table(x$quad)  
 }
 
+
+
+
+
+plot(density(x$SRP_Retention_percent), xlim = c(-170,100), ylim = c(0, 0.014))
+lines(density(x$TP_Retention_percent), xlim = c(-170,100))
+
+
+model <- lm(TP_Retention_percent~SRP_Retention_percent, data=x)
+res <- resid(model)
+plot(fitted(model), res, xlim = c(-170, 100), ylim = c(-150, 105))
+abline(0,0)
+abline(v=1)
+qqnorm(res)
+qqline(res) 
+plot(density(res), xlim = c(-100,100))
+
+df <- data.frame(x$SRP_Retention_percent, res)
+df.neg <- df[which(df$res < 0),]
+df.pos <- df[which(df$res > 0),]
+plot(density(df.pos$res), xlim = c(-150,100))
+lines(density(df.neg$res))
+
+
+plot(df$x.SRP_Retention_percent, df$res, xlim = c(-150,100), ylim = c(-160, 100))
+abline(h=0)
+abline(v=0)
+
+
+
 ### Q1 quadrats
 ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   geom_segment(aes(x = 50, y = 0, xend = 50, yend = 100), size = 2, color = "#f57971") +
@@ -617,8 +647,8 @@ ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   geom_segment(aes(x = 0, y = 0, xend = -250, yend = 0) , size = 2, color = "#f57971") +
   geom_segment(aes(x = 33, y = 33, xend = 33, yend = -145), size = 2, color = "#f57971") +
   geom_segment(aes(x = 33, y = 33, xend = -250, yend = 33) , size = 2, color = "#f57971") +
-  geom_segment(aes(x = 66, y = 66, xend = 66, yend = -145), size = 2, color = "#f57971") +
-  geom_segment(aes(x = 66, y = 66, xend = -250, yend = 66) , size = 2, color = "#f57971") +
+  geom_segment(aes(x = 67, y = 67, xend = 67, yend = -145), size = 2, color = "#f57971") +
+  geom_segment(aes(x = 67, y = 67, xend = -250, yend = 67) , size = 2, color = "#f57971") +
   geom_segment(aes(x = 100, y = 100, xend = 100, yend = -145), size = 2, color = "#f57971") +
   geom_segment(aes(x = 100, y = 100, xend = -250, yend = 100) , size = 2, color = "#f57971") +
   geom_point() + 
@@ -634,7 +664,7 @@ ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   ylab("TP % Retention") +
   annotate(geom = "text", x = 0, y = -150, label = "0", size = 5, color = "#fc4f44") + 
   annotate(geom = "text", x = 33, y = -150, label = "33", size = 5, color = "#fc4f44") + 
-  annotate(geom = "text", x = 66, y = -150, label = "66", size = 5, color = "#fc4f44") + 
+  annotate(geom = "text", x = 67, y = -150, label = "67", size = 5, color = "#fc4f44") + 
   annotate(geom = "text", x = 100, y = -150, label = "100", size = 5, color = "#fc4f44") 
 
 
@@ -642,7 +672,7 @@ ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
 
 x$quad <- ifelse(x$TP_Retention_percent < 0 & x$SRP_Retention_percent < 0, "< 0", 
                  ifelse(x$TP_Retention_percent < 33 & x$SRP_Retention_percent < 33, "0-33",
-                        ifelse(x$TP_Retention_percent < 66 & x$SRP_Retention_percent < 66, "33-66", "66-100")))
+                        ifelse(x$TP_Retention_percent < 67 & x$SRP_Retention_percent < 67, "33-67", "67-100")))
 
 
 #### WETLAND TYPE
@@ -872,13 +902,13 @@ ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   geom_segment(aes(x = 0, y = 0, xend = 100, yend = 0) , size = 2, color = "#f57971") +
   geom_segment(aes(x = 33, y = 33, xend = 33, yend = 100), size = 2, color = "#f57971") +
   geom_segment(aes(x = 33, y = 33, xend = 100, yend = 33) , size = 2, color = "#f57971") +
-  geom_segment(aes(x = 66, y = 66, xend = 66, yend = 100), size = 2, color = "#f57971") +
-  geom_segment(aes(x = 66, y = 66, xend = 100, yend = 66) , size = 2, color = "#f57971") +
+  geom_segment(aes(x = 67, y = 67, xend = 67, yend = 100), size = 2, color = "#f57971") +
+  geom_segment(aes(x = 67, y = 67, xend = 100, yend = 67) , size = 2, color = "#f57971") +
   geom_segment(aes(x = 100, y = 100, xend = 100, yend = 100), size = 2, color = "#f57971") +
   geom_segment(aes(x = 100, y = 100, xend = 100, yend = 100) , size = 2, color = "#f57971") +
   geom_point() + 
   theme(legend.position = "none") +
-  xlim(-250, 105) +
+  xlim(-250, 117) +
   ylim(-150, 105) + 
   theme_bw(base_size = 16) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
@@ -887,22 +917,22 @@ ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   geom_vline(xintercept = 0, lty = 2) +
   xlab("SRP % Retention") +
   ylab("TP % Retention") +
-  annotate(geom = "text", x = 105, y = 0, label = "0", size = 5, color = "#fc4f44") + 
-  annotate(geom = "text", x = 105, y = 33, label = "33", size = 5, color = "#fc4f44") + 
-  annotate(geom = "text", x = 105, y = 66, label = "66", size = 5, color = "#fc4f44") + 
-  annotate(geom = "text", x = 105, y = 100, label = "100", size = 5, color = "#fc4f44") 
+  annotate(geom = "text", x = 115, y = 5, label = "0", size = 5, color = "#fc4f44") + 
+  annotate(geom = "text", x = 115, y = 38, label = "33", size = 5, color = "#fc4f44") + 
+  annotate(geom = "text", x = 115, y = 72, label = "67", size = 5, color = "#fc4f44") + 
+  annotate(geom = "text", x = 117, y = 105, label = "100", size = 5, color = "#fc4f44") 
 
 
 
 
 x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0", 
                  ifelse(x$TP_Retention_percent < 33 | x$SRP_Retention_percent < 33, "0-33",
-                        ifelse(x$TP_Retention_percent < 66 | x$SRP_Retention_percent < 66, "33-66", "66-100")))
+                        ifelse(x$TP_Retention_percent < 67 | x$SRP_Retention_percent < 67, "33-67", "67-100")))
 
 
 #### WETLAND TYPE
 { table(x$quad, x$Wetland_Type)
-  x$Wetland_Type <- droplevels(x$Wetland_Type)
+  #x$Wetland_Type <- droplevels(x$Wetland_Type)
   summary <- table(x$quad, x$Wetland_Type)
   m <- as.data.frame(summary)
   
@@ -912,7 +942,7 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
     theme_classic(base_size = 10) +
     scale_fill_manual(labels = c("Constructed", "Mesocosm", "Natural", "Restored"), 
                       values = c("#440154FF", "#44015477", "#2c728e55",  "#2c728eFF"  )) +
-    labs(x = " ", y = "Frequency ", fill = "Wetland \nType") +
+    labs(x = "Retention bins (%) ", y = "Frequency ", fill = "Wetland \nType") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) #+
@@ -941,9 +971,9 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
   FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 10) +
-    scale_fill_manual(labels = c("Continuous,\n  constant", "Intermittent,\n  constant", "Continuous,\n  variable", "Intermittent,\n  variable", "Not \n  specified" ),
+    scale_fill_manual(labels = c("Continuous,\n  regulated", "Intermittent,\n  regulated", "Continuous,\n  variable", "Intermittent,\n  variable", "Not \n  specified" ),
                       values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
-    labs(x = " ", y = " ", fill = "Hydrologic\n Regime") +
+    labs(x = "Retention bins (%)", y = " ", fill = "Hydrologic\n Regime") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) +
@@ -968,17 +998,14 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
   TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic() +
-    scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.3", "0.3 - 1.9", "1.9+"),
+    scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
-    labs(x = " ", y = " ", fill = "Inflow TP\n (mg/L)") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Inflow TP\n (mg/L)") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
-  # scale_x_discrete(labels = c("Q1", "Q2",
-  #                             "Q3", "Q4"))
   TP
 }
-
 
 #### INFLOW SRP CONCENTRATION
 {
@@ -991,11 +1018,10 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
     theme_classic() +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = " ", y = " ", fill = "Inflow SRP\n (mg/L)") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Inflow SRP\n (mg/L)") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
-  # scale_x_discrete(labels = c("Q1", "Q2","Q3", "Q4"))
   SRP
 }
 
@@ -1013,7 +1039,7 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
     theme_classic(base_size = 10) +
     scale_fill_manual(labels = c("smallest", " ", " ", "largest"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = " ", y = "Frequency", fill = "Wetland \nSize") +
+    labs(x = "Retention bins (%) ", y = "Frequency", fill = "Wetland \nSize") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold"))
@@ -1041,7 +1067,7 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
     theme_classic(base_size = 10) +
     scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
-    labs(x = " ", y = " ", fill = "Wetland \nAge") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Wetland \nAge") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
@@ -1065,7 +1091,7 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
     theme_classic(base_size = 10) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = " ", y = " ", fill = "HLR") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "HLR") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
@@ -1078,8 +1104,8 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
 
 ### WETLAND:CATCHMENT ratio
 {
-  x$AreaRatio <- x$Area_m2/x$Catchment_area_ha/10000
-  x$bins <- cut_number(x$AreaRatio, 4)
+  x$CWRatio <- x$Catchment_area_ha/x$Area_m2*10000
+  x$bins <- cut_number(x$CWRatio, 4)
   table(x$quad, x$bins)
   summary <- table(x$quad, x$bins)
   m <- as.data.frame(summary)
@@ -1088,9 +1114,9 @@ x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0"
   ratio <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 10) +
-    scale_fill_manual(labels = c("< 0.004", "0.004 - 0.025", "0.025 - 0.05", "0.05+"),
+    scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
-    labs(x = " ", y = " ", fill = "Wetland to \ncatchment\nratio") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto wetland\narea ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
           legend.title = element_text(size = 10), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 8, family = "serif", face = "bold")) 
