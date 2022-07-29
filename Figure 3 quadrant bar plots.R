@@ -19,8 +19,12 @@ library(cowplot)
 
 
 ## Data set-up
-x <- read.csv("Wetland_P_Clean2.csv", header = T)
+x <- read.csv("Wetland_P_Clean3.csv", header = T)
 {
+  
+  x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
+  x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranberry farm"
+  
   x$Water_regime <- as.factor(x$Water_regime)
   
   lX<-log(x[,c(11,13, 16,17)])
