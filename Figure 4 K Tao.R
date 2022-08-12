@@ -47,94 +47,176 @@ x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranbe
 }
 
 
-## K~Tau (Fred's equations)
-  x$Tau <- 1.51*x$Area_m2^0.23 ## using constants from Cheng and Basu 2017
-  hist(x$Tau)
-  
-  plot(x$HRT_d, x$Tau)
-  fit <- lm(x$Tau ~ x$HRT_d)
-  abline(fit)
-  summary(fit)   ## p = 0.14, R = 0.007
-  
-  
-  
-  plot(log(x$Area_m2), x$HRT_d) #xlim = c(0,200000))
-  fit <- lm(x$HRT_d ~ x$Area_m2)
-  abline(fit)
-  summary(fit)
-  
-  
-  abline(a = 1.5, b=0.23)
-  
-  
-  ##  omit outliers
-  
-  y <- x[which(x$Area_m2 < 10000 & x$Area_m2 != 100),]
-  plot((y$Area_m2), y$HRT_d)
-  fit <- lm(y$HRT_d ~ y$Area_m2)
-  abline(fit)
-  summary(fit)
-  
-  x$Tau2 <- 0.0018376*x$Area_m2 + 6.044 ### bad
-  
-  
-  y <- x[which(x$Area_m2 != 100),]
-  plot(log(y$Area_m2), y$HRT_d)
-  fit <- lm(y$HRT_d ~ log(y$Area_m2))
-  summary(fit)
-  exponent <- coef(fit)[1]
-  constant <- exp(coef(fit)[2])
-  abline(4.65, (0.6945))
-  
-  y$Tau3 <- 4.65*y$Area_m2^0.6945
-  
-  plot(y$HRT_d, y$Tau3)
-  
-  
-  ## calculate k (rate constant) TP  
-  x$k2 <- -(log(1-(x$TP_Retention_percent/100))/x$HRT_d)   ## change to measured
-  fit <- lm(log(x$k2) ~ log(x$HRT_d))
-  summary(fit)
-  exponent <- coef(fit)[1]
-  constant <- exp(coef(fit)[2])
-  
-  ### plot TP K~tau
-  par(mfrow = c(1,1), mar = c(5,6,2,3))
-  
-  #tiff(filename = "figures/K_Tau_plot.tiff", height=3600, width=3600, units= "px", res=800, compression= "lzw")
-  
-  
-  plot((x$HRT_d), (x$k2), log = 'xy', pch = 16, cex = 0.7, xlim = c(1.2,115),
-       xlab = expression(paste("Water Residence Time, ", tau, " (d)")), 
-       ylab = expression(paste("Rate Constant, k ( ", d^-1, ")")))
-  x1 <- seq(0,150, by = 0.1)
-  y1 <- constant*x1^exponent
-  points(x1,y1, col = "gray20", type = 'l')
-  text(4,0.001, expression(bold(paste("TP, k = 0.36", tau)^-0.86)), cex = 0.8)
-  text(4,0.00055, expression(bold(paste(" ",R^2, " = 0.46, p < 0.0001"))), cex = 0.8)
-  nrow(x[which(x$TP_Retention_percent < 0),])
-  text(4,0.0003, "(57 points omited)", cex = 0.8, font = 2)
-  
-  
-  ## Add srp on top
-  
-  x$k3 <- -(log(1-(x$SRP_Retention_percent/100))/x$HRT_d)
-  fit1 <- lm(log(x$k3) ~ log(x$HRT_d))
-  summary(fit1)
-  exponent1 <- coef(fit1)[1]
-  constant1 <- exp(coef(fit1)[2])
-  
-  
-  points((x$Tau), (x$k3), pch = 16, cex = 0.6, col = "#FF0000aa")
-  x2 <- seq(0,150, by = 0.1)
-  y2 <- constant1*x1^exponent1
-  points(x2,y2, col = "red", type = 'l')
-  text(48,0.5, expression(bold(paste("SRP, k = 0.52", tau)^-1.4)), cex = 0.8, col = 'red')
-  text(48,0.3, expression(bold(paste(" ",R^2, " = 0.24, p < 0.0001"))), cex = 0.8, col = 'red')
-  nrow(x[which(x$SRP_Retention_percent < 0),])
-  text(48,0.17, "(87 points omited)", cex = 0.8, font = 2, col = "red")
-  
-  
 
+## calculate k (rate constant) TP  
+x$kTP <- -(log(1-(x$TP_Retention_percent/100))/x$HRT_d)   ## measured HRT
+x$kSRP <- -(log(1-(x$SRP_Retention_percent/100))/x$HRT_d)   ## measured HRT
+
+#y <- x[complete.cases(x[36]),]
+#z <- x[complete.cases(x[37]),]
+
+#### K tao
+#plot((x$HRT_d), (x$kTP), log = 'xy', cex = 1.5)
+#plot(log(x$HRT_d), log(x$kTP), pch = 16)
+
+
+
+tiff(filename = "figures/Fig3_Ktao_new.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+
+
+par(mar= c(3,3,1,1), cex.axis= 0.6, cex.lab= 0.6)
+plot(log(x$HRT_d), log(x$kTP), pch = 16, col = "#2c728ecc", cex = 0.6,
+     ylab = " ", #xlab = "log retention time (d)"
+     xlab = " ")
+title(ylab = "log k", line = 2)
+title(xlab = expression(paste("log ", tau)), line = 2)
+fitTP <- lm(log(x$kTP) ~ log(x$HRT_d))
+k <- coef(fitTP)
+abline(fitTP, col = "#2c728e")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(0,-6.1, expression(bold(paste("k"[TP], " = 0.43", tau)^-1.26)), cex = 0.6, col = "#2c728e")
+text(0,0.-6.7, expression(bold(paste(" ",R^2, " = 0.43, p < 0.0001"))), cex = 0.6, col ="#2c728e")
+
+
+### add SRP
+points(log(x$HRT_d), log(x$kSRP), col = "#440154bb", pch = 16, cex = 0.6)
+fitSRP <- lm(log(x$kSRP) ~ log(x$HRT_d))
+k <- coef(fitSRP)
+abline(fitSRP, col = "#440154")
+summary(fitSRP)
+coef(fitSRP)[1]
+exp(coef(fitSRP)[2])
+text(3,0.3, expression(bold(paste("k"[PO4]," = 0.43", tau)^-1.15)), cex = 0.6, col = "#440154")
+text(2.9,-0.3, expression(bold(paste(" ",R^2, " = 0.33, p < 0.0001"))), cex = 0.6, col = "#440154")
+
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+###quads
+
+x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0", 
+                 ifelse(x$TP_Retention_percent < 33 | x$SRP_Retention_percent < 33, "0-33",
+                        ifelse(x$TP_Retention_percent < 67 | x$SRP_Retention_percent < 67, "33-67", "67-100")))
+
+
+
+Q33 <- x[which(x$quad == "0-33"),]
+Q67 <- x[which(x$quad == "33-67"),]
+Q100 <- x[which(x$quad == "67-100"),]
+
+#
+tiff(filename = "figures/Fig3_Ktao_supp_TP.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+
+par(mar= c(3,3,1,1), cex.axis= 0.6, cex.lab= 0.6)
+
+plot(log(Q33$HRT_d), log(Q33$kTP), pch = 21, bg = "orange", cex = 0.6,
+     ylab = " ", #xlab = "log retention time (d)"
+     xlab = " ",
+     xlim = c(-2,5), ylim = c(-7,1))
+title("(A) TP", adj = 0, cex.main = 0.9)
+title(ylab = "log k", line = 2)
+title(xlab = expression(paste("log ", tau)), line = 2)
+fitTP <- lm(log(Q33$kTP) ~ log(Q33$HRT_d))
+k <- coef(fitTP)
+abline(fitTP, col = "#d17300")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(0,-6.3, expression(bold(paste("k"[0-33], " = 0.43", tau)^-1.86)), cex = 0.4, col = "#d17300")
+text(0,0.-6.7, expression(bold(paste(" ",R^2, " = 0.48, p < 0.0001"))), cex = 0.4, col = "#d17300")
+
+
+
+points(log(Q67$HRT_d), log(Q67$kTP), pch = 21, bg = "yellow", cex = 0.6,
+     ylab = " ", #xlab = "log retention time (d)"
+     xlab = " ")
+fitTP <- lm(log(Q67$kTP) ~ log(Q67$HRT_d))
+k <- coef(fitTP)
+abline(fitTP, col = "black")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(-1,-5.1, expression(bold(paste("k"[33-67], " = 0.37", tau)^-0.43)), cex = 0.4)
+text(-1,0.-5.5, expression(bold(paste(" ",R^2, " = 0.87, p < 0.0001"))), cex = 0.4)
+
+
+
+points(log(Q100$HRT_d), log(Q100$kTP), pch = 21, bg = "green", cex = 0.6,
+     ylab = " ", #xlab = "log retention time (d)"
+     xlab = " ")
+fitTP <- lm(log(Q100$kTP) ~ log(Q100$HRT_d))
+k <- coef(fitTP)
+abline(fitTP, col = "#007d15")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(3.2,0.3, expression(bold(paste("k"[67-100], " = 0.38", tau)^0.28)), cex = 0.4, col = "#007d15")
+text(3.1,-0.1, expression(bold(paste(" ",R^2, " = 0.94, p < 0.0001"))), cex = 0.4, col = "#007d15")
+
+
+dev.off()
+
+
+
+
+tiff(filename = "figures/Fig3_Ktao_supp_PO4.tif", height=2400, width=2400, units= "px", res=800, compression= "lzw")
+
+par(mar= c(3,3,1,1), cex.axis= 0.6, cex.lab= 0.6)
+
+plot(log(Q33$HRT_d), log(Q33$kSRP), pch = 21, bg = "orange", cex = 0.6,
+     ylab = " ", #xlab = "log retention time (d)"
+     xlab = " ",
+     xlim = c(-2,5), ylim = c(-7,1))
+title("(B) PO4", adj = 0, cex.main = 0.9)
+title(ylab = "log k", line = 2)
+title(xlab = expression(paste("log ", tau)), line = 2)
+fitTP <- lm(log(Q33$kSRP) ~ log(Q33$HRT_d))
+abline(fitTP, col = "#d17300")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(0,-6.3, expression(bold(paste("k"[0-33], " = 0.31", tau)^-1.30)), cex = 0.4, col = "#d17300")
+text(0,0.-6.7, expression(bold(paste(" ",R^2, " = 0.60, p < 0.0001"))), cex = 0.4, col = "#d17300")
+
+
+
+points(log(Q67$HRT_d), log(Q67$kSRP), pch = 21, bg = "yellow", cex = 0.6,
+       ylab = " ", #xlab = "log retention time (d)"
+       xlab = " ")
+fitTP <- lm(log(Q67$kSRP) ~ log(Q67$HRT_d))
+abline(fitTP, col = "black")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(-1,-5.1, expression(bold(paste("k"[33-67], " = 0.47", tau)^-0.68)), cex = 0.4)
+text(-1,0.-5.5, expression(bold(paste(" ",R^2, " = 0.69, p < 0.0001"))), cex = 0.4)
+
+
+
+points(log(Q100$HRT_d), log(Q100$kSRP), pch = 21, bg = "green", cex = 0.6,
+       ylab = " ", #xlab = "log retention time (d)"
+       xlab = " ")
+fitTP <- lm(log(Q100$kSRP) ~ log(Q100$HRT_d))
+abline(fitTP, col = "#007d15")
+summary(fitTP)
+coef(fitTP)[1]
+exp(coef(fitTP)[2])
+text(3.2,0.3, expression(bold(paste("k"[67-100], " = 0.38", tau)^0.55)), cex = 0.4, col = "#007d15")
+text(3.1,-0.1, expression(bold(paste(" ",R^2, " = 0.95, p < 0.0001"))), cex = 0.4, col = "#007d15")
+
+
+dev.off()
 
 
