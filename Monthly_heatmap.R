@@ -53,20 +53,8 @@ df <- df %>%                                ### reorder months in order
   mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
                              "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
 
-df.sum <- df %>%
-  group_by(Unique_ID) %>%
-  summarise(
-    an_TP_rem = sum(TP_Retention, na.rm = TRUE),
-    an_TP_IN = sum(TP_IN_g_m2_mo, na.rm = TRUE),
-    an_SRP_rem = sum(SRP_Retention, na.rm = TRUE),
-    an_SRP_IN = sum(SRP_IN_g_m2_mo, na.rm = TRUE))
 
-df.sum$an_TP_rem_percent <- df.sum$an_TP_rem/df.sum$an_TP_IN*100
-df.sum$an_SRP_rem_percent <- df.sum$an_SRP_rem/df.sum$an_SRP_IN*100
-
-
-
-######## Basic Version  #####################
+######## Supplement: Retention g/m2  #####################
 
 ## set class breaks by TP removal
 breaks <- c("<-0.1", "-0.1 - -0.05", "-0.05 - 0", "0", "0 - 0.05", "0.05 - 0.1", "0.1 - 1", "1+")
@@ -89,13 +77,13 @@ TP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
                     values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
                                "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
   theme_minimal(base_size = 18) +
-  theme(plot.margin = margin(1, .3, 1, 3, "cm"),
+  theme(plot.margin = margin(1, .3, 1, 0, "cm"),
         axis.text.y = element_text(hjust = 0)) +
   ylab(" ") +
   xlab(" ") +
   scale_y_discrete(labels = labs) +
-  scale_x_discrete(labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 TP
 
 
@@ -113,19 +101,74 @@ SRP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col2))+
   theme_minimal(base_size = 18) +
   ylab(" ") +
   xlab(" ") + 
-  scale_x_discrete(labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
   theme(axis.text.y = element_blank(),
-        plot.margin = margin(1, 1, 1, 0.3, "cm"))
+        plot.margin = margin(1, 1, 1, 0.3, "cm"),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 SRP
 
 
-tiff(filename = "figures/Heatmaps.tif", height=7000, width=7000, units= "px", res=800, compression= "lzw")
-plot_grid(TP, SRP, labels = c('TP', 'SRP'), label_size = 16, rel_widths = c(6.5,8), ncol = 2)
-dev.off()
+#tiff(filename = "figures/Heatmaps_retention.tif", height=7000, width=9000, units= "px", res=800, compression= "lzw")
+plot_grid(NULL, TP, SRP, labels = c(' ', 'TP', 'SRP'), label_size = 16, rel_widths = c(3,5.7,9), ncol = 3)
+#dev.off()
 
 
 
 
+
+
+# 
+# 
+# ### retention percent
+# #### percent retention
+# breaks <- c("<-100", "-100 - -67", "-67 - -33", "-33 - 0", "0 - 33", "33 - 67", "67 - 100")
+# df$col3 <- breaks[as.numeric(cut(df$TP_Retention_percent, breaks = c(-Inf, -100, -67, -33, 0, 33, 67,  Inf)))]
+# df <- df %>%
+#   mutate(col3 = fct_relevel(col3,"67 - 100","33 - 67", "0 - 33", "0", "-33 - 0", "-67 - -33", "-100 - -67", "<-100"   )) 
+# 
+# 
+# 
+# TP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col3))+
+#   geom_tile(color= "white",size=0.1) +
+#   scale_fill_manual(name = "TP Retention \n (%)", 
+#                     values = c("#053061", "#67a9cf" , "#d1e5f0",
+#                                "#f2b9b1","#f76752", "#b2182b", "#800000" )) +
+#   theme_minimal(base_size = 18) +
+#   ylab("Site ID") +
+#   xlab(" ") +
+#   theme(legend.position = "none") +
+#   ggtitle("TP") +
+#   scale_y_discrete(labels = labs) +
+#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+# TP
+# 
+# 
+# 
+# 
+# breaks <- c("<-100", "-100 - -67", "-67 - -33", "-33 - 0", "0 - 33", "33 - 67", "67 - 100")
+# df$col4 <- breaks[as.numeric(cut(df$SRP_Retention_percent, breaks = c(-Inf, -100, -67, -33, 0, 33, 67,  Inf)))]
+# df <- df %>%
+#   mutate(col4 = fct_relevel(col4,"67 - 100","33 - 67", "0 - 33", "0", "-33 - 0", "-67 - -33", "-100 - -67", "<-100"   )) 
+# 
+# 
+# SRP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col4))+
+#   geom_tile(color= "white",size=0.1) +
+#   scale_fill_manual(name = "Retention \n (%)", 
+#                     values = c("#053061", "#67a9cf" , "#d1e5f0",
+#                                "#f2b9b1","#f76752", "#b2182b", "#800000" )) + 
+#   theme_minimal(base_size = 18) +
+#   ylab(" ") +
+#   xlab(" ") + 
+#   ggtitle("SRP") +
+#   theme(axis.text.y = element_blank(),
+#         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+# 
+# SRP
+# 
+# plot_grid(TP, SRP, labels = c('A', 'B'), rel_widths = c(6,10), ncol = 2)
+# 
+
+
+#### ratio plot
 
 
 
@@ -135,42 +178,27 @@ df$SRP.TP.ratio <- (df$SRP_OUT_g_m2_mo/df$TP_OUT_g_m2_mo)/(df$SRP_IN_g_m2_mo/df$
 ##df$SRP.TP.ratio <- df$SRP_IN_g_m2_mo/df$TP_IN_g_m2_mo - (df$SRP_IN_g_m2_mo - df$SRP_Retention)/(df$TP_IN_g_m2_mo-df$TP_Retention)
 breaks <- c("0-0.5", "0.5-1", "1-1.5", "1.5+" )
 
-df$col3 <- breaks[as.numeric(cut(df$SRP.TP.ratio, breaks = c(0, 0.5, 1, 1.5, Inf)))]
+df$col5 <- breaks[as.numeric(cut(df$SRP.TP.ratio, breaks = c(0, 0.5, 1, 1.5, Inf)))]
 df <- df %>%
-  mutate(col3 = fct_relevel(col3, "0-0.5", "0.5-1", "1-1.5", "1.5+"  ))
+  mutate(col5 = fct_relevel(col5, "0-0.5", "0.5-1", "1-1.5", "1.5+"  ))
 
-ratio <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col3))+
+ratio <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col5))+
   geom_tile(color= "white",size=0.1) +
-  scale_fill_manual(name = "SRP:TP ratio",
+  scale_fill_manual(name = "Ratio",
                     values = c("#2166ac", "#67a9cf" , "#f2b9b1" ,"#f76752")) +
   theme_minimal(base_size = 18) +
   ylab(" ") +
   xlab(" ") + 
     theme(axis.text.y = element_blank(),
-          plot.margin = margin(1, 1, 1, 0.3, "cm"))+
-  scale_x_discrete(labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) 
-  #scale_y_discrete(labels = labs)
+          plot.margin = margin(1, 1, 1, 0.3, "cm"),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ratio 
 
-tiff(filename = "figures/Heatmaps2.tif", height=7000, width=10000, units= "px", res=800, compression= "lzw")
-plot_grid(TP, SRP, ratio, labels = c('TP', 'SRP', 'SRP:TP'), label_size = 16, rel_widths = c(6.5,8.1,8), ncol = 3)
-dev.off()
-
-
-summary(df$SRP.TP.ratio)
-
-hist(df$SRP.TP.ratio)
-
-
-
-########### Order the plots by total annual retention
-
-# df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem)  ### reorder factor by total TP retention
-# Unique <- df.sum$Unique_ID
-# order <- levels(Unique)
-# df <- df %>%
-#   mutate(Unique_ID = fct_relevel(Unique_ID, order))
+#tiff(filename = "figures/Heatmaps2.tif", height=7000, width=10000, units= "px", res=800, compression= "lzw")
+plot_grid(NULL, TP, SRP, ratio, labels = c(' ', 'A', 'B', 'C'), label_size = 16,
+          rel_widths = c(3, 6.5,8.1,8), ncol = 4)
+#dev.off()
 
 
 
@@ -181,120 +209,65 @@ hist(df$SRP.TP.ratio)
 
 
 
-####### Plot Version 2
+
+
+####### Percent Retention
 ########### add column for annual total
 
-df.sum$col <- breaks[as.numeric(cut(df.sum$an_TP_rem, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
+df.sum <- df %>%
+  group_by(Unique_ID) %>%
+  summarise(
+    an_TP_rem = sum(TP_Retention, na.rm = TRUE),
+    an_TP_IN = sum(TP_IN_g_m2_mo, na.rm = TRUE),
+    an_SRP_rem = sum(SRP_Retention, na.rm = TRUE),
+    an_SRP_IN = sum(SRP_IN_g_m2_mo, na.rm = TRUE))
+
+df.sum$an_TP_rem_percent <- df.sum$an_TP_rem/df.sum$an_TP_IN*100
+df.sum$an_SRP_rem_percent <- df.sum$an_SRP_rem/df.sum$an_SRP_IN*100
+
 df.sum2 <- df.sum %>%
-  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) %>%
-  separate(col = "Unique_ID", into = c("Short_Ref", "Short_ID", "Short_year"), sep = "_", remove = "FALSE") %>%
-  rename(TP_IN_g_m2_mo = an_TP_IN )%>%
+  #mutate(col3 = fct_relevel(col3,"67 - 100","33 - 67", "0 - 33", "-33 - 0", "-67 - -33", "-100 - -67", "<-100")) %>%
   rename(TP_Retention = an_TP_rem )%>%
   rename(TP_Retention_percent = an_TP_rem_percent )%>%
-  rename(SRP_IN_g_m2_mo = an_SRP_IN )%>%
   rename(SRP_Retention = an_SRP_rem )%>%
-  rename(SRP_Retention_percent = an_SRP_rem_percent )
+  rename(SRP_Retention_percent = an_SRP_rem_percent ) %>%
+  select(-c("an_TP_IN", "an_SRP_IN"))
 
 df.sum2$Month <- "Total"
-#names(df)
-#names(df.sum2)
 
-df2 <- rbind(df,  df.sum2)
+df.select <- df %>%
+  select("Unique_ID", "TP_Retention", "SRP_Retention", "TP_Retention_percent", "SRP_Retention_percent", "Month")
 
-
-df2 <- df2 %>%
-  mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
-                             "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Total")) %>%
-  mutate(Unique_ID = fct_relevel(Unique_ID, order)) 
-
-tiff(filename = "figures/HeatmapTP.tiff", height=6000, width=6000, units= "px", res=800, compression= "lzw")
-
-ggplot(df2,aes(x = Month, y = Unique_ID, fill=col))+
-  geom_tile(color= "white",size=0.1) +
-  scale_fill_manual(name = "TP Retention \n (g/m2/month)", 
-                    values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
-                               "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) + 
-  theme_minimal(base_size = 8) +
-  ylab("Site ID") +
-  xlab(" ") +
-  geom_text(data=df.sum2, aes(x = 14, y=Unique_ID,label=round(TP_Retention,2)), size = 3, fontface = "bold") +
-  coord_cartesian(clip = "off") +
-  geom_rect(mapping=aes(xmin=12.5, xmax=14.6, ymin=0.5, ymax=36.5), color = "black", fill = NA, size = 1)
+df2 <- rbind(df.select,  df.sum2)
 
 
-dev.off()
-
-
-
-
-
-###### TP Percent
-
-
-
-
-df.sum$Unique_ID <- fct_reorder(df.sum$Unique_ID , df.sum$an_TP_rem_percent)  ### reorder factor by total TP retention
-Unique <- df.sum$Unique_ID
-order <- levels(Unique)
-df <- df %>%
-  mutate(Unique_ID = fct_relevel(Unique_ID, order)) 
-
-######## Basic Version  #####################
-
-## set class breaks by TP removal
 breaks <- c("<-100", "-100 - -67", "-67 - -33", "-33 - 0", "0 - 33", "33 - 67", "67 - 100")
-df$col <- breaks[as.numeric(cut(df$TP_Retention_percent, breaks = c(-Inf, -100, -67, -33, 0, 33, 67,  Inf)))]
-df <- df %>%
+df2$col <- breaks[as.numeric(cut(df2$TP_Retention_percent, breaks = c(-Inf, -100, -67, -33, 0, 33, 67,  Inf)))]
+df2 <- df2 %>%
   mutate(col = fct_relevel(col,"67 - 100","33 - 67", "0 - 33", "0", "-33 - 0", "-67 - -33", "-100 - -67", "<-100"   )) 
 
-# ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
-#   geom_tile(color= "white",size=0.1) +
-#   scale_fill_manual(name = "TP Retention \n (%)", 
-#                     values = c("#053061", "#67a9cf" , "#d1e5f0",
-#                                "#f2b9b1","#f76752", "#b2182b", "#800000" )) + 
-#   theme_minimal(base_size = 8) +
-#   ylab("Site ID") +
-#   xlab(" ")
-
-
-
-####### Plot Version 2
-########### add column for annual total
-
-df.sum$col <- breaks[as.numeric(cut(df.sum$an_TP_rem_percent, breaks = c(-Inf, -100, -67, -33, 0, 33, 67,  Inf)))]
-df.sum2 <- df.sum %>%
-  mutate(col = fct_relevel(col,"67 - 100","33 - 67", "0 - 33", "-33 - 0", "-67 - -33", "-100 - -67", "<-100")) %>%
-  separate(col = "Unique_ID", into = c("Short_Ref", "Short_ID", "Short_year"), sep = "_", remove = "FALSE") %>%
-  rename(TP_IN_g_m2_mo = an_TP_IN )%>%
-  rename(TP_Retention = an_TP_rem )%>%
-  rename(TP_Retention_percent = an_TP_rem_percent )%>%
-  rename(SRP_IN_g_m2_mo = an_SRP_IN )%>%
-  rename(SRP_Retention = an_SRP_rem )%>%
-  rename(SRP_Retention_percent = an_SRP_rem_percent )
-
-df.sum2$Month <- "Total"
-names(df)
-names(df.sum2)
-
-df2 <- rbind(df,  df.sum2)
-
-
-df2 <- df2 %>%
-  mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
-                             "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Total")) %>%
-  mutate(Unique_ID = fct_relevel(Unique_ID, order)) 
+labs2 <- as.character(round(df.sum2$TP_Retention_percent,1))
 
 ggplot(df2,aes(x = Month, y = Unique_ID, fill=col))+
   geom_tile(color= "white",size=0.1) +
   scale_fill_manual(name = "TP Retention \n (%)", 
                     values = c("#053061", "#67a9cf" , "#d1e5f0",
-                               "#f2b9b1","#f76752", "#b2182b", "#800000" )) + 
-  theme_minimal(base_size = 8) +
-  ylab("Site ID") +
-  xlab(" ") +
-  geom_text(data=df.sum2, aes(x = 14.1, y=Unique_ID,label=round(TP_Retention_percent,1)), size = 3, fontface = "bold") +
+                               "#f2b9b1","#f76752", "#b2182b", "#800000" )) +
   coord_cartesian(clip = "off") +
-  geom_rect(mapping=aes(xmin=12.5, xmax=14.7, ymin=0.5, ymax=36.5), color = "black", fill = NA, size = 1)
+  ylab(" ") +
+  xlab(" ") +
+  scale_y_discrete(labels = labs) +
+  theme_minimal(base_size = 18) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  geom_rect(mapping=aes(xmin=12.5, xmax=14.7, ymin=0.5, ymax=36.5), color = "black", fill = NA, size = 1) +
+  annotate("text", x = 14.1, y = 1:36, label = labs2, size = 4, fontface = "bold")
+
+
+
+
+
+
+
 
 
 
