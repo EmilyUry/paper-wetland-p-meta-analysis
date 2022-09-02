@@ -21,10 +21,11 @@ library(viridis)
 #library(patchwork)
 #library(gridExtra)
 library(ggpubr)
+library(cowplot)
 
 
 setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
-#setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")
+setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")
 
 #x <- read.csv("Wetland_P_Toy_Data2.csv", header = T)
 x <- read.csv("Wetland_P_Clean3.csv", header = T)
@@ -45,10 +46,10 @@ pal
 
 
 world <- borders("world", colour="#B9D0D9", fill="#2c728eff") # create a layer of borders
-map <- ggplot() + world + ylim(-55,100) + theme_void() +
+map <- ggplot() + world + ylim(-55,100) + theme_void(base_size = 14) +
   geom_point(aes(x=x$Long, y = x$Lat), color = "black", pch = 21, fill = "white", size = 1) +
  # labs(title="(a) Location of studied wetlands ")+
-  theme(plot.margin = margin(t = 0.5, r = 0.0, b = 1.25, l = 0, unit = "cm")) +
+  theme(plot.margin = margin(t = 0.5, r = 0.1, b = 1.25, l = 0, unit = "cm")) +
   theme(plot.title = element_text(hjust = 1, size = 7, face = "bold"))
 
 map
@@ -65,10 +66,10 @@ D <- ggplot(n, aes(area)) +
   annotation_logticks(base = 10, sides = "b", outside = TRUE, short = unit(0, "cm"), 
                       mid = unit(0.0, "cm"), long = unit(0.1, "cm"))  +
   coord_cartesian(clip = "off") +
-  theme_classic() +
-  labs(title = " ", x = expression(paste("Area (", m^2, ")")))+
-  #labs(title = "(b) Wetland size distribution", x = expression(paste("Area (", m^2, ")")))+
-  theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.1, l = 0.2, unit = "cm")) +
+  theme_classic(base_size = 14) +
+  labs(title = " ", x = expression(paste("Wetland area (", m^2, ")")))+
+  #labs(title = "(b) Wetland size distribution", x = expression(paste("Wetland area (", m^2, ")")))+
+  theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.1, l = 0.4, unit = "cm")) +
   theme(plot.title = element_text(hjust = 0.1, size = 7, face = "bold"))
 
 D 
@@ -103,12 +104,12 @@ c <- ggplot(dd, aes(factor(Type), Catchment, fill = count)) +
   geom_tile() +
   geom_text(aes(label=count), size = 4, color = "black") +
   scale_fill_gradient(low="white", high ="#2c728e") +
-  theme_classic() +
+  theme_classic(base_size = 14) +
   ylab("Catchment Type          ") +
   xlab("Wetland Type")+
-  scale_y_discrete(labels = c("Ag.", "Urban", "WTP")) +
+  scale_y_discrete(labels = c("Ag.", "Urban", "WWT")) +
   #labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
-  theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.2, l = 0.2, unit = "cm"), legend.position = "none") +
+  theme(plot.margin = margin(t = 0.2, r = 0.4, b = 0.2, l = 0.5, unit = "cm"), legend.position = "none") +
   theme(plot.title = element_text(hjust = 1, size = 8, face = "bold")) +
   theme(axis.text.x = element_text(hjust = 1, size = 9, angle = 45))
 
@@ -128,8 +129,10 @@ B <- ggplot(data = z, (aes(x = num, y = yr ))) +
   geom_jitter(width = 0.15, height = 0.15, shape = 21, fill = "#2c728ebb", size = 2)+
   xlab("Wetlands per study") +
   ylab("Years per wetland") + 
+  theme_gray(base_size = 14)+
   theme(panel.background = element_rect(fill = "#2c728e22", colour = "white")) +
-  scale_y_continuous(breaks = c(0,2,4,6,8,10)) +
+  theme(plot.margin = margin(t = 0.5, r = 0.2, b = 0.0, l = 0.5, unit = "cm"), legend.position = "none") +
+    scale_y_continuous(breaks = c(0,2,4,6,8,10)) +
   scale_x_continuous(breaks = c(0,2,4,6,8, 10,  12, 14, 16))
 
 B
@@ -150,15 +153,24 @@ nrow(x)
 
 210/277
 
-tiff(filename = "figures/Figure1.tif", height=3600, width=3600, units= "px", res=800, compression= "lzw")
 
-#ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
-ggarrange(map, B, c, D, ncol = 2, nrow = 2, labels = c("A", "B", "C", "D"))                        
+
+#tiff(filename = "figures/Figure1.tif", height=3600, width=4400, units= "px", res=800, compression= "lzw")
+
+
+tiff(filename = "figures/Figure1.tif", height=5, width=6.5, units= "in", res=800, compression= "lzw")
+
+plot_grid(map, B, c, D, labels = c("A", "B", "C", "D"), label_size = 12, rel_widths = c(1, 1), ncol = 2)
 
 dev.off()
 
 
 
+
+#ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
+#ggarrange(map, B, c, D, ncol = 2, nrow = 2, labels = c("A", "B", "C", "D")) 
+
+plot_grid(map, B, c, D, labels = c("A", "B", "C", "D"), label_size = 16, rel_widths = c(1.5, 1), ncol = 2)
 
 
 
