@@ -54,30 +54,29 @@ x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranbe
 
 
 
-p <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
-  geom_point() + 
+p <- x %>%
+  ggplot(aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
+  geom_point(data = . %>% filter(SRP_Retention_percent > 0 & TP_Retention_percent > 0),pch = 21, fill = "gray80", size = 1) + 
+  geom_point(data = . %>% filter(SRP_Retention_percent < 0 | TP_Retention_percent < 0),pch = 21, fill = "gray40", size = 1) + 
   theme(legend.position = "none") +
   xlim(-250, 105) +
   ylim(-150, 105) + 
-  theme_bw(base_size = 16) +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme_bw(base_size = 10) +
+  theme(plot.margin = margin(t = 0, r = 0, b = 0.1, l = 0.3, unit = "cm"),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   geom_abline(slope = 1, intercept = 0) +
   geom_hline(yintercept = 0, lty = 2) +
   geom_vline(xintercept = 0, lty = 2) +
-  xlab("SRP % Retention") +
-  ylab("TP % Retention") +
-  annotate(geom = "text", x = 25, y = 105, label = "Q1", size = 6) + 
-  annotate(geom = "text", x = -240, y = 105, label = "Q2", size = 6) + 
-  annotate(geom = "text", x = -240, y = -147, label = "Q3", size = 6) + 
-  annotate(geom = "text", x = 25, y = -147, label = "Q4", size = 6) 
+  xlab("PO4 Retention (%)") +
+  ylab("TP Retention (%)") 
 p
 
 hist <- ggplot(x, (aes(x = SRP_retention))) +
   geom_density() +
   xlim(-11.7, 5) +
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 10) +
   xlab(" ") +
-  theme(plot.margin = margin(t = 0, r = 0, b = -0.5, l = 1.4, unit = "cm"),
+  theme(plot.margin = margin(t = 0, r = 0, b = -0.4, l = 1.4, unit = "cm"),
         axis.title.y = element_blank(), axis.text.y = element_blank(), 
         axis.ticks.y = element_blank(), panel.grid = element_blank(), 
         axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
@@ -87,7 +86,7 @@ hist <- ggplot(x, (aes(x = SRP_retention))) +
 hist2 <- ggplot(x, (aes(x = TP_retention))) +
   geom_density() +
   xlim(-18.9, 13) +
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 10) +
   xlab(" ") +
   coord_flip()  +
   theme(plot.margin = margin(t = 0, r = 0, b = 1, l = -0.5, unit = "cm"),
@@ -97,12 +96,12 @@ hist2 <- ggplot(x, (aes(x = TP_retention))) +
         axis.line.x = element_line(size = 0.5, colour = "white", linetype=1))
 
 lab <- ggplot(x, (aes(x = TP_retention))) +
-  annotate("text", 0,0, label = "Retention \n (g/m2/yr)") +
+  annotate("text", 0,0, label = "Retention \n (g/m2/yr)", size = 3) +
   theme_void()
 
-A <- plot_grid(hist, lab, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
+C <- plot_grid(hist, lab, p, hist2, labels = " ",rel_widths = c(4, 1), rel_heights = c(1, 4), ncol = 2)
 
-A
+C
 
 
 
@@ -121,31 +120,67 @@ SRP.source.percent <- round(SRP.source/(SRP.sink+SRP.source)*100,1)
 behavior <- c("source", "sink", "source", "sink")
 species <- c("TP", "TP", "SRP", "SRP")
 num <- c(TP.sink, TP.source, SRP.sink, SRP.source)
-label_ypos <- c(250, 10, 250, 10)
+label_ypos <- c(240, 10, 230, 10)
 label_text <- c("16%", " ", "25%", " ")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
-c <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 6, fontface = "bold")+
-  theme_classic(base_size = 16) +
-  theme(legend.position = "right", legend.direction = "vertical", legend.text = element_text(size = 15), legend.key.size = unit(1,"cm"))+
-  labs(title = " ", x = " ", y = "n (site-years)", fill = " " ) +
-  #labs(title = "(c) Wetland sink/source behavior", x = " ", y = "n" ) +
-  scale_fill_manual(values = c("#2c728eFF", "#2c728e55"), labels = c("source", "sink")) + 
-  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, unit = "cm")) +
-  theme(plot.title = element_text(hjust = 0.6, size = 7, face = "bold"))
+a <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
+  geom_bar(stat = "identity", color = "black") +
+  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 3)+
+  theme_classic(base_size = 10) +
+  theme(plot.margin = margin(t = -0.250, r = 0, b = -0.25, l = 1, unit = "cm"),
+               legend.position = "right", legend.direction = "vertical", legend.text = element_text(size = 10), legend.key.size = unit(0.3,"cm"))+
+  labs(title = " ", x = " ", y = "n ", fill = " " ) +
+  scale_fill_manual(values = c("gray40", "gray80"), labels = c("source", "sink")) 
+a
 
-c
+## bar plot
+nrow(x[which(x$TP_retention > 0 & x$SRP_retention >0),])
+nrow(x[which(x$TP_retention < 0 & x$SRP_retention <0),])
+nrow(x[which(x$TP_retention < 0 & x$SRP_retention >0),])
+nrow(x[which(x$TP_retention > 0 & x$SRP_retention <0),])
+
+quad <- c("Q1","Q2","Q3","Q4")
+count <- c(12, 31, 37, 192 )
+df <- data.frame(quad, count)
+
+labs <- c("TP Source,\nPO4 Sink", "TP Source,\nPO4 Source", "TP Sink,\nPO4 Source", "TP Sink,\nPO4 Sink")
+b <- ggplot(df, aes(x = quad, y = count, fill = quad))+
+  geom_bar(stat = "identity", color = "black") +
+  theme_classic(base_size = 10) +
+  coord_flip() +
+  geom_text(aes(label=count), hjust=c(-0.2,-0.2, -0.2, 1.2), size=3, color = "black")+
+  xlab(" ") +
+  ylab("n (site-years)") +
+  scale_x_discrete(labels = labs) +
+  scale_fill_manual(values=c("gray40", "gray40", "gray40", "gray80"))+
+  theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.1, l = 0, unit = "cm"),
+        legend.position = "none")
+b  
+12+31+37
+80/273
+192/273
 
 
 
+left <- plot_grid(a, b, labels = c("A", "B"), ncol = 1, rel_heights = c(3,4), label_size = 11)
 
-tiff(filename = "figures/Source_sink.tif", height=3600, width=7200, units= "px", res=800, compression= "lzw")
 
-plot_grid(c, A, labels = c("A", "B"), ncol = 2)
+tiff(filename = "figures/Source_sink.tif", height=3, width=6, units= "in", res=800, compression= "lzw")
+
+plot_grid(left, C, labels = c(" ", "C"), ncol = 2, rel_widths = c(3,4), label_size = 11)
 
 dev.off()
+
+
+
+
+
+
+
+
+
+
 
 unique(x$Source)
 unique(x$WetlandID)
