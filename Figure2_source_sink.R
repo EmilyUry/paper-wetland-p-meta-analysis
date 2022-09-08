@@ -59,7 +59,7 @@ p <- x %>%
   geom_point(data = . %>% filter(SRP_Retention_percent > 0 & TP_Retention_percent > 0),pch = 21, fill = "gray80", size = 1) + 
   geom_point(data = . %>% filter(SRP_Retention_percent < 0 | TP_Retention_percent < 0),pch = 21, fill = "gray40", size = 1) + 
   theme(legend.position = "none") +
-  xlim(-250, 105) +
+  xlim(-170, 105) +
   ylim(-150, 105) + 
   theme_bw(base_size = 10) +
   theme(plot.margin = margin(t = 0, r = 0, b = 0.1, l = 0.3, unit = "cm"),
@@ -89,7 +89,7 @@ hist2 <- ggplot(x, (aes(x = TP_retention))) +
   theme_classic(base_size = 10) +
   xlab(" ") +
   coord_flip()  +
-  theme(plot.margin = margin(t = 0, r = 0, b = 1, l = -0.5, unit = "cm"),
+  theme(plot.margin = margin(t = 0, r = 0, b = 0.9, l = -0.5, unit = "cm"),
         axis.title.x = element_blank(), axis.text.x = element_blank(), 
         axis.ticks.x = element_blank(), panel.grid = element_blank(), 
         axis.line.y = element_line(size = 0.5, colour = "black", linetype=1),
