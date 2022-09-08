@@ -300,7 +300,7 @@ sum(is.na(x$CWRatio))
 
 #### full plot
 
-tiff(filename = "figures/Figure3_NEW.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
+tiff(filename = "figures/Figure4_NEW.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
 
 plot_grid(scatter, WT, FlowR, TP, SRP, size, age, hlr, ratio, 
           labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"), 
