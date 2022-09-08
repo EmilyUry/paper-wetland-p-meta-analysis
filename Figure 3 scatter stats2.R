@@ -263,3 +263,19 @@ ggplot(x, aes(x = HLR, y = SRP_Retention_percent, color = SRP.S)) +
     annotate(geom = "text", x = 6, y = 103, label = 'bold("R2 = 0.00, p = 0.9")', 
              color = "#00BFC4", parse = TRUE)  
  
+  
+  
+  
+summary(x$TP_Retention_percent) 
+summary(x$SRP_Retention_percent)
+
+y <- x[which(x$Wetland_Type != "Mesocosm"),]
+summary(y$TP_Retention_percent)
+summary(y$SRP_Retention_percent)
+
+
+summary(x$TP_retention)
+summary(x$SRP_retention)
+
+summary(y$TP_retention)
+summary(y$SRP_retention)
