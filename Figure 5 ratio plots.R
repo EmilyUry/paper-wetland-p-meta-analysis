@@ -96,7 +96,7 @@ dist
   
   x %>%
     group_by(source.sink) %>%
-    get_summary_stats(ratio, type = "mean_sd")
+    get_summary_stats(ratio, type = "median_mad")
   
   #pairwise comparison T-test with bonferroni adjustment
   pwc <- x %>%
@@ -106,14 +106,17 @@ dist
   pwc <- pwc %>% add_xy_position(x = "source.sink")
   res.aov <- x %>% anova_test(ratio ~ source.sink)
   
-  # ggboxplot(x, x = "source.sink", y = "ratio") +
-  #   stat_pvalue_manual(pwc, hide.ns = TRUE, label = "p.adj.signif", tip.length = 0, step.increase = 0.1) +
-  #   labs(
-  #     subtitle = get_test_label(res.aov, detailed = TRUE),
-  #     caption = get_pwc_label(pwc)
-  #   )
+  ggboxplot(x, x = "source.sink", y = "ratio") +
+    stat_pvalue_manual(pwc, hide.ns = TRUE, label = "p.adj.signif", tip.length = 0, step.increase = 0.1) +
+    labs(
+      subtitle = get_test_label(res.aov, detailed = TRUE),
+      caption = get_pwc_label(pwc)
+    )
 }
 
+
+x %>% kruskal_test(ratio ~source.sink)
+wilcox.test(ratio~source.sink, data = x)
 
 
 # Compare means of multiple groups w ANOVA test
