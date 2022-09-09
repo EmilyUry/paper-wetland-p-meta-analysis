@@ -118,13 +118,13 @@ SRP.sink <- table(x$PO4ret)[2]
 SRP.source.percent <- round(SRP.source/(SRP.sink+SRP.source)*100,1)
 
 behavior <- c("source", "sink", "source", "sink")
-species <- c("TP", "TP", "SRP", "SRP")
+species <- c("TP", "TP", "PO4", "PO4")
 num <- c(TP.sink, TP.source, SRP.sink, SRP.source)
 label_ypos <- c(240, 10, 230, 10)
 label_text <- c("16%", " ", "25%", " ")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
-a <- ggplot(data, aes(x = factor(species, level = c("TP", "SRP")), y = (num), fill = behavior)) +
+a <- ggplot(data, aes(x = factor(species, level = c("TP", "PO4")), y = (num), fill = behavior)) +
   geom_bar(stat = "identity", color = "black") +
   geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 3)+
   theme_classic(base_size = 10) +
