@@ -364,3 +364,39 @@ dev.off()
 
 
 
+
+
+
+### quick check
+
+df <-x %>% select(Short_Ref, Short_ID,  Short_year, Month, TP_IN_g_m2_mo, TP_Retention, TP_Retention_percent, 
+                  SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent, TP_OUT_g_m2_mo, SRP_OUT_g_m2_mo, Monthly_Inflow_m3_month, Monthly_Outflow_m3_month)
+df$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
+site_year <-unique(df$Unique_ID)
+
+
+
+
+df <- df[which(df$Short_Ref !=  17),]       ### drop site 17 because it is too gappy
+df <- df[which(df$Short_year != "YN"),]     ### drop partial years
+df <- na.omit(df)                           ### drop months with NAs
+df <- df %>%                                ### reorder months in order
+  mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
+                             "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
+
+
+
+plot(log(df$Monthly_Inflow_m3_month), df$TP_Retention)
+
+plot(log(df$Monthly_Inflow_m3_month), df$SRP_Retention)
+
+plot(log(df$Monthly_Inflow_m3_month), df$TP_Retention_percent, 
+     ylim = c(-400, 100))
+abline(h=0)
+
+plot(log(df$Monthly_Inflow_m3_month), df$SRP_Retention_percent, 
+     ylim = c(-400, 100))
+abline(h=0)
+
+
+
