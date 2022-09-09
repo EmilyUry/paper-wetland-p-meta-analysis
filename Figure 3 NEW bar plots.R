@@ -179,7 +179,7 @@ dev.off()
   FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c("Continuous,\n  regulated", "Intermittent,\n  regulated", "Continuous,\n  variable", "Intermittent,\n  variable", "Not \n  specified" ),
+    scale_fill_manual(labels = c("Continuous,\n  regulated", "Intermittent,\n  regulated", "Continuous,\n  natural", "Intermittent,\n  natural", "Not \n  specified" ),
                       values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
     labs(x = "Retention bins (%)", y = " ", fill = "Hydrologic\n Regime") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
@@ -333,6 +333,7 @@ dev.off()
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
   WT
+  
 }
 
 #### FLOW REGIME
@@ -347,7 +348,7 @@ dev.off()
   FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c("Continuous,\n  regulated", "Intermittent,\n  regulated", "Continuous,\n  variable", "Intermittent,\n  variable", "Not \n  specified" ),
+    scale_fill_manual(labels = c("Continuous,\n  regulated", "Intermittent,\n  regulated", "Continuous,\n  natural", "Intermittent,\n  natural", "Not \n  specified" ),
                       values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
     labs(x = "Retention bins (%)", y = " ", fill = "Hydrologic\n Regime") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
@@ -467,12 +468,13 @@ dev.off()
 
 #### full plot
 
-tiff(filename = "figures/Figure3_NEW_supp.tif", height=3600, width=9600, units= "px", res=800, compression= "lzw")
+tiff(filename = "figures/Figure4_NEW_supp.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
 
-plot_grid(WT, FlowR, TP, SRP, size, age, hlr, ratio, labels = c("A", "B", "C", "D", "E", "F", "G", "H"), ncol = 4)
+plot_grid(scatter, WT, FlowR, TP, SRP, size, age, hlr, ratio, 
+          labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"), 
+          ncol = 3, label_size = 8)
 
 dev.off()
-
 
 
 
