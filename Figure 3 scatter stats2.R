@@ -16,6 +16,7 @@ setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_file
 library(ggplot2)
 library(tidyverse)
 library(cowplot)
+library(ggpmisc)
 
 
 ## Data set-up
