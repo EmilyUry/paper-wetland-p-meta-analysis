@@ -321,9 +321,9 @@ a <- x %>%
   stat_poly_line(data = .%>% filter(TP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(TP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               color = "blue", size = 3) +
+               color = "blue", size = 3, label.y.npc = 1) +
   geom_segment(aes(x = 0.01, y = 0, xend = 1800, yend = 0), lty = 2, col = "black") +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
@@ -339,14 +339,14 @@ b <- x %>%
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               size = 3, color = "blue") +
+               size = 3, color = "blue", label.y.npc = 1) +
   stat_poly_line(data = .%>% filter(SRP_Retention_percent <= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "red") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent <= 0),method = "lm", na.rm = TRUE,
                label.y.npc = "bottom" ,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
                color = "red", size = 3) +
   geom_segment(aes(x = 0.01, y = 0, xend = 1800, yend = 0), lty = 2, col = "black") +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 c <- x %>%
@@ -359,7 +359,7 @@ c <- x %>%
   ylab("TP Retention (%)") +
   geom_segment(aes(x = 0.01, y = 0, xend = 8000000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
@@ -375,13 +375,13 @@ d <- x %>%
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               size = 3, color = "blue") +
+               size = 3, color = "blue", label.y.npc = 1) +
   # stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray50") +
   # stat_poly_eq(method = "lm", na.rm = TRUE,
   #              aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
   #              label.y.npc = "bottom" , size = 3, color = "gray50") +
   geom_segment(aes(x = 0.01, y = 0, xend = 8000000, yend = 0), lty = 2, col = "black") +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 e <- x %>%
@@ -395,14 +395,14 @@ e <- x %>%
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               size = 3, color = "blue") +
+               size = 3, color = "blue", label.y.npc = 1) +
   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
   stat_poly_eq(method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
                label.y.npc = "bottom" , size = 3, color = "gray30") +
   geom_segment(aes(x = 1, y = 0, xend = 5000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
@@ -418,13 +418,13 @@ f <- x %>%
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               size = 3, color = "blue") +
+               size = 3, color = "blue", label.y.npc = 1) +
   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
   stat_poly_eq(method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
                label.y.npc = "bottom" , size = 3, color = "gray30") +
   geom_segment(aes(x = 1, y = 0, xend = 5000, yend = 0), lty = 2, col = "black") +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
@@ -439,10 +439,10 @@ g <- x %>%
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               size = 3, color = "blue") +
+               size = 3, color = "blue", label.y.npc = 1) +
   geom_segment(aes(x = 1, y = 0, xend = 5000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
@@ -458,19 +458,19 @@ h <- x %>%
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               size = 3, color = "blue") +
+               size = 3, color = "blue", label.y.npc = 1) +
   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
   stat_poly_eq(method = "lm", na.rm = TRUE,
                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
                label.y.npc = "bottom" , size = 3, color = "gray30") +
   geom_segment(aes(x = 1, y = 0, xend = 5000, yend = 0), lty = 2, col = "black") +
-  theme(plot.margin = margin(25, 25, 0, 5),
+  theme(plot.margin = margin(10, 10, 0, 5),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
 
-plot_grid(a,b, c, d, e, f, g, h, nrow = 4, labels = c("a", "b", "c", "d",
-                                                      "e", "f", "g", "h"))
+plot_grid(a,b, c, d, e, f, g, h, nrow = 4, label_size = 10,
+          labels = c("a", "b", "c", "d", "e", "f", "g", "h"))
 
 
 
