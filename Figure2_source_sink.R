@@ -56,8 +56,8 @@ x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranbe
 
 p <- x %>%
   ggplot(aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
-  geom_point(data = . %>% filter(SRP_Retention_percent > 0 & TP_Retention_percent > 0),pch = 21, fill = "gray80", size = 1) + 
-  geom_point(data = . %>% filter(SRP_Retention_percent < 0 | TP_Retention_percent < 0),pch = 21, fill = "gray40", size = 1) + 
+  geom_point(data = . %>% filter(SRP_Retention_percent > 0 & TP_Retention_percent > 0),pch = 21, fill = "black", size = 1, alpha = 0.25) + 
+  geom_point(data = . %>% filter(SRP_Retention_percent < 0 | TP_Retention_percent < 0),pch = 21,color = "red", fill = "red", size = 1, alpha = 0.25) + 
   theme(legend.position = "none") +
   xlim(-170, 105) +
   ylim(-150, 105) + 
@@ -76,7 +76,7 @@ hist <- ggplot(x, (aes(x = SRP_retention))) +
   xlim(-11.7, 5) +
   theme_classic(base_size = 10) +
   xlab(" ") +
-  theme(plot.margin = margin(t = 0, r = 0, b = -0.4, l = 1.4, unit = "cm"),
+  theme(plot.margin = margin(t = 0, r = 0.55, b = -0.4, l = 1.4, unit = "cm"),
         axis.title.y = element_blank(), axis.text.y = element_blank(), 
         axis.ticks.y = element_blank(), panel.grid = element_blank(), 
         axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
@@ -124,14 +124,18 @@ label_ypos <- c(240, 10, 230, 10)
 label_text <- c("16%", " ", "25%", " ")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
-a <- ggplot(data, aes(x = factor(species, level = c("TP", "PO4")), y = (num), fill = behavior)) +
-  geom_bar(stat = "identity", color = "black") +
-  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "white", size = 3)+
+a <- ggplot(data, aes(x = factor(species, level = c("TP", "PO4")), y = (num), fill = behavior, color = behavior)) +
+  #geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", color = c( "black", "red", "black", "red")) +
+  geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "black", size = 3)+
   theme_classic(base_size = 10) +
   theme(plot.margin = margin(t = -0.250, r = 0, b = -0.25, l = 1, unit = "cm"),
-               legend.position = "right", legend.direction = "vertical", legend.text = element_text(size = 10), legend.key.size = unit(0.3,"cm"))+
+               legend.position = "right", legend.direction = "vertical", 
+        legend.text = element_text(size = 10), legend.key.size = unit(0.3,"cm"),
+        legend.key=element_rect(color = "white"))+
   labs(title = " ", x = " ", y = "n ", fill = " " ) +
-  scale_fill_manual(values = c("gray40", "gray80"), labels = c("source", "sink")) 
+  scale_fill_manual(values = c("#ff000025", "#bababa55"), labels = c("source", "sink")) +
+  guides(fill = guide_legend(override.aes = list(colour = c("red", "black"))))
 a
 
 ## bar plot
@@ -144,16 +148,16 @@ quad <- c("Q1","Q2","Q3","Q4")
 count <- c(12, 31, 37, 192 )
 df <- data.frame(quad, count)
 
-labs <- c("TP Source,\nPO4 Sink", "TP Source,\nPO4 Source", "TP Sink,\nPO4 Source", "TP Sink,\nPO4 Sink")
+labs <- c("TP Source, PO4 Sink", "TP Source, PO4 Source", "TP Sink, PO4 Source", "TP Sink, PO4 Sink")
 b <- ggplot(df, aes(x = quad, y = count, fill = quad))+
-  geom_bar(stat = "identity", color = "black") +
+  geom_bar(stat = "identity", color = c("red", "red", "red", "black")) +
   theme_classic(base_size = 10) +
   coord_flip() +
   geom_text(aes(label=count), hjust=c(-0.2,-0.2, -0.2, 1.2), size=3, color = "black")+
   xlab(" ") +
   ylab("n (site-years)") +
   scale_x_discrete(labels = labs) +
-  scale_fill_manual(values=c("gray40", "gray40", "gray40", "gray80"))+
+  scale_fill_manual(values=c("#ff000025", "#ff000025", "#ff000025", "#bababa55"))+
   theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.1, l = 0, unit = "cm"),
         legend.position = "none")
 b  
@@ -162,19 +166,59 @@ b
 192/273
 
 
+# 
+# left <- plot_grid(a, b, labels = c("A", "B"), ncol = 1, rel_heights = c(3,4), label_size = 11)
+# 
+# 
+# tiff(filename = "figures/Source_sink.tif", height=3, width=6, units= "in", res=800, compression= "lzw")
+# 
+# plot_grid(left, C, labels = c(" ", "C"), ncol = 2, rel_widths = c(3,4), label_size = 11)
+# 
+# dev.off()
 
-left <- plot_grid(a, b, labels = c("A", "B"), ncol = 1, rel_heights = c(3,4), label_size = 11)
 
 
-tiff(filename = "figures/Source_sink.tif", height=3, width=6, units= "in", res=800, compression= "lzw")
 
-plot_grid(left, C, labels = c(" ", "C"), ncol = 2, rel_widths = c(3,4), label_size = 11)
+
+
+x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0", 
+                 ifelse(x$TP_Retention_percent < 33 | x$SRP_Retention_percent < 33, "0-33",
+                        ifelse(x$TP_Retention_percent < 67 | x$SRP_Retention_percent < 67, "33-67", "67-100")))
+
+x$source.sink <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "source", "sink")
+
+mu <- x %>%
+  group_by(source.sink) %>%
+  summarise(mean = mean(ratio, na.rm = TRUE),
+            median = median(ratio, na.rm = TRUE))
+
+dist <-  ggplot(x, aes(x = ratio, color = source.sink, fill = source.sink)) +
+  geom_density() +
+  xlim(0,5) +
+  theme_classic(base_size = 10) +
+  geom_vline(data = mu, aes(xintercept = median, color = source.sink),
+             linetype="dashed", size=1)+
+  geom_vline(aes(xintercept=1),
+             color="black", linetype="solid", size=0.5) +
+  scale_fill_manual(values = c("#bababa55", "#ff000025" )) +
+  scale_color_manual(values = c("black", "red" )) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.7,0.75),
+        legend.text = element_text(size = 10),
+        legend.key.size = unit(0.5, 'cm')) +
+  xlab("PO4 magnification ratio")
+dist  
+
+
+
+#### updated version
+
+tiff(filename = "figures/Source_sink_v2.tif", height=4, width=6, units= "in", res=800, compression= "lzw")
+
+plot_grid(a, b, dist, C, nrow = 2, rel_heights = c(1,2), rel_widths = c(1.5,2),
+          labels = c("A", "B", "C", "D"), label_size = 10)
 
 dev.off()
-
-
-
-
 
 
 
