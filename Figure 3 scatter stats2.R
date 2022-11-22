@@ -311,8 +311,8 @@ x <- read.csv("Wetland_P_Clean3.csv", header = T)
 
 a <- x %>%
   ggplot(aes(x = (TP_load_in_g_m2_yr), y = TP_Retention_percent)) +
-  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10')+
   xlab("TP load (g/m2/year)") +
@@ -329,8 +329,8 @@ a <- x %>%
 
 b <- x %>%
   ggplot(aes(x = (SRP_load_in_g_m2_yr), y = SRP_Retention_percent)) +
-  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10')+
   xlab("PO4 load (g/m2/year)") +
@@ -351,8 +351,8 @@ b <- x %>%
 
 c <- x %>%
   ggplot(aes(x = (Area_m2), y = TP_Retention_percent)) +
-  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10')+
   xlab("Wetland area (m2)") +
@@ -365,8 +365,8 @@ c <- x %>%
 
 d <- x %>%
   ggplot(aes(x = (Area_m2), y = SRP_Retention_percent)) +
-  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10')+
   xlab("Wetland area (m2)") +
@@ -386,8 +386,8 @@ d <- x %>%
 
 e <- x %>%
   ggplot(aes(x = (HLR), y = TP_Retention_percent)) +
-  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10', limits = c(1,5000))+
   xlab("HLR (m)") +
@@ -408,8 +408,8 @@ e <- x %>%
 
 f <- x %>%
   ggplot(aes(x = (HLR), y = SRP_Retention_percent)) +
-  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10', limits = c(1,5000))+
   xlab("HLR (m)") +
@@ -430,8 +430,8 @@ f <- x %>%
 
 g <- x %>%
   ggplot(aes(x = (CWRatio), y = TP_Retention_percent)) +
-  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(TP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10', limits = c(1,5000))+
   xlab("Catchment:wetland area") +
@@ -448,8 +448,8 @@ g <- x %>%
 
 h <- x %>%
   ggplot(aes(x = (CWRatio), y = SRP_Retention_percent)) +
-  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue") +
-  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red") +
+  geom_point(data = . %>% filter(SRP_Retention_percent >= 0), color = "blue", alpha = 0.5) +
+  geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10', limits = c(1,5000))+
   xlab("Catchment:wetland area") +
@@ -475,6 +475,12 @@ plot_grid(a,b, c, d, e, f, g, h, nrow = 4, label_size = 10,
 
 
 
+tiff(filename = "figures/Supp_scatter_stats.tif", height=7.5, width=6, units= "in", res=800, compression= "lzw")
+
+plot_grid(a,b, c, d, e, f, g, h, nrow = 4, label_size = 10,
+          labels = c("a", "b", "c", "d", "e", "f", "g", "h"))
+
+dev.off()
 
 
 
