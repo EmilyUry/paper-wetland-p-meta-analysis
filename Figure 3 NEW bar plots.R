@@ -270,7 +270,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "HLR") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "HLR (m)") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6)) 
@@ -439,7 +439,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "HLR") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "HLR (m)") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
