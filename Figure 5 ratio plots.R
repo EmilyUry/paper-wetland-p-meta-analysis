@@ -119,6 +119,11 @@ x %>% kruskal_test(ratio ~source.sink)
 wilcox.test(ratio~source.sink, data = x)
 
 
+
+tt <- x %>% group_by(source.sink) %>%
+  wilcox_test(ratio ~ 1, mu = 1)
+tt
+
 # Compare means of multiple groups w ANOVA test
 
 res.aov <- x %>% anova_test(ratio ~ Catchment_Type)
