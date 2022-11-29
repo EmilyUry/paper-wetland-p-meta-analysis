@@ -278,6 +278,9 @@ ggplot(x, aes(y = SRP_Retention_percent, x = Wetland_Type, group = Wetland_Type)
 median(x$TP_Retention_percent)
 median(x$SRP_Retention_percent)
 
+median(x$TP_retention)
+median(x$SRP_retention)
+
 mean(x$TP_Retention_percent)
 mean(x$SRP_Retention_percent)
 
@@ -286,11 +289,17 @@ xx <- x[which(x$Wetland_Type != "Mesocosm"),]
 median(xx$TP_Retention_percent)
 median(xx$SRP_Retention_percent)
 
+median(xx$TP_retention)
+median(xx$SRP_retention)
+
 mean(xx$TP_Retention_percent)
 mean(xx$SRP_Retention_percent)
 
 xc <- x[which(x$Catchment_Type != "WWTP"),]
 
+nrow(xx)
+273-208
+65/273
 
 median(xc$TP_Retention_percent)
 median(xc$SRP_Retention_percent)
