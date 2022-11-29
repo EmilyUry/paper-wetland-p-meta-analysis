@@ -38,7 +38,7 @@ x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranbe
   x<-cbind(x,lX); rm(lX)
   
   x$ratio <- x$SRP_Retention_percent/x$TP_Retention_percent
-  
+  x$ratio <- (x$SRP_outflow_mg_L/x$TP_outflow_mg_L)/(x$SRP_Inflow_mg_L/x$TP_Inflow_mg_L)
   ## mass at outflow
   x$TP_load_out <- x$TP_load_in_g_m2_yr*(1 - x$TP_Retention_percent/100)
   x$SRP_load_out <- x$SRP_load_in_g_m2_yr*(1- x$SRP_Retention_percent/100)
@@ -56,8 +56,8 @@ x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranbe
 
 p <- x %>%
   ggplot(aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
-  geom_point(data = . %>% filter(SRP_Retention_percent > 0 & TP_Retention_percent > 0),pch = 21, fill = "black", size = 1, alpha = 0.25) + 
-  geom_point(data = . %>% filter(SRP_Retention_percent < 0 | TP_Retention_percent < 0),pch = 21,color = "red", fill = "red", size = 1, alpha = 0.25) + 
+  geom_point(data = . %>% filter(SRP_Retention_percent > 0 & TP_Retention_percent > 0),pch = 21, fill = "#bababa55", size = 1) + 
+  geom_point(data = . %>% filter(SRP_Retention_percent < 0 | TP_Retention_percent < 0),pch = 21,color = "red", fill = "#ff000025", size = 1) + 
   theme(legend.position = "none") +
   xlim(-170, 105) +
   ylim(-150, 105) + 
@@ -129,7 +129,7 @@ a <- ggplot(data, aes(x = factor(species, level = c("TP", "PO4")), y = (num), fi
   geom_bar(stat = "identity", color = c( "black", "red", "black", "red")) +
   geom_text(aes(y = label_ypos, label = label_text), vjust = 0, hjust = "middle", color = "black", size = 3)+
   theme_classic(base_size = 10) +
-  theme(plot.margin = margin(t = -0.250, r = 0, b = -0.25, l = 1, unit = "cm"),
+  theme(plot.margin = margin(t = -0.250, r = 0, b = -0.25, l = 0.7, unit = "cm"),
                legend.position = "right", legend.direction = "vertical", 
         legend.text = element_text(size = 10), legend.key.size = unit(0.3,"cm"),
         legend.key=element_rect(color = "white"))+
@@ -158,7 +158,7 @@ b <- ggplot(df, aes(x = quad, y = count, fill = quad))+
   ylab("n (site-years)") +
   scale_x_discrete(labels = labs) +
   scale_fill_manual(values=c("#ff000025", "#ff000025", "#ff000025", "#bababa55"))+
-  theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.1, l = 0, unit = "cm"),
+  theme(plot.margin = margin(t = 0.2, r = 0.5, b = 0.1, l = 0, unit = "cm"),
         legend.position = "none")
 b  
 12+31+37
@@ -194,15 +194,20 @@ mu <- x %>%
 
 dist <-  ggplot(x, aes(x = ratio, color = source.sink, fill = source.sink)) +
   geom_density() +
-  xlim(0,5) +
+  xlim(-1,4) +
   theme_classic(base_size = 10) +
   geom_vline(data = mu, aes(xintercept = median, color = source.sink),
-             linetype="dashed", size=1)+
+              linetype="dashed", size=1)+
   geom_vline(aes(xintercept=1),
              color="black", linetype="solid", size=0.5) +
+  # geom_vline(aes(xintercept=-0.42),
+  #            color="red", linetype="dashed", size=1) +
+  # geom_vline(aes(xintercept=1.08),
+  #            color="black", linetype="dashed", size=1) +
   scale_fill_manual(values = c("#bababa55", "#ff000025" )) +
   scale_color_manual(values = c("black", "red" )) +
-  theme(legend.title = element_blank(),
+  theme(plot.margin = margin(t = 0.6, r = 0.2, b = 0.1, l = 0.5, unit = "cm"),
+    legend.title = element_blank(),
         legend.position = c(0.7,0.75),
         legend.text = element_text(size = 10),
         legend.key.size = unit(0.5, 'cm')) +
@@ -213,10 +218,16 @@ dist
 
 #### updated version
 
-tiff(filename = "figures/Source_sink_v2.tif", height=4, width=6, units= "in", res=800, compression= "lzw")
+top <- plot_grid(a, b, nrow = 1,  rel_widths = c(1.5,2),
+                 labels = c("A", "B"), label_size = 10)
+bottom <- plot_grid(C, dist, nrow = 1,  rel_widths = c(2, 1.7),
+                    labels = c( "C", "D"), label_size = 10)
 
-plot_grid(a, b, dist, C, nrow = 2, rel_heights = c(1,2), rel_widths = c(1.5,2),
-          labels = c("A", "B", "C", "D"), label_size = 10)
+
+tiff(filename = "figures/Source_sink_v3.tif", height=4, width=5.5, units= "in", res=800, compression= "lzw")
+
+plot_grid(top, bottom, nrow = 2, rel_heights = c(1,2), 
+          labels = c( " ", " "), label_size = 10)
 
 dev.off()
 
@@ -244,4 +255,69 @@ median(x$SRP_load_in_g_m2_yr)
 
 
 
+##### retention by wetland type
 
+n <- x %>%
+  group_by(Wetland_Type) %>%
+  summarise(n = n())
+labs <- n$n
+
+ggplot(x, aes(y = TP_Retention_percent, x = Wetland_Type, group = Wetland_Type)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(-150,100)) +
+  annotate("text", x = c(1,2,3,4), y = -150, label = labs, color = "gray40") +
+  theme_classic()
+
+
+ggplot(x, aes(y = SRP_Retention_percent, x = Wetland_Type, group = Wetland_Type)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(-150,100)) +
+  annotate("text", x = c(1,2,3,4), y = -150, label = labs, color = "gray40") +
+  theme_classic()
+
+median(x$TP_Retention_percent)
+median(x$SRP_Retention_percent)
+
+mean(x$TP_Retention_percent)
+mean(x$SRP_Retention_percent)
+
+xx <- x[which(x$Wetland_Type != "Mesocosm"),]
+
+median(xx$TP_Retention_percent)
+median(xx$SRP_Retention_percent)
+
+mean(xx$TP_Retention_percent)
+mean(xx$SRP_Retention_percent)
+
+xc <- x[which(x$Catchment_Type != "WWTP"),]
+
+
+median(xc$TP_Retention_percent)
+median(xc$SRP_Retention_percent)
+
+mean(xc$TP_Retention_percent)
+mean(xc$SRP_Retention_percent)
+
+
+n <- x %>%
+  group_by(Catchment_Type) %>%
+  summarise(n = n())
+labs <- n$n
+
+ggplot(x, aes(y = TP_Retention_percent, x = Catchment_Type, group = Catchment_Type)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(-150,100)) +
+  annotate("text", x = c(1,2,3), y = -150, label = labs, color = "gray40") +
+  theme_classic()
+
+
+ggplot(x, aes(y = SRP_Retention_percent, x = Catchment_Type, group = Catchment_Type)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(-150,100)) +
+  annotate("text", x = c(1,2,3), y = -150, label = labs, color = "gray40") +
+  theme_classic()
+
+
+
+
+nrow(x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0),])/273*100
