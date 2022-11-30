@@ -138,6 +138,33 @@ dev.off()
 
 
 
+############# talk version
+
+M %>%
+  ggplot(aes(x=  HLR, y = TP_Retention_percent,
+             color = water_atten_percent, fill = water_atten_percent))+
+  geom_point(pch =21, alpha = 0.7, cex = 2)+
+  scale_fill_gradient2(midpoint = 80, low = "red",  high = "blue", mid = "blue") +
+  scale_color_gradient2(midpoint = 80, low = "red",  high = "blue", mid = "blue") +
+  scale_x_continuous(trans='log10')+
+  ylim(-120,150) +
+  xlab("HLR (m/month)") +
+  ylab("TP Retention (%)")+
+  theme_classic(base_size = 12) +
+  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+  stat_poly_eq(method = "lm", na.rm = TRUE,
+               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+               label.y.npc = 1, size = 4, color = "gray30") +
+  theme(plot.margin = margin(25, 5, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5), 
+        legend.position = "right", legend.title = element_blank()) 
+
+
+
+
+
+
+
 
 
 ### Hydro figure
