@@ -155,8 +155,7 @@ nrow(x)
 
 
 
-#tiff(filename = "figures/Figure1.tif", height=3600, width=4400, units= "px", res=800, compression= "lzw")
-
+### #Paper version Figure 1
 
 tiff(filename = "figures/Figure1.tif", height=5, width=6.5, units= "in", res=800, compression= "lzw")
 
@@ -165,6 +164,15 @@ plot_grid(map, B, c, D, labels = c("A", "B", "C", "D"), label_size = 12, rel_wid
 dev.off()
 
 
+
+
+
+
+
+
+
+#### old stuff
+{
 
 
 #ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
@@ -184,3 +192,6 @@ ggarrange(ggarrange(map, b, d, ncol = 3, labels = c("A", "B", "C")),   # First r
 ggarrange(map, b, c, p, ncol = 2, nrow = 2, #layout_matrix = rbind(c(1,2,3), c(4,4,4)), 
         labels = c("A", "B", "C", "D"))
 #grid.arrange(map, b, c, d, p, nrow = 3, layout_matrix = rbind(c(1,2), c(3,4), c(5,5)))
+
+
+}
