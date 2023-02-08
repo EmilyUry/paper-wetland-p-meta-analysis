@@ -69,8 +69,12 @@ sig <- x %>%
 sig$TP <- c("A", "A", "A" )
 sig$SRP <- c("A", "B", "B")
 
-a <- x %>% ggplot(aes(x = group, y = TP_Retention_percent))+
+
+pal <- c('#e5a77f', '#3e783f', '#6fabd9')
+
+a <- x %>% ggplot(aes(x = group, y = TP_Retention_percent, fill = group))+
   geom_boxplot()  +
+  scale_fill_manual(values = pal) +
   coord_cartesian(ylim = c(-180,110)) +
   theme_classic(base_size = 7) +
   geom_text(data = summary, aes(label = count), 
@@ -80,12 +84,14 @@ a <- x %>% ggplot(aes(x = group, y = TP_Retention_percent))+
   ylab("Retention (%)") +
   xlab(" ") +
   theme(plot.margin = unit(c(t = 0.1, r = 0, b = 0, l = 0.5), "cm"),
-        plot.title = element_text( hjust = -0.35, size = 10)) +
+        plot.title = element_text( hjust = -0.35, size = 10),
+        legend.position = "none") +
   ggtitle("TP")
 
 
-b <- x %>% ggplot(aes(x = group, y = SRP_Retention_percent))+
+b <- x %>% ggplot(aes(x = group, y = SRP_Retention_percent, fill = group))+
   geom_boxplot()  +
+  scale_fill_manual(values = pal) +
   coord_cartesian(ylim = c(-180,110)) +
   theme_classic(base_size = 7) +
   geom_text(data = summary, aes(label = count), 
@@ -95,7 +101,8 @@ b <- x %>% ggplot(aes(x = group, y = SRP_Retention_percent))+
   ylab(" ") +
   xlab(" ") +
   theme(plot.margin = unit(c(t = 0.1, r = 0.5, b = 0, l = 0), "cm"),
-        plot.title = element_text( hjust = -0.2, size = 10)) +
+        plot.title = element_text( hjust = -0.2, size = 10),
+        legend.position = "none") +
   ggtitle(expression("PO"[4]^"3-"))
 
 plot_grid(a,b, nrow = 1, labels = c(" ", " "))
