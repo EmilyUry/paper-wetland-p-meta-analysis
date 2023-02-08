@@ -288,6 +288,52 @@ dev.off()
 
 
 
+############### supplemental figure 5
+a <- x %>%
+  ggplot(aes(x=  HLR, y = water_atten_percent))+
+  geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
+  #scale_fill_manual("Retention (%)", values = c("green", "yellow", "orange", "red"),
+  #                  label = c("67-100", "33-67", "0-33", "<0"))+
+  scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
+  #scale_y_continuous(trans='log10')+
+  ylim(-50, 120) +
+  xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
+  ylab("Water attenuation (%)")+
+  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+  stat_poly_eq(method = "lm", na.rm = TRUE,
+               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+               label.y.npc = 1, size = 3, color = "gray30") +
+  theme_classic(base_size = 12) +
+  theme(plot.margin = margin(25, 5, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        legend.position = 'none')
+
+
+b <- x %>%
+  ggplot(aes(x=  HLR, y = CAWA))+
+  geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
+  scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
+  scale_y_continuous(trans='log10')+
+  xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
+  ylab("Catchment:wetland area")+
+  theme_classic(base_size = 12) +
+  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+  stat_poly_eq(method = "lm", na.rm = TRUE,
+               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+               label.y.npc = 1, size = 3, color = "gray30") +
+  theme(plot.margin = margin(25, 5, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        legend.position = 'none')
+
+
+plot_grid(a,b, nrow = 1, labels = c("A", "B"))
+
+
+tiff(filename = "figures/Supp_fig5_hlr.tif", height=2.5, width=6, units= "in", res=800, compression= "lzw")
+
+plot_grid(a,b, nrow = 1, labels = c("A", "B"))
+
+dev.off()
 
 
 
@@ -874,52 +920,6 @@ dev.off()
 # 
 # 
 # 
-# ############### supplemental figure 5
-# a <- x %>%
-#   ggplot(aes(x=  HLR, y = water_atten_percent))+
-#   geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
-#   #scale_fill_manual("Retention (%)", values = c("green", "yellow", "orange", "red"),
-#   #                  label = c("67-100", "33-67", "0-33", "<0"))+
-#   scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
-#   #scale_y_continuous(trans='log10')+
-#   ylim(-50, 120) +
-#   xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
-#   ylab("Water attenuation (%)")+
-#   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
-#   stat_poly_eq(method = "lm", na.rm = TRUE,
-#                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-#                label.y.npc = 1, size = 3, color = "gray30") +
-#   theme_classic(base_size = 12) +
-#   theme(plot.margin = margin(25, 5, 0, 5),
-#         axis.text.y = element_text(angle = 90, hjust = 0.5), 
-#         legend.position = 'none') 
-# 
-# 
-# b <- x %>%
-#   ggplot(aes(x=  HLR, y = CAWA))+
-#   geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
-#   scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
-#   scale_y_continuous(trans='log10')+
-#   xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
-#   ylab("Catchment:wetland area")+
-#   theme_classic(base_size = 12) +
-#   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
-#   stat_poly_eq(method = "lm", na.rm = TRUE,
-#                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-#                label.y.npc = 1, size = 3, color = "gray30") +
-#   theme(plot.margin = margin(25, 5, 0, 5),
-#         axis.text.y = element_text(angle = 90, hjust = 0.5), 
-#         legend.position = 'none') 
-# 
-# 
-# plot_grid(a,b, nrow = 1, labels = c("A", "B"))
-# 
-# 
-# tiff(filename = "figures/Supp_fig5_hlr.tif", height=2.5, width=6, units= "in", res=800, compression= "lzw")
-# 
-# plot_grid(a,b, nrow = 1, labels = c("A", "B"))
-# 
-# dev.off()
 
 }
 
