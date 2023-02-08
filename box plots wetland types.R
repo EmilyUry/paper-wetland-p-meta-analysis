@@ -79,7 +79,9 @@ a <- x %>% ggplot(aes(x = group, y = TP_Retention_percent))+
             position = position_dodge(width = 1.0), size = 2.5) +
   ylab("Retention (%)") +
   xlab(" ") +
-  theme(plot.margin = unit(c(t = 0.5, r = 0, b = 0, l = 0.5), "cm"))
+  theme(plot.margin = unit(c(t = 0.1, r = 0, b = 0, l = 0.5), "cm"),
+        plot.title = element_text( hjust = -0.35, size = 10)) +
+  ggtitle("TP")
 
 
 b <- x %>% ggplot(aes(x = group, y = SRP_Retention_percent))+
@@ -92,13 +94,19 @@ b <- x %>% ggplot(aes(x = group, y = SRP_Retention_percent))+
             position = position_dodge(width = 1.0), size = 2.5) +
   ylab(" ") +
   xlab(" ") +
-  theme(plot.margin = unit(c(t = 0.5, r = 0.5, b = 0, l = 0), "cm"))
+  theme(plot.margin = unit(c(t = 0.1, r = 0.5, b = 0, l = 0), "cm"),
+        plot.title = element_text( hjust = -0.2, size = 10)) +
+  ggtitle(expression("PO"[4]^"3-"))
 
-plot_grid(a,b, nrow = 1, labels = c("TP", "PO4"))
+plot_grid(a,b, nrow = 1, labels = c(" ", " "))
+
+
+
+#### paper version Figure 4
 
 
 tiff(filename = "figures/Type_box_new2.tif", height=1.7, width=4, units= "in", res=800, compression= "lzw")
-plot_grid(a,b, nrow = 1, labels = c("TP", "PO4"), label_size = 9)
+plot_grid(a,b, nrow = 1, labels = c(" ", " "), label_size = 9)
 dev.off()
 
 
@@ -179,6 +187,7 @@ b <- ggplot(y, aes(x = group, y = SRP_Retention_percent, fill = group )) +
 plot_grid(a,b, nrow = 2, labels = c(" ", " "), rel_heights = c(1,0.9))
 
 
+##### paper version figure 5
 
 tiff(filename = "figures/Type_box_facet.tif", height=5, width=6, units= "in", res=800, compression= "lzw")
 
