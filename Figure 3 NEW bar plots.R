@@ -61,8 +61,8 @@ scatter <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   geom_abline(slope = 1, intercept = 0) +
   #geom_hline(yintercept = 0, lty = 2) +
   #geom_vline(xintercept = 0, lty = 2) +
-  xlab("PO4 % Retention") +
-  ylab("TP % Retention") +
+  xlab(expression(paste("PO"[4]^"3-", " Retention (%)"))) +
+  ylab("TP Retention (%)") +
   annotate(geom = "text", x = 130, y = -16, label = "< 0", size = 2.5) + 
   annotate(geom = "text", x = 135, y = 16, label = "0-33", size = 2.5) + 
   annotate(geom = "text", x = 135, y = 50, label = "33-67", size = 2.5) + 
@@ -82,69 +82,6 @@ quad.sum <- table(x$quad)
 n <- as.data.frame(quad.sum)
 
 
-
-
-
-
-### supplemental figures, density plots
-{
-TP <- x[,c(1,20)]
-TP$species <- "TP"
-names(TP) <- c("rec", "load", "species")
-
-SRP <- x[,c(1,21)]
-SRP$species <- "PO4"
-names(SRP) <- c("rec", "load", "species")
-
-new <- rbind(TP, SRP)
-new$species <- as.factor(new$species)
-new$species <- factor(new$species, levels = c("TP", "PO4"))
-
-
-
-load <- ggplot(new, aes(x = log(load), color = species, fill = species)) +
-  geom_density(alpha = 0.3) +
-  scale_color_manual(values = c("#2c728e", "#440154")) +
-  scale_fill_manual(values = c("#2c728e", "#440154")) +
-  xlim(0,10) +
-  xlab("log P load (g/m2/yr)") +
-  theme_classic(base_size = 12) +
-  theme(legend.title = element_blank())
-
-load
-
-
-
-
-TP <- x[,c(1,34)]
-TP$species <- "TP"
-names(TP) <- c("rec", "retention", "species")
-
-SRP <- x[,c(1,35)]
-SRP$species <- "PO4"
-names(SRP) <- c("rec", "retention", "species")
-
-new <- rbind(TP, SRP)
-new$species <- as.factor(new$species)
-new$species <- factor(new$species, levels = c("TP", "PO4"))
-
-
-retention <- ggplot(new, aes(x = (retention), color = species, fill = species)) +
-  geom_density(alpha = 0.3) +
-  scale_color_manual(values = c("#2c728e", "#440154")) +
-  scale_fill_manual(values = c("#2c728e", "#440154")) +
-  #xlim(-5,10) +
-  theme_classic(base_size = 12) +
-  theme(legend.title = element_blank()) +
-  geom_vline(xintercept = 0) +
-  scale_x_continuous(name = "retention (g/m2/yr)", limits = c(-5,10))
-retention
-
-tiff(filename = "figures/Supp_Density_plots.tif", height=1600, width=4800, units= "px", res=800, compression= "lzw")
-plot_grid(load, retention, labels = c("A", "B"), ncol = 2, rel_widths = c(1,1))
-
-dev.off()
-}
 
 
 
@@ -170,7 +107,7 @@ dev.off()
 ##### Wetland Type *** NEW ***
 
 {x$Catchment_Type <- as.factor(x$Catchment_Type)
-x$group <- ifelse(x$Catchment_Type == "WWTP", "WTP", 
+x$group <- ifelse(x$Catchment_Type == "WWTP", "WWT", 
                   ifelse(x$Wetland_Type == "Mesocosm", "Mesocosm", "Restored/\nConstructed"))
 
 table(x$quad, x$group)
@@ -220,7 +157,8 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
-    labs(x = "  ",y = "Frequency ", fill = "Inflow TP\n (mg/L)") +
+    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
+                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6)) 
@@ -238,7 +176,8 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = " ", y = " ", fill = "Inflow PO4\n (mg/L)") +
+    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
+                                                                         atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +    
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6)) 
@@ -291,7 +230,9 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "Hydraulic \nloading rate\n (m/yr)") +
+    #labs(x = "Retention bins (%) ", y = " ", fill = "Hydraulic \nloading rate\n (m/yr)") +
+    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nloading rate",
+                                                                atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6)) 
@@ -318,6 +259,7 @@ m <- as.data.frame(summary)
 }
 sum(is.na(x$CWRatio))
 174/273
+273 - 174
 
 #### full plot
 
@@ -341,7 +283,7 @@ dev.off()
 
 #### WETLAND TYPE
 {x$Catchment_Type <- as.factor(x$Catchment_Type)
-  x$group <- ifelse(x$Catchment_Type == "WWTP", "WTP", 
+  x$group <- ifelse(x$Catchment_Type == "WWTP", "WWT", 
                     ifelse(x$Wetland_Type == "Mesocosm", "Mesocosm", "Restored/\nConstructed"))
   
   table(x$quad, x$group)
@@ -391,7 +333,8 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
-    labs(x = "  ", y = "Frequency", fill = "Inflow TP\n (mg/L)") +
+    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
+                                                                         atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
@@ -409,7 +352,8 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = "  ", y = " ", fill = "Inflow PO4\n (mg/L)") +
+    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
+                                                                         atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) + 
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
@@ -462,7 +406,8 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "Hydraulic \nloading rate\n (m/yr)") +
+    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nloading rate",
+                                                                    atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
@@ -503,6 +448,73 @@ dev.off()
 
 
 
+
+
+
+
+
+
+######old stuff
+
+### supplemental figures, density plots
+{
+  TP <- x[,c(1,20)]
+  TP$species <- "TP"
+  names(TP) <- c("rec", "load", "species")
+  
+  SRP <- x[,c(1,21)]
+  SRP$species <- "PO4"
+  names(SRP) <- c("rec", "load", "species")
+  
+  new <- rbind(TP, SRP)
+  new$species <- as.factor(new$species)
+  new$species <- factor(new$species, levels = c("TP", "PO4"))
+  
+  
+  
+  load <- ggplot(new, aes(x = log(load), color = species, fill = species)) +
+    geom_density(alpha = 0.3) +
+    scale_color_manual(values = c("#2c728e", "#440154")) +
+    scale_fill_manual(values = c("#2c728e", "#440154")) +
+    xlim(0,10) +
+    xlab("log P load (g/m2/yr)") +
+    theme_classic(base_size = 12) +
+    theme(legend.title = element_blank())
+  
+  load
+  
+  
+  
+  
+  TP <- x[,c(1,34)]
+  TP$species <- "TP"
+  names(TP) <- c("rec", "retention", "species")
+  
+  SRP <- x[,c(1,35)]
+  SRP$species <- "PO4"
+  names(SRP) <- c("rec", "retention", "species")
+  
+  new <- rbind(TP, SRP)
+  new$species <- as.factor(new$species)
+  new$species <- factor(new$species, levels = c("TP", "PO4"))
+  
+  
+  retention <- ggplot(new, aes(x = (retention), color = species, fill = species)) +
+    geom_density(alpha = 0.3) +
+    scale_color_manual(values = c("#2c728e", "#440154")) +
+    scale_fill_manual(values = c("#2c728e", "#440154")) +
+    #xlim(-5,10) +
+    theme_classic(base_size = 12) +
+    theme(legend.title = element_blank()) +
+    geom_vline(xintercept = 0) +
+    scale_x_continuous(name = "retention (g/m2/yr)", limits = c(-5,10))
+  retention
+  
+  tiff(filename = "figures/Supp_Density_plots.tif", height=1600, width=4800, units= "px", res=800, compression= "lzw")
+  plot_grid(load, retention, labels = c("A", "B"), ncol = 2, rel_widths = c(1,1))
+  
+  dev.off()
+}
 
 
 
