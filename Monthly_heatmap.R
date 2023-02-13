@@ -35,11 +35,15 @@ x$TP_Retention <- x$TP_IN_g_m2_mo - x$TP_OUT_g_m2_mo
 x$SRP_Retention <- x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo
 
 
+x$TP_retention <- (x$TP_IN_g_m2_mo - x$TP_OUT_g_m2_mo)/x$TP_IN_g_m2_mo*100
+x$SRP_retention <- (x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo)/x$SRP_IN_g_m2_mo*100
+
 
 ## subset data
 
 df <-x %>% select(Short_Ref, Short_ID,  Short_year, Month, TP_IN_g_m2_mo, TP_Retention, TP_Retention_percent, 
-                  SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent, TP_OUT_g_m2_mo, SRP_OUT_g_m2_mo)
+                  SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent, TP_OUT_g_m2_mo, SRP_OUT_g_m2_mo,
+                  TP_retention, SRP_retention)
 df$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
 site_year <-unique(df$Unique_ID)
 
@@ -120,7 +124,7 @@ dev.off()
 
 
 df$SRP.TP.ratio <- (df$SRP_OUT_g_m2_mo/df$TP_OUT_g_m2_mo)/(df$SRP_IN_g_m2_mo/df$TP_IN_g_m2_mo)
-
+summary(df$SRP.TP.ratio)
 
 ##df$SRP.TP.ratio <- df$SRP_IN_g_m2_mo/df$TP_IN_g_m2_mo - (df$SRP_IN_g_m2_mo - df$SRP_Retention)/(df$TP_IN_g_m2_mo-df$TP_Retention)
 breaks <- c("0-0.5", "0.5-1", "1-1.5", "1.5+" )
@@ -349,6 +353,13 @@ SRPp <- ggplot(df2,aes(x = Month, y = Unique_ID, fill=col2))+
 
 
 
+
+###################
+#######      This is the paper version
+
+###
+
+
 tiff(filename = "figures/Heatmaps_percent_new.tif", height=7000, width=10000, units= "px", res=800, compression= "lzw")
 plot_grid(NULL, TPp, SRPp, NULL, ratio, labels = c(' ', ' ', ' ', ' ', ' '), label_size = 16,
           rel_widths = c(3, 8.3,8,4,5.7), ncol = 5)
@@ -359,6 +370,64 @@ dev.off()
 
 
 
+####### summary stats
+
+###
+
+x <- df
+
+summary(x$TP_IN_g_m2_mo)
+std.error(x$TP_IN_g_m2_mo)
+summary(x$TP_Retention)
+std.error(x$TP_Retention)
+summary(x$TP_retention) ## this is retention percent
+std.error(x$TP_retention) ## ## this is retention percent
+
+summary(x$SRP_IN_g_m2_mo)
+std.error(x$SRP_IN_g_m2_mo)
+summary(x$SRP_Retention)
+std.error(x$SRP_Retention)
+summary(x$SRP_Retention_percent)
+std.error(x$SRP_Retention_percent)
+
+
+TP.source <- x[which(x$TP_Retention < 0),]
+TP.sink <- x[which(x$TP_Retention >= 0),]
+
+SRP.source <- x[which(x$SRP_Retention < 0),]
+SRP.sink <- x[which(x$SRP_Retention >= 0),]
+
+summary(TP.sink$TP_IN_g_m2_mo)
+std.error(TP.sink$TP_IN_g_m2_mo)
+summary(TP.sink$TP_Retention)
+std.error(TP.sink$TP_Retention)
+summary(TP.sink$TP_retention) ## this is retention percent
+std.error(TP.sink$TP_retention) ## this is retention percent
+
+summary(TP.source$TP_IN_g_m2_mo)
+std.error(TP.source$TP_IN_g_m2_mo)
+summary(TP.source$TP_Retention)
+std.error(TP.source$TP_Retention)
+summary(TP.source$TP_retention) ## this is retention percent
+std.error(TP.source$TP_retention) ## this is retention percent
+
+
+summary(SRP.sink$SRP_IN_g_m2_mo)
+std.error(SRP.sink$SRP_IN_g_m2_mo)
+summary(SRP.sink$SRP_Retention)
+std.error(SRP.sink$SRP_Retention)
+summary(SRP.sink$SRP_retention) ## this is retention percent
+std.error(SRP.sink$SRP_retention) ## this is retention percent
+
+
+summary(SRP.source$SRP_IN_g_m2_mo)
+std.error(SRP.source$SRP_IN_g_m2_mo)
+summary(SRP.source$SRP_Retention)
+std.error(SRP.source$SRP_Retention)
+
+SRP.source1 <- SRP.source[!is.infinite(SRP.source$SRP_retention),]
+summary(SRP.source1$SRP_retention) ## this is retention percent
+std.error(SRP.source1$SRP_retention) ## this is retention percent
 
 
 
@@ -366,37 +435,41 @@ dev.off()
 
 
 
-
-### quick check
-
-df <-x %>% select(Short_Ref, Short_ID,  Short_year, Month, TP_IN_g_m2_mo, TP_Retention, TP_Retention_percent, 
-                  SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent, TP_OUT_g_m2_mo, SRP_OUT_g_m2_mo, Monthly_Inflow_m3_month, Monthly_Outflow_m3_month)
-df$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
-site_year <-unique(df$Unique_ID)
+##### extra stuff
 
 
 
 
-df <- df[which(df$Short_Ref !=  17),]       ### drop site 17 because it is too gappy
-df <- df[which(df$Short_year != "YN"),]     ### drop partial years
-df <- na.omit(df)                           ### drop months with NAs
-df <- df %>%                                ### reorder months in order
-  mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
-                             "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
-
-
-
-plot(log(df$Monthly_Inflow_m3_month), df$TP_Retention)
-
-plot(log(df$Monthly_Inflow_m3_month), df$SRP_Retention)
-
-plot(log(df$Monthly_Inflow_m3_month), df$TP_Retention_percent, 
-     ylim = c(-400, 100))
-abline(h=0)
-
-plot(log(df$Monthly_Inflow_m3_month), df$SRP_Retention_percent, 
-     ylim = c(-400, 100))
-abline(h=0)
+# ### quick check
+# 
+# df <-x %>% select(Short_Ref, Short_ID,  Short_year, Month, TP_IN_g_m2_mo, TP_Retention, TP_Retention_percent, 
+#                   SRP_IN_g_m2_mo, SRP_Retention, SRP_Retention_percent, TP_OUT_g_m2_mo, SRP_OUT_g_m2_mo, Monthly_Inflow_m3_month, Monthly_Outflow_m3_month)
+# df$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
+# site_year <-unique(df$Unique_ID)
+# 
+# 
+# 
+# 
+# df <- df[which(df$Short_Ref !=  17),]       ### drop site 17 because it is too gappy
+# df <- df[which(df$Short_year != "YN"),]     ### drop partial years
+# df <- na.omit(df)                           ### drop months with NAs
+# df <- df %>%                                ### reorder months in order
+#   mutate(Month = fct_relevel(Month, "Jan", "Feb", "Mar", "Apr",
+#                              "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
+# 
+# 
+# 
+# plot(log(df$Monthly_Inflow_m3_month), df$TP_Retention)
+# 
+# plot(log(df$Monthly_Inflow_m3_month), df$SRP_Retention)
+# 
+# plot(log(df$Monthly_Inflow_m3_month), df$TP_Retention_percent, 
+#      ylim = c(-400, 100))
+# abline(h=0)
+# 
+# plot(log(df$Monthly_Inflow_m3_month), df$SRP_Retention_percent, 
+#      ylim = c(-400, 100))
+# abline(h=0)
 
 
 
