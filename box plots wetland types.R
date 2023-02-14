@@ -77,10 +77,14 @@ sig <- y %>%
   summarise(count = n()) %>%
   mutate(TP_Retention_percent = 115,
          SRP_Retention_percent = 115)
-sig$TP <- c("A", "A", "B" , "A", "A" , "A")
-sig$SRP <- c("A", "A", "B", "A", "A", "A")
 
+### grouping flow type and wetland group independently
+# sig$TP <- c("A", "A", "B" , "A", "A" , "A")
+# sig$SRP <- c("A", "A", "B", "A", "A", "A")
 
+### stat differences between all 6 groups at once
+sig$TP <- c("A", "A", "A" , "A", "A" , "A")
+sig$SRP <- c("A", "A", "AC", "ABC", "BC", "C")
 
 pal <- c('#e5a77f', '#3e783f', '#6fabd9')
 
@@ -144,7 +148,21 @@ dev.off()
 
 ### stats
 
+y %>%
+  group_by(group) %>%
+  get_summary_stats(TP_Retention_percent, type = "median_mad")
+
+
+y %>%
+  group_by(group) %>%
+  get_summary_stats(SRP_Retention_percent, type = "median_mad")
+
 y$newgroup <- paste(y$group, y$flow)
+y %>%
+  group_by(newgroup) %>%
+  get_summary_stats(TP_Retention_percent, type = "median_mad")
+
+
 y %>%
   group_by(newgroup) %>%
   get_summary_stats(SRP_Retention_percent, type = "median_mad")
@@ -180,6 +198,16 @@ pwc <- ureg %>%
 pwc
 
 
+
+
+
+pwc <- y %>%
+  pairwise_t_test(TP_Retention_percent ~  newgroup, p.adjust.method = 'bonferroni')
+pwc
+
+pwc <- y %>%
+  pairwise_t_test(SRP_Retention_percent ~  newgroup, p.adjust.method = 'bonferroni')
+pwc
 
 
 
