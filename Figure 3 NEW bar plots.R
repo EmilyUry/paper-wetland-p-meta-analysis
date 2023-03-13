@@ -265,7 +265,7 @@ sum(is.na(x$CWRatio))
 
 tiff(filename = "figures/Figure4_NEW.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
 
-plot_grid(scatter, WT, FlowR, TP, SRP, size, age, hlr, ratio, 
+plot_grid(scatter, WT, FlowR, age, size, ratio, TP, SRP, hlr, 
           labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"), 
           ncol = 3, label_size = 8)
 
@@ -438,7 +438,7 @@ dev.off()
 
 tiff(filename = "figures/Figure4_NEW_supp.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
 
-plot_grid(scatter, WT, FlowR, TP, SRP, size, age, hlr, ratio, 
+plot_grid(scatter, WT, FlowR, age, size, ratio, TP, SRP, hlr,  
           labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"), 
           ncol = 3, label_size = 8)
 
