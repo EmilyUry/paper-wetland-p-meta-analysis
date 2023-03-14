@@ -67,7 +67,7 @@ D <- ggplot(n, aes(area)) +
                       mid = unit(0.0, "cm"), long = unit(0.1, "cm"))  +
   coord_cartesian(clip = "off") +
   theme_classic(base_size = 14) +
-  labs(title = " ", x = expression(paste("Wetland area (", m^2, ")")))+
+  labs(title = " ", x = expression(paste("Wetland Area (", m^2, ")")))+
   #labs(title = "(b) Wetland size distribution", x = expression(paste("Wetland area (", m^2, ")")))+
   theme(plot.margin = margin(t = 0.2, r = 0.2, b = 0.1, l = 0.4, unit = "cm")) +
   theme(plot.title = element_text(hjust = 0.1, size = 7, face = "bold"))
@@ -127,8 +127,8 @@ z <- x %>%
 
 B <- ggplot(data = z, (aes(x = num, y = yr ))) +
   geom_jitter(width = 0.15, height = 0.15, shape = 21, fill = "#2c728ebb", size = 2)+
-  xlab("Wetlands per study") +
-  ylab("Years per wetland") + 
+  xlab("Wetlands per Study") +
+  ylab("Years Studied") + 
   theme_gray(base_size = 14)+
   theme(panel.background = element_rect(fill = "#2c728e22", colour = "white")) +
   theme(plot.margin = margin(t = 0.5, r = 0.2, b = 0.0, l = 0.5, unit = "cm"), legend.position = "none") +
