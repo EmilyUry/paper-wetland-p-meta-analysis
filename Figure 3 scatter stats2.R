@@ -68,9 +68,7 @@ a <- x %>%
                color = "red", size = 3) +
   geom_segment(aes(x = 0.01, y = 0, xend = 1800, yend = 0), lty = 2, col = "black") +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        plot.title = element_text( hjust = 0.5, size = 14))+
-  ggtitle("TP")
+        axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
 b <- x %>%
@@ -93,9 +91,7 @@ b <- x %>%
                color = "red", size = 3) +
   geom_segment(aes(x = 0.01, y = 0, xend = 1800, yend = 0), lty = 2, col = "black") +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        plot.title = element_text( hjust = 0.5, size = 14)) +
-  ggtitle(expression("PO"[4]^"3-"))
+        axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 
 e <- x %>%
@@ -158,13 +154,15 @@ g <- x %>%
                size = 3, color = "blue", label.y.npc = 1) +
   geom_segment(aes(x = 1, y = 0, xend = 5000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
-  theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5)) +
   annotate("rect", xmin = 200, xmax = 3500, ymin = -180, ymax = -70, color = "black", alpha = 0)+
   annotate("text", x = 800, y = -100, label = "sink", color = "blue")+
   annotate("text", x = 1100, y = -150, label = "source", color = "red") +
   annotate("point", x = 350, y = -100, pch = 21, color = "blue", fill = "blue", alpha = 0.6) +
-  annotate("point", x = 350, y = -150, pch = 21, color = "red", fill = "red", alpha = 0.6)
+  annotate("point", x = 350, y = -150, pch = 21, color = "red", fill = "red", alpha = 0.6) +
+  theme(plot.margin = margin(10, 10, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        plot.title = element_text( hjust = 0.5, size = 14))+
+  ggtitle("TP")
 
 
 
@@ -187,7 +185,10 @@ h <- x %>%
                label.y.npc = "bottom" , size = 3, color = "gray30") +
   geom_segment(aes(x = 1, y = 0, xend = 5000, yend = 0), lty = 2, col = "black") +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5))
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        plot.title = element_text( hjust = 0.5, size = 14)) +
+  ggtitle(expression("PO"[4]^"3-"))
+
 
 
 
@@ -195,13 +196,14 @@ h <- x %>%
 
 tiff(filename = "figures/scatter_stats3.tif", height=6.5, width=6, units= "in", res=800, compression= "lzw")
 
-plot_grid(a,b, e, f, g, h, nrow = 3, label_size = 10,
-          labels = c("a", "b", "c", "d", "e", "f", "g", "h"), rel_heights = c(1,0.9, 0.9))
+plot_grid(g, h, a,b, e, f,  nrow = 3, label_size = 10,
+          labels = c("A", "B", "C", "D", "E", "F", "G", "H"), rel_heights = c(1,0.9, 0.9))
 
 dev.off()
 
 
 ###### figure for supplement (Sup Fig 3)
+options(scipen = 9)
 
 c <- x %>%
   ggplot(aes(x = (Area_m2), y = TP_Retention_percent)) +
@@ -213,10 +215,14 @@ c <- x %>%
   ylab("Retention (%)") +
   geom_segment(aes(x = 0.01, y = 0, xend = 8000000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
+  annotate("rect", xmin = 0.02, xmax = 22, ymin = -180, ymax = -70, color = "black", alpha = 0)+
+  annotate("text", x = 0.9, y = -100, label = "sink", color = "blue")+
+  annotate("text", x = 1.1, y = -150, label = "source", color = "red") +
+  annotate("point", x = 0.06, y = -100, pch = 21, color = "blue", fill = "blue", alpha = 0.6) +
+  annotate("point", x = 0.06, y = -150, pch = 21, color = "red", fill = "red", alpha = 0.6) +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        plot.title = element_text( hjust = 0.5)) +
-  ggtitle("TP")
+        axis.text.y = element_text(angle = 90, hjust = 0.5))
+
 
 
 d <- x %>%
@@ -238,9 +244,7 @@ d <- x %>%
   #              label.y.npc = "bottom" , size = 3, color = "gray50") +
   geom_segment(aes(x = 0.01, y = 0, xend = 8000000, yend = 0), lty = 2, col = "black") +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        plot.title = element_text( hjust = 0.5)) +
-  ggtitle(expression("PO"[4]^"3-"))
+        axis.text.y = element_text(angle = 90, hjust = 0.5))
 
 x["Age_yr"][x["Age_yr"] == 0] <- 0.5
 
@@ -256,7 +260,10 @@ i <- x %>%
   geom_segment(aes(x = 0.25, y = 0, xend = 60, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5))
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        plot.title = element_text( hjust = 0.5)) +
+  ggtitle("TP")
+
 
 
 j <- x %>%
@@ -275,12 +282,14 @@ j <- x %>%
                size = 3, color = "blue", label.y.npc = 1) +
   geom_segment(aes(x = 0.25, y = 0, xend = 60, yend = 0), lty = 2, col = "black") +
   theme(plot.margin = margin(10, 10, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5))
+      axis.text.y = element_text(angle = 90, hjust = 0.5),
+      plot.title = element_text( hjust = 0.5)) +
+  ggtitle(expression("PO"[4]^"3-"))
 
 tiff(filename = "figures/Supp_scatter_stats.tif", height=4.5, width=6, units= "in", res=800, compression= "lzw")
 
-plot_grid(c, d, i, j, nrow = 2, label_size = 10,
-          labels = c("a", "b", "c", "d"), rel_heights = c(1,0.9))
+plot_grid(i, j, c, d,  nrow = 2, label_size = 10,
+          labels = c("A", "B", "C", "D"), rel_heights = c(1,0.9))
 
 dev.off()
 
