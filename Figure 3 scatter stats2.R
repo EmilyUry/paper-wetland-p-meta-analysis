@@ -146,7 +146,7 @@ g <- x %>%
   geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10', limits = c(1,5000))+
-  xlab("Catchment : wetland area") +
+  xlab("Catchment to Wetland Area Ratio") +
   ylab("Retention (%)") +
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
   stat_poly_eq(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", na.rm = TRUE,
@@ -172,7 +172,7 @@ h <- x %>%
   geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10', limits = c(1,5000))+
-  xlab("Catchment : wetland area") +
+  xlab("Catchment to Wetland Area Ratio") +
   ylab("Retention (%)") +
   theme_classic(base_size = 9) +
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
@@ -211,7 +211,7 @@ c <- x %>%
   geom_point(data = . %>% filter(TP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10')+
-  xlab(expression(paste("Wetland area (m"^2, ")"))) +
+  xlab(expression(paste("Wetland Area (m"^2, ")"))) +
   ylab("Retention (%)") +
   geom_segment(aes(x = 0.01, y = 0, xend = 8000000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
@@ -231,7 +231,7 @@ d <- x %>%
   geom_point(data = . %>% filter(SRP_Retention_percent <= 0), color = "red", alpha = 0.5) +
   ylim(-190, 150) +
   scale_x_continuous(trans='log10')+
-  xlab(expression(paste("Wetland area (m"^2, ")"))) +
+  xlab(expression(paste("Wetland Area (m"^2, ")"))) +
   ylab("Retention (%)") +
   theme_classic(base_size = 9) +
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
@@ -255,7 +255,7 @@ i <- x %>%
   ylim(-190, 150) +
   #xlim(-2, 70) +
   scale_x_continuous(trans='log10')+
-  xlab("Wetland age (years)") +
+  xlab("Wetland Age (years)") +
   ylab("Retention (%)") +
   geom_segment(aes(x = 0.25, y = 0, xend = 60, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
@@ -273,7 +273,7 @@ j <- x %>%
   ylim(-190, 150) +
   #xlim(-2, 70) +
   scale_x_continuous(trans='log10')+
-  xlab("Wetland age (years)") +
+  xlab("Wetland Age (years)") +
   ylab("Retention (%)") +
   theme_classic(base_size = 9) +
   stat_poly_line(data = .%>% filter(SRP_Retention_percent >= 0),method = "lm", fullrange = TRUE, na.rm = TRUE, color = "blue") +
@@ -296,53 +296,53 @@ dev.off()
 
 
 
-
-############### supplemental figure 5
-a <- x %>%
-  ggplot(aes(x=  HLR, y = water_atten_percent))+
-  geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
-  #scale_fill_manual("Retention (%)", values = c("green", "yellow", "orange", "red"),
-  #                  label = c("67-100", "33-67", "0-33", "<0"))+
-  scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
-  #scale_y_continuous(trans='log10')+
-  ylim(-50, 120) +
-  xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
-  ylab("Water attenuation (%)")+
-  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
-  stat_poly_eq(method = "lm", na.rm = TRUE,
-               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               label.y.npc = 1, size = 3, color = "gray30") +
-  theme_classic(base_size = 12) +
-  theme(plot.margin = margin(25, 5, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        legend.position = 'none')
-
-
-b <- x %>%
-  ggplot(aes(x=  HLR, y = CAWA))+
-  geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
-  scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
-  scale_y_continuous(trans='log10')+
-  xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
-  ylab("Catchment:wetland area")+
-  theme_classic(base_size = 12) +
-  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
-  stat_poly_eq(method = "lm", na.rm = TRUE,
-               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
-               label.y.npc = 1, size = 3, color = "gray30") +
-  theme(plot.margin = margin(25, 5, 0, 5),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        legend.position = 'none')
-
-
-plot_grid(a,b, nrow = 1, labels = c("A", "B"))
-
-
-tiff(filename = "figures/Supp_fig5_hlr.tif", height=2.5, width=6, units= "in", res=800, compression= "lzw")
-
-plot_grid(a,b, nrow = 1, labels = c("A", "B"))
-
-dev.off()
+# 
+# ############### supplemental figure 5
+# a <- x %>%
+#   ggplot(aes(x=  HLR, y = water_atten_percent))+
+#   geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
+#   #scale_fill_manual("Retention (%)", values = c("green", "yellow", "orange", "red"),
+#   #                  label = c("67-100", "33-67", "0-33", "<0"))+
+#   scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
+#   #scale_y_continuous(trans='log10')+
+#   ylim(-50, 120) +
+#   xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
+#   ylab("Water Attenuation (%)")+
+#   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+#   stat_poly_eq(method = "lm", na.rm = TRUE,
+#                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+#                label.y.npc = 1, size = 3, color = "gray30") +
+#   theme_classic(base_size = 12) +
+#   theme(plot.margin = margin(25, 5, 0, 5),
+#         axis.text.y = element_text(angle = 90, hjust = 0.5),
+#         legend.position = 'none')
+# 
+# 
+# b <- x %>%
+#   ggplot(aes(x=  HLR, y = CAWA))+
+#   geom_point(pch =21, fill = "black", alpha = 0.5, cex = 3)+
+#   scale_x_continuous(trans='log10', limits = c(0.9, 1000))+
+#   scale_y_continuous(trans='log10')+
+#   xlab(expression(paste("HLR (m"%.% "year" ^"-1", ")")))+
+#   ylab("Catchment to Wetland Area Ratio")+
+#   theme_classic(base_size = 12) +
+#   stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+#   stat_poly_eq(method = "lm", na.rm = TRUE,
+#                aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+#                label.y.npc = 1, size = 3, color = "gray30") +
+#   theme(plot.margin = margin(25, 5, 0, 5),
+#         axis.text.y = element_text(angle = 90, hjust = 0.5),
+#         legend.position = 'none')
+# 
+# 
+# plot_grid(a,b, nrow = 1, labels = c("A", "B"))
+# 
+# 
+# tiff(filename = "figures/Supp_fig5_hlr.tif", height=2.5, width=6, units= "in", res=800, compression= "lzw")
+# 
+# plot_grid(a,b, nrow = 1, labels = c("A", "B"))
+# 
+# dev.off()
 
 
 
