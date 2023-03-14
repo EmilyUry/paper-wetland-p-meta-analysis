@@ -230,8 +230,8 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    #labs(x = "Retention bins (%) ", y = " ", fill = "Hydraulic \nloading rate\n (m/yr)") +
-    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nloading rate",
+    #labs(x = "Retention bins (%) ", y = " ", fill = "Hydraulic \nLoading Rate\n (m/yr)") +
+    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nLoading Rate",
                                                                 atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -251,7 +251,7 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto wetland\narea ratio") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6)) 
@@ -406,7 +406,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nloading rate",
+    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nLoading Rate",
                                                                     atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -426,7 +426,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto wetland\narea ratio") +
+    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
