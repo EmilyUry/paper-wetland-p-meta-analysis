@@ -159,6 +159,15 @@ y %>%
   get_summary_stats(SRP_Retention_percent, type = "median_mad")
 
 
+y %>%
+  group_by(group) %>%
+  get_summary_stats(TP_load_in_g_m2_yr, type = "median_mad")
+
+
+y %>%
+  group_by(group) %>%
+  get_summary_stats(SRP_load_in_g_m2_yr, type = "median_mad")
+
 
 
 y$newgroup <- paste(y$group, y$flow)
@@ -281,7 +290,97 @@ dev.off()
 
 
 
+##################
 
+## Maybe new supp figure -- loading by wetland type
+
+pal <- c('#e5a77faa', '#3e783f33', '#6fabd9ee')
+
+summary <- y %>%
+  group_by(group) %>%
+  summarise(count = n()) %>%
+  mutate(TP_load_in_g_m2_yr = 0.02,
+         SRP_load_in_g_m2_yr = 0.02)
+
+sig <- y %>%
+  group_by( group) %>%
+  summarise(count = n()) %>%
+  mutate(TP_load_in_g_m2_yr = 2000,
+         SRP_load_in_g_m2_yr = 2000)
+
+
+
+pwc <- y %>%
+  pairwise_t_test(TP_load_in_g_m2_yr ~  group, p.adjust.method = 'bonferroni')
+pwc
+
+pwc <- y %>%
+  pairwise_t_test(SRP_load_in_g_m2_yr ~  group, p.adjust.method = 'bonferroni')
+pwc
+
+
+
+sig$TP <- c("A", "AB", "B" )
+sig$SRP <- c("A", "AB", "B")
+
+a <- ggplot(y, aes(x = group, y = TP_load_in_g_m2_yr, fill = group )) +
+  geom_boxplot(position = position_dodge2(preserve = "single"), outlier.alpha = 0) +
+  scale_fill_manual(values = pal) +
+  #geom_point(position = position_jitterdodge(), alpha = 0.7, size = 2, aes(pch = flow2)) +
+  #scale_color_manual(values = c("black", "gray70"))+
+  #scale_shape_manual(values = c(17,1)) +
+  scale_x_discrete(labels = c("M", "R/C", "W")) +
+  scale_y_continuous(trans='log10', limits = c(0.01,3000))+
+  #facet_grid(.~flow, space = "free") +
+  theme_bw(base_size = 14) +
+  geom_text(data = summary, aes(label = count),
+            position = position_dodge(width = 1.0), size = 5, color = "gray50")+
+  geom_text(data = sig, aes(label = TP),
+            position = position_dodge(width = 1.0), size = 5) +
+  ylab(expression(paste("Load (g"%.% "m"^-2 %.% "year" ^"-1", ")"))) +
+  xlab(" ") +
+  theme(plot.margin = unit(c(t = 0.5, r = 0.5, b = 0, l = 0.5), "cm"),
+        legend.position = "none",
+        legend.title = element_blank(),
+        plot.title = element_text( hjust = 0, size = 13)) +
+  ggtitle("TP")
+
+
+b <- ggplot(y, aes(x = group, y = SRP_load_in_g_m2_yr, fill = group )) +
+  geom_boxplot(position = position_dodge2(preserve = "single"), outlier.alpha = 0) +
+  #geom_point(position = position_jitterdodge(), size = 2, alpha = 0.7, aes(pch = flow2)) +
+  #scale_shape_manual(values = c(17,1)) +
+  scale_fill_manual(values = pal) +
+  scale_x_discrete(labels = c("M", "R/C", "W")) +
+  scale_y_continuous(trans='log10', limits = c(0.01,3000))+
+  #coord_cartesian(ylim = c(-20,400)) +
+  #facet_grid(.~flow, space = "free") +
+  theme_bw(base_size = 14) +
+  geom_text(data = summary, aes(label = count),
+            position = position_dodge(width = 1.0), size = 5, color = "gray50")+
+  geom_text(data = sig, aes(label = SRP), 
+            position = position_dodge(width = 1.0), size = 5) +
+  ylab(expression(paste("Load (g"%.% "m"^-2 %.% "year" ^"-1", ")"))) +
+  #ylab(expression(paste("PO"[4]^"3-", " Retention (%)"))) +
+  xlab(" ") +
+  theme(plot.margin = unit(c(t = 0.3, r = 0.5, b = 0, l = 0.5), "cm"),
+        legend.position = "right",
+        legend.title = element_blank(),
+        plot.title = element_text( hjust = 0.0, size = 13)) +
+  ggtitle(expression("PO"[4]^"3-"))
+
+
+plot_grid(a,b, nrow = 1, labels = c(" ", " "), rel_widths =  c(1, 1.5))
+
+
+
+
+
+tiff(filename = "figures/Type_box_facet_jitter_supp.tif", height=3.5, width=7, units= "in", res=800, compression= "lzw")
+
+plot_grid(a,b, nrow = 1, labels = c(" ", " "), rel_widths =  c(1, 1.55))
+
+dev.off()
   
 
 
