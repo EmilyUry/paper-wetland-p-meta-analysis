@@ -164,8 +164,74 @@ M %>%
 
 
 
+############# talk version black and white
+
+M %>%
+  ggplot(aes(x=  HLR, y = TP_Retention_percent,
+             color = water_atten_percent, fill = water_atten_percent))+
+  geom_point(pch =21, alpha = 0.7, cex = 2)+
+  scale_fill_gradient2(midpoint = 80, low = "red",  high = "blue", mid = "blue") +
+  scale_color_gradient2(midpoint = 80, low = "red",  high = "blue", mid = "blue") +
+  scale_x_continuous(trans='log10')+
+  ylim(-120,150) +
+  xlab("HLR (m/month)") +
+  ylab("TP Retention (%)")+
+  theme_classic(base_size = 12) +
+  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+  stat_poly_eq(method = "lm", na.rm = TRUE,
+               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+               label.y.npc = 1, size = 4, color = "gray30") +
+  theme(plot.margin = margin(25, 5, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5), 
+        legend.position = "right", legend.title = element_blank()) 
 
 
+
+
+
+
+top <- M %>%
+  ggplot(aes(x=  HLR, y = TP_Retention_percent))+
+  geom_point(pch =21, fill = "black", alpha = 0.3, cex = 3)+
+  #scale_fill_manual("Retention (%)", values = c("green", "yellow", "orange", "red"),
+  #                  label = c("67-100", "33-67", "0-33", "<0"))+
+  scale_x_continuous(trans='log10')+
+  #scale_y_continuous(trans='log10')+
+  ylim(-120,150) +
+  ylab("TP Retention (%)") +
+  xlab("HLR (m/month)")+
+  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+  stat_poly_eq(method = "lm", na.rm = TRUE,
+               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+               label.y.npc = 1, size = 4, color = "gray30") +
+  theme_classic(base_size = 12) +
+  theme(plot.margin = margin(25, 5, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5), 
+        legend.position = 'none') 
+
+top
+
+bottom <- x %>%
+  ggplot(aes(x=  CAWA, y = HLR))+
+  geom_point(pch =21, fill = "black", alpha = 0.3, cex = 3)+
+  #scale_fill_manual("Retention (%)", values = c("green", "yellow", "orange", "red"),
+  #                  label = c("67-100", "33-67", "0-33", "<0"))+
+  scale_x_continuous(trans='log10', limits = c(5,1000))+
+  scale_y_continuous(trans='log10')+
+  #ylim(-120, 120) +
+  xlab("Catchment:wetland area") +
+  ylab("HLR (m/yr)")+
+  stat_poly_line(method = "lm", fullrange = TRUE, na.rm = TRUE, color = "gray30") +
+  stat_poly_eq(method = "lm", na.rm = TRUE,
+               aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*")),
+               label.y.npc = 1, size = 4, color = "gray30") +
+  theme_classic(base_size = 12) +
+  theme(plot.margin = margin(25, 5, 0, 5),
+        axis.text.y = element_text(angle = 90, hjust = 0.5), 
+        legend.position = 'none') 
+
+bottom
+plot_grid(top, bottom, nrow = 2, labels = c(" ", " "))
 
 ### Hydro figure
 
