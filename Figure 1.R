@@ -1,46 +1,31 @@
 
 
 #' ---
-#' title: "Wetland-P-Meta-analysis Figure 1"
+#' title: "Wetland-P-Meta-analysis - Figure 1"
 #' author: "Emily Ury"
-#' last update: "April 19, 2022"
+#' last update: "March 30, 2023"
 #' output: github_document
 #' ---
 #' 
 #' Figure 1. Description of the data included in the meta-analysis
-#'   (a) map
-#'   (b) histogram of size distribution
-#'   (c) source/sink behavior
-#'   (d) flow regime by wetland type
-#'   (e) study publication year and catchment type
+#'   (a) Map
+#'   (b) Study n and duration
+#'   (c) Wetland type by catchment type
+#'   (d) Wetland size distribution
 
 
 library(ggplot2)
 library(tidyverse)
-library(viridis)
-#library(patchwork)
-#library(gridExtra)
 library(ggpubr)
 library(cowplot)
 
 
-setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")
 
-#x <- read.csv("Wetland_P_Toy_Data2.csv", header = T)
 x <- read.csv("Wetland_P_Clean3.csv", header = T)
-x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
-x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranberry farm"
-
-head(x)
-
-
-unique(x$Source)
-unique(x$WetlandID)
 
 options(scipen = 100) ## gets out of scientific notation
-pal <- viridis(6)
-pal
+
 
 ## (a) - world map + study sites
 
@@ -54,7 +39,57 @@ map <- ggplot() + world + ylim(-55,100) + theme_void(base_size = 14) +
 
 map
 
-## (b) - histogram of wetland size distribition
+
+
+
+## (b) number of sites vs number of years per study
+z <- x %>%
+  group_by(Source)  %>%
+  summarize(num = n_distinct(WetlandID), yr = n_distinct(Data_Year))
+
+B <- ggplot(data = z, (aes(x = num, y = yr ))) +
+  geom_jitter(width = 0.15, height = 0.15, shape = 21, fill = "#2c728ebb", size = 2)+
+  xlab("Wetlands per Study") +
+  ylab("Years Studied") + 
+  theme_gray(base_size = 14)+
+  theme(panel.background = element_rect(fill = "#2c728e22", colour = "white")) +
+  theme(plot.margin = margin(t = 0.5, r = 0.2, b = 0.0, l = 0.5, unit = "cm"), legend.position = "none") +
+  scale_y_continuous(breaks = c(0,2,4,6,8,10)) +
+  scale_x_continuous(breaks = c(0,2,4,6,8, 10,  12, 14, 16))
+
+B
+
+
+
+### (c) - Wetland type
+
+
+xx <- x %>%
+  group_by(WetlandID) %>%
+  filter(Age_yr == min(Age_yr))
+
+
+dd <- data.frame(table(xx$Wetland_Type, xx$Catchment_Type))
+names(dd) <- c("Type", "Catchment", "count")
+dd
+
+
+c <- ggplot(dd, aes(factor(Type), Catchment, fill = count)) +
+  geom_tile() +
+  geom_text(aes(label=count), size = 4, color = "black") +
+  scale_fill_gradient(low="white", high ="#2c728e") +
+  theme_classic(base_size = 14) +
+  ylab("Catchment Type          ") +
+  xlab("Wetland Type")+
+  scale_y_discrete(labels = c("Ag.", "Urban", "WWT")) +
+  #labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
+  theme(plot.margin = margin(t = 0.2, r = 0.4, b = 0.2, l = 0.5, unit = "cm"), legend.position = "none") +
+  theme(plot.title = element_text(hjust = 1, size = 8, face = "bold")) +
+  theme(axis.text.x = element_text(hjust = 1, size = 9, angle = 45))
+
+c
+
+### (d) - histogram of wetland size distribution
 
 n <- x %>%
   group_by(WetlandID) %>%
@@ -75,86 +110,6 @@ D <- ggplot(n, aes(area)) +
 D 
 
 
-
-
-
-### (c) - Inflow
-
-table(x$Catchment_Type)
-table(x$Water_regime)
-table(x$Wetland_Type)
-
-
-xx <- x %>%
-  group_by(WetlandID) %>%
-  filter(Age_yr == min(Age_yr))
-
-## missing 1 constructed Ag
-## missing 1 constructed WWTP
-
-dd <- data.frame(table(xx$Wetland_Type, xx$Catchment_Type))
-names(dd) <- c("Type", "Catchment", "count")
-dd
-
-dd[1,3] <- 37
-dd[9,3] <- 25
-dd
-
-c <- ggplot(dd, aes(factor(Type), Catchment, fill = count)) +
-  geom_tile() +
-  geom_text(aes(label=count), size = 4, color = "black") +
-  scale_fill_gradient(low="white", high ="#2c728e") +
-  theme_classic(base_size = 14) +
-  ylab("Catchment Type          ") +
-  xlab("Wetland Type")+
-  scale_y_discrete(labels = c("Ag.", "Urban", "WWT")) +
-  #labs(title = "(d) Flow regime by wetland type", y = " ", x = " ") +
-  theme(plot.margin = margin(t = 0.2, r = 0.4, b = 0.2, l = 0.5, unit = "cm"), legend.position = "none") +
-  theme(plot.title = element_text(hjust = 1, size = 8, face = "bold")) +
-  theme(axis.text.x = element_text(hjust = 1, size = 9, angle = 45))
-
-
-c
-25/139
-9/139
-37+36+1+31
-105/139
-
-## plot B, number of sites vs number of years per study
-z <- x %>%
-  group_by(Source)  %>%
-  summarize(num = n_distinct(WetlandID), yr = n_distinct(Data_Year))
-
-B <- ggplot(data = z, (aes(x = num, y = yr ))) +
-  geom_jitter(width = 0.15, height = 0.15, shape = 21, fill = "#2c728ebb", size = 2)+
-  xlab("Wetlands per Study") +
-  ylab("Years Studied") + 
-  theme_gray(base_size = 14)+
-  theme(panel.background = element_rect(fill = "#2c728e22", colour = "white")) +
-  theme(plot.margin = margin(t = 0.5, r = 0.2, b = 0.0, l = 0.5, unit = "cm"), legend.position = "none") +
-    scale_y_continuous(breaks = c(0,2,4,6,8,10)) +
-  scale_x_continuous(breaks = c(0,2,4,6,8, 10,  12, 14, 16))
-
-B
-
-
-
-
-
-hist(x$Age_yr, xlim = c(0,20), breaks = 100)
-nrow(x[which(x$Age_yr <= 5),])
-nrow(x[which(x$Age_yr <= 3),])
-nrow(x)
-
-22+26+42+58+62
-
-176/273
-224/273
-
-210/277
-
-
-
 ### #Paper version Figure 1
 
 tiff(filename = "figures/Figure1.tif", height=5, width=6.5, units= "in", res=800, compression= "lzw")
@@ -165,33 +120,45 @@ dev.off()
 
 
 
+#### Metrics used in text
+
+
+## Results - First paragraph
+
+# how many wetlands are in ag catchments
+nrow(xx[which(xx$Catchment_Type == "ag"),])/139*100   
+# 76%
+
+# how many wetlands are treating wastewater 
+nrow(xx[which(xx$Catchment_Type == "WWTP"),])/139*100
+# 18 %
+
+# how many wetlands are categorized as constructed
+nrow(xx[which(xx$Wetland_Type == "Constructed"),])
+# n = 64
+
+# how many wetlands are categorized as constructed
+nrow(xx[which(xx$Wetland_Type == "Mesocosm"),])
+# n = 39
+
+# how many wetlands are categorized as constructed
+nrow(xx[which(xx$Wetland_Type == "Restored"),])
+# n = 33 
+
+# how many wetlands are categorized as constructed
+nrow(xx[which(xx$Wetland_Type == "Natural"),])
+# n = 3
+
+#### how many site-years were monitored when the wetland was 3 years old or younger
+nrow(x[which(x$Age_yr <= 3),])
+# 178
+nrow(x[which(x$Age_yr <= 3),])/273*100
+# 65%
+
+# how much data comes from sites 5 years or older
+nrow(x[which(x$Age_yr > 5),])/273*100
+# 17%
 
 
 
 
-
-
-#### old stuff
-{
-
-
-#ggarrange(map, b, d, ncol = 3, nrow = 1, labels = c("A", "B", "C")) 
-#ggarrange(map, B, c, D, ncol = 2, nrow = 2, labels = c("A", "B", "C", "D")) 
-
-plot_grid(map, B, c, D, labels = c("A", "B", "C", "D"), label_size = 16, rel_widths = c(1.5, 1), ncol = 2)
-
-
-
-ggarrange(ggarrange(map, b, d, ncol = 3, labels = c("A", "B", "C")),   # First row with 3 plots
-          p, nrow = 2, labels = c(" ", "D")) 
-
-# grid.arrange(map, b, c, p, nrow = 2, layout_matrix = rbind(c(1,2,3), c(4,4,4)), 
-#              name = c("A", "B", "C", "D"),)
-# 
-# library(ggpubr)
-ggarrange(map, b, c, p, ncol = 2, nrow = 2, #layout_matrix = rbind(c(1,2,3), c(4,4,4)), 
-        labels = c("A", "B", "C", "D"))
-#grid.arrange(map, b, c, d, p, nrow = 3, layout_matrix = rbind(c(1,2), c(3,4), c(5,5)))
-
-
-}
