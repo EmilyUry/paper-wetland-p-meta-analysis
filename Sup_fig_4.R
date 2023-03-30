@@ -22,19 +22,10 @@ options(scipen = 10)
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
 
 
-#########
-# monthly data set up
-{
-  x <- read.csv("Monthly_Wetland_P_Clean.csv", header = T)
-  x <- x[which(x$data_type == "both" | x$data_type == "load"),]
-  x$TP_Retention <- x$TP_IN_g_m2_mo - x$TP_OUT_g_m2_mo
-  x$SRP_Retention <- x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo
-  x <- x[which(x$Short_Ref !=  17),]       ### drop site 17 because it is too gappy
-  x <- x[which(x$Short_year != "YN"),]     ### drop partial years
-  x$HLR <- x$Monthly_Inflow_m3_month/x$SA_m2
-  
-}
 
+#### data set-up
+x <- read.csv("Lit_data_monthly.csv")
+x$HLR <- x$Monthly_Inflow_m3_month/x$SA_m2
 
 
 
