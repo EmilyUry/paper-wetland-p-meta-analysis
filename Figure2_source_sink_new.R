@@ -4,28 +4,21 @@
 #' ---
 #' title: "Figure 2. TP SPR retention bar plot and scatter plot with distributions"
 #' author: "Emily Ury"
-#' date: "April 27, 2022"
+#' date: "March 30, 2023"
 #' ---
 #' 
 
 
-setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
 
 
 library(ggplot2)
 library(tidyverse)
-# library(viridis)
-# library(gridExtra)
 library(cowplot)
-#library(ggExtra)
-#library(ggpubr)
+
 
 ## Data set-up
 x <- read.csv("Wetland_P_Clean3.csv", header = T)
-
-x <- x[which(x$Source != "Kennedy 2020"),] ## remove the one whose type is "cranberry farm"
-x <- x[which(x$Source != "Dunne 2012"),] ## remove the one whose type is "cranberry farm"
 
 
 {head(x)
@@ -71,82 +64,6 @@ p <- x %>%
   ylab("TP Retention (%)") 
 p
 
-
-
-sink <- x[which(x$SRP_retention > 0),]
-sumSRPret <- sum(sink$SRP_retention)
-sumSRPret <- sum(sink$SRP_retention*sink$Area_m2)/1000 ## total SRP retained across all wetlands in kg
-avgSRPret <- mean(sink$SRP_retention)
-medSRPret <- median(sink$SRP_retention)
-
-
-source <- x[which(x$SRP_retention < 0),]
-sumSRPrel <- sum(source$SRP_retention)
-sumSRPrel <- sum(source$SRP_retention*source$Area_m2)/1000 ## total SRP retained across all wetlands in kg
-avgSRPrel <- mean(source$SRP_retention)
-medSRPrel <- median(source$SRP_retention)
-
-sink <- x[which(x$TP_retention > 0),]
-sumTPret <- sum(sink$TP_retention*sink$Area_m2)/1000 ## total SRP retained across all wetlands in kg
-
-source <- x[which(x$TP_retention < 0),]
-sumTPrel <- sum(source$TP_retention*source$Area_m2)/1000 ## total SRP retained across all wetlands in kg
-
-##### colored histograms -- do not use
-{
-d <- density(x$SRP_retention , n = 2^15)
-dx <- d$x
-dy <- d$y
-dd <- data.frame(dx, dy)
-dd <- dd %>%
-  mutate(variable = case_when(
-    (dx < 0) ~ "Red",
-    (dx >= 0) ~ "Gray",
-    TRUE ~ NA_character_))
-
-
-hist <- ggplot(dd, aes(dx,dy)) + 
-  geom_line() +
-  geom_area(data = filter(dd, variable == 'Red'), fill = 'red', alpha = 0.5) +
-  geom_area(data = filter(dd, variable == 'Gray'), fill = 'gray50', alpha = 0.5) +
-    #xlim(-11.7, 5.8) +
-  xlim(-25,20) +
-  theme_classic(base_size = 10) +
-  xlab(" ") +
-  theme(plot.margin = margin(t = 0, r = 0.01, b = -0.4, l = 1.8, unit = "cm"),
-        axis.title.y = element_blank(), axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(), panel.grid = element_blank(), 
-        axis.line.x = element_line(size = 0.5, colour = "black", linetype=1),
-        axis.line.y = element_line(size = 0.5, colour = "white", linetype=1)) +
-  annotate('text', x = 12, y = 0.2, label = "185 Mg PO4/yr \n retained ", size = 2)+
-  annotate('text', x = -15, y = 0.2, label = "8.2 Mg PO4/yr \n released ", color = "red", size = 2)
-
-d <- density(x$TP_retention , n = 2^15)
-dx <- d$x
-dy <- d$y
-dd <- data.frame(dx, dy)
-dd <- dd %>%
-  mutate(variable = case_when(
-    (dx < 0) ~ "Red",
-    (dx >= 0) ~ "Gray",
-    TRUE ~ NA_character_))
-
-hist2 <- ggplot(dd, aes(dx,dy)) + 
-  geom_line() +
-  geom_area(data = filter(dd, variable == 'Red'), fill = 'red', alpha = 0.5) +
-  geom_area(data = filter(dd, variable == 'Gray'), fill = 'gray50', alpha = 0.5) +
-  xlim(-45, 45) +
-  theme_classic(base_size = 10) +
-  xlab(" ") +
-  coord_flip()  +
-  theme(plot.margin = margin(t = 0, r = 0, b = 1.5, l = -0.5, unit = "cm"),
-        axis.title.x = element_blank(), axis.text.x = element_blank(), 
-        axis.ticks.x = element_blank(), panel.grid = element_blank(), 
-        axis.line.y = element_line(size = 0.5, colour = "black", linetype=1),
-        axis.line.x = element_line(size = 0.5, colour = "white", linetype=1)) +
-  annotate('text', x = 25, y = 0.05, label = "256 Mg TP/yr \n retained ", angle = 270, size = 2)+
-  annotate('text', x = -25, y = 0.05, label = "2.8 Mg TP/yr \n released ", angle = 270, color = "red", size = 2)
-}
 
 ## OG histograms, use these
 hist <- ggplot(x, (aes(x = SRP_retention))) +
@@ -198,11 +115,12 @@ SRP.source <- table(x$PO4ret)[1]
 SRP.sink <- table(x$PO4ret)[2]
 SRP.source.percent <- round(SRP.source/(SRP.sink+SRP.source)*100,1)
 
+
 behavior <- c("source", "sink", "source", "sink")
 species <- c("TP", "TP", "PO4", "PO4")
 num <- c(TP.sink, TP.source, SRP.sink, SRP.source)
-label_ypos <- c(240, 10, 230, 10)
-label_text <- c("16%", " ", "25%", " ")
+label_ypos <- c(240, 100, 230, 100)
+label_text <- c("16%", "84%", "25%", "75%")
 data <- data.frame(behavior, species, num, label_ypos, label_text)
 
 a <- ggplot(data, aes(x = factor(species, level = c("TP", "PO4")), y = (num), fill = behavior, color = behavior)) +
@@ -242,29 +160,10 @@ b <- ggplot(df, aes(x = quad, y = count, fill = quad))+
   theme(plot.margin = margin(t = 0.2, r = 0.5, b = 0.1, l = 0, unit = "cm"),
         legend.position = "none")
 b  
-12+31+37
-80/273
-192/273
 
 
-# 
-# left <- plot_grid(a, b, labels = c("A", "B"), ncol = 1, rel_heights = c(3,4), label_size = 11)
-# 
-# 
-# tiff(filename = "figures/Source_sink.tif", height=3, width=6, units= "in", res=800, compression= "lzw")
-# 
-# plot_grid(left, C, labels = c(" ", "C"), ncol = 2, rel_widths = c(3,4), label_size = 11)
-# 
-# dev.off()
+#### d - magnification plot
 
-
-
-
-
-
-x$quad <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "< 0", 
-                 ifelse(x$TP_Retention_percent < 33 | x$SRP_Retention_percent < 33, "0-33",
-                        ifelse(x$TP_Retention_percent < 67 | x$SRP_Retention_percent < 67, "33-67", "67-100")))
 
 x$source.sink <- ifelse(x$TP_Retention_percent < 0 | x$SRP_Retention_percent < 0, "source", "sink")
 
@@ -318,169 +217,57 @@ dev.off()
 
 
 
+############# paper metrics
+
+## Results 3.1
+
+################################### Summary Stats, Table 1
 
 
-unique(x$Source)
-unique(x$WetlandID)
-nrow(x[which(x$Age_yr < 4),])
-176/273
+library(plotrix)
 
-
+### mass loading
 mean(x$TP_load_in_g_m2_yr)
 range(x$TP_load_in_g_m2_yr)
 median(x$TP_load_in_g_m2_yr)
+std.error(x$TP_load_in_g_m2_yr)
 
 mean(x$SRP_load_in_g_m2_yr)
 range(x$SRP_load_in_g_m2_yr)
 median(x$SRP_load_in_g_m2_yr)
+std.error(x$SRP_load_in_g_m2_yr)
 
-
-
-
-
-##### retention by wetland type
-
-n <- x %>%
-  group_by(Wetland_Type) %>%
-  summarise(n = n())
-labs <- n$n
-
-ggplot(x, aes(y = TP_Retention_percent, x = Wetland_Type, group = Wetland_Type)) +
-  geom_boxplot() +
-  coord_cartesian(ylim = c(-150,100)) +
-  annotate("text", x = c(1,2,3,4), y = -150, label = labs, color = "gray40") +
-  theme_classic()
-
-
-ggplot(x, aes(y = SRP_Retention_percent, x = Wetland_Type, group = Wetland_Type)) +
-  geom_boxplot() +
-  coord_cartesian(ylim = c(-150,100)) +
-  annotate("text", x = c(1,2,3,4), y = -150, label = labs, color = "gray40") +
-  theme_classic()
-
-median(x$TP_Retention_percent)
-median(x$SRP_Retention_percent)
-
+#mass retention
+mean(x$TP_retention)
+range(x$TP_retention)
 median(x$TP_retention)
+std.error(x$TP_retention)
+
+mean(x$SRP_retention)
+range(x$SRP_retention)
 median(x$SRP_retention)
+std.error(x$SRP_retention)
 
+## retention efficiency (retention %)
 mean(x$TP_Retention_percent)
+range(x$TP_Retention_percent)
+median(x$TP_Retention_percent)
+std.error(x$TP_Retention_percent)
+
 mean(x$SRP_Retention_percent)
-
-xx <- x[which(x$Wetland_Type != "Mesocosm"),]
-
-median(xx$TP_Retention_percent)
-median(xx$SRP_Retention_percent)
-
-median(xx$TP_retention)
-median(xx$SRP_retention)
-
-mean(xx$TP_Retention_percent)
-mean(xx$SRP_Retention_percent)
-
-xc <- x[which(x$Catchment_Type != "WWTP"),]
-
-nrow(xx)
-273-208
-65/273
-
-median(xc$TP_Retention_percent)
-median(xc$SRP_Retention_percent)
-
-mean(xc$TP_Retention_percent)
-mean(xc$SRP_Retention_percent)
-
-
-n <- x %>%
-  group_by(Catchment_Type) %>%
-  summarise(n = n())
-labs <- n$n
-
-ggplot(x, aes(y = TP_Retention_percent, x = Catchment_Type, group = Catchment_Type)) +
-  geom_boxplot() +
-  coord_cartesian(ylim = c(-150,100)) +
-  annotate("text", x = c(1,2,3), y = -150, label = labs, color = "gray40") +
-  theme_classic()
-
-
-ggplot(x, aes(y = SRP_Retention_percent, x = Catchment_Type, group = Catchment_Type)) +
-  geom_boxplot() +
-  coord_cartesian(ylim = c(-150,100)) +
-  annotate("text", x = c(1,2,3), y = -150, label = labs, color = "gray40") +
-  theme_classic()
+range(x$SRP_Retention_percent)
+median(x$SRP_Retention_percent)
+std.error(x$SRP_Retention_percent)
 
 
 
 
-nrow(x[which(x$TP_Retention_percent > 0 & x$SRP_Retention_percent > 0),])/273*100
-
-
-
-
-
-# how many wetlands are a TP source on average (all years of study combined)
-
-
-subset <- x %>%
-  select(c("Source", "WetlandID", "TP_load_in_g_m2_yr", "TP_load_out", 
-           "SRP_load_in_g_m2_yr", "SRP_load_out")) %>%
-  mutate(TPretention = TP_load_in_g_m2_yr - TP_load_out,
-         SRPretention = SRP_load_in_g_m2_yr - SRP_load_out)
-
-nrow(subset[which(subset$TPretention < 0),])
-43/273
-nrow(subset[which(subset$SRPretention < 0),])
-68/273
-
-summary <- subset %>%
-  group_by(WetlandID) %>%
-  summarize(meanTPretention = mean(TPretention),
-            meanSRPretention = mean(SRPretention))
-
-
-nrow(summary[which(summary$meanTPretention < 0),])
-nrow(summary[which(summary$meanSRPretention < 0),])
-
-22/139
-30/139
-
-
-
-
-plot(density(x$ratio))
-
-hist(log(x$ratio))
-
-
-library(rstatix)
-stat.test <- x %>% wilcox_test(ratio ~ 1, mu = 1)
-stat.test
-
-x %>%
-  group_by(source.sink) %>% 
-  get_summary_stats(ratio, type = "median_iqr")
-stat.test <- x %>%
-  wilcox_test(ratio ~ source.sink) %>%
-  add_significance()
-stat.test
-
-
-
-stat.test <- source %>% wilcox_test(ratio ~ 1, mu = 1)
-stat.test <- sink %>% wilcox_test(ratio ~ 1, mu = 1)
-
-
-summary(x$ratio)
-
-
-
+### separate wetland by source/sink
 TP.source <- x[which(x$TP_retention < 0),]
 TP.sink <- x[which(x$TP_retention >= 0),]
 
 SRP.source <- x[which(x$SRP_retention < 0),]
 SRP.sink <- x[which(x$SRP_retention >= 0),]
-
-library(plotrix)
 
 
 summary(TP.source$TP_load_in_g_m2_yr)
@@ -509,6 +296,42 @@ summary(SRP.source$SRP_Retention_percent)
 std.error(SRP.source$SRP_Retention_percent)
 summary(SRP.sink$SRP_Retention_percent)
 std.error(SRP.sink$SRP_Retention_percent)
+
+
+
+
+
+
+################# Test for significant difference between groups (magnification ratio)
+
+library(rstatix)
+
+summary(x$ratio)
+
+stat.test <- x %>% wilcox_test(ratio ~ 1, mu = 1)
+stat.test
+
+x %>%
+  group_by(source.sink) %>% 
+  get_summary_stats(ratio, type = "median_iqr")
+stat.test <- x %>%
+  wilcox_test(ratio ~ source.sink) %>%
+  add_significance()
+stat.test
+
+source <- x[which(x$source.sink == "source"),]
+sink <- x[which(x$source.sink == "sink"),]
+
+
+median(source$ratio, na.rm = TRUE)
+median(sink$ratio, na.rm = TRUE)
+
+stat.test <- source %>% wilcox_test(ratio ~ 1, mu = 1)
+stat.test
+stat.test <- sink %>% wilcox_test(ratio ~ 1, mu = 1)
+stat.test
+
+
 
 
 
