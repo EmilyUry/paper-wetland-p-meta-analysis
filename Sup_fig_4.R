@@ -24,9 +24,12 @@ setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_file
 
 
 #### data set-up
-x <- read.csv("Lit_data_monthly.csv")
+x <- read.csv("Lit_data_monthly_final.csv")
+x$TP_Retention <- x$TP_IN_g_m2_mo - x$TP_OUT_g_m2_mo
+x$SRP_Retention <- x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo
+x$TP_Retention_percent <- x$TP_Retention/x$TP_IN_g_m2_mo*100
+x$SRP_Retention_percent <- x$SRP_Retention/x$SRP_IN_g_m2_mo*100
 x$HLR <- x$Monthly_Inflow_m3_month/x$SA_m2
-
 
 
 A <- x %>%
