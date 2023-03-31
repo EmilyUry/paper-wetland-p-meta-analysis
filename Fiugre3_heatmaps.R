@@ -21,7 +21,10 @@ library(tidyr)
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
 
 
-x <- read.csv("Lit_data_monthly.csv")
+
+x <- read.csv("Lit_data_monthly_final.csv")
+x <- x[which(x$Short_year != "YN"),]     ### drop partial years
+
 x$Month <- factor(x$Month, levels =c("Jan", "Feb", "Mar", "Apr",
                                         "May", "Jun", "Jul", "Aug",
                                         "Sep", "Oct", "Nov", "Dec"))
@@ -32,7 +35,7 @@ x$TP_Retention_percent_new <- x$TP_Retention/x$TP_IN_g_m2_mo*100
 x$SRP_Retention_percent_new <- x$SRP_Retention/x$SRP_IN_g_m2_mo*100
 
 
-x <- x[is.finite(rowSums(x[28:29])),]
+x <- x[is.finite(rowSums(x[27:28])),]
 
 
 x$Unique_ID <- paste(x$Short_Ref, x$Short_ID, x$Short_year, sep = "_")
@@ -169,7 +172,7 @@ ratio <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col5))+
   theme(plot.title = element_text(hjust = 0.5),
         axis.text.y = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        legend.position = "none",
+        legend.position = "right",
         plot.margin = margin(0.3, 0, 0.5, 0, "cm"),)
 
  
@@ -205,7 +208,7 @@ dev.off()
 breaks <- c("<-0.1", "-0.1 - -0.05", "-0.05 - 0", "0", "0 - 0.05", "0.05 - 0.1", "0.1 - 1", "1+")
 df$col <- breaks[as.numeric(cut(df$TP_Retention, breaks = c(-Inf, -0.1, -0.05, -0.0000001, 0.000001, 0.05, 0.1, 1,  Inf)))]
 df <- df %>%
-  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "0", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
+  mutate(col = fct_relevel(col,"1+","0.1 - 1", "0.05 - 0.1", "0 - 0.05", "-0.05 - 0", "-0.1 - -0.05", "<-0.1"   )) 
 
 labs <- (c("Z2","Z1","Y2", "Y1", "X", "W", 
            "V", "U",
@@ -220,7 +223,7 @@ TP <- ggplot(df,aes(x = Month, y = Unique_ID, fill=col))+
   geom_tile(color= "white",size=0.1) +
   scale_fill_manual(name = "TP Retention \n (g/m2/month)",
                     values = c("#053061", "#2166ac", "#67a9cf" , "#d1e5f0",
-                               "#bababa" , "#f2b9b1","#f76752", "#b2182b" )) +
+                               "#f2b9b1","#f76752", "#b2182b" )) +
   theme_minimal(base_size = 18) +
   theme(plot.margin = margin(1, .3, 1, 0, "cm"),
         axis.text.y = element_text(hjust = 0)) +
@@ -280,7 +283,19 @@ dev.off()
 library(plotrix)
 
 
-x <- df
+
+
+x <- read.csv("Lit_data_monthly_final.csv")
+### x <- x[which(x$Short_year != "YN"),]     ### dont
+
+x$TP_Retention <- x$TP_IN_g_m2_mo - x$TP_OUT_g_m2_mo
+x$SRP_Retention <- x$SRP_IN_g_m2_mo - x$SRP_OUT_g_m2_mo
+x$TP_Retention_percent_new <- x$TP_Retention/x$TP_IN_g_m2_mo*100
+x$SRP_Retention_percent_new <- x$SRP_Retention/x$SRP_IN_g_m2_mo*100
+
+
+
+
 TP.source <- x[which(x$TP_Retention < 0),]
 TP.sink <- x[which(x$TP_Retention >= 0),]
 
@@ -328,6 +343,7 @@ std.error(SRP.source$SRP_Retention)
 
 
 ### TP
+
 x<- x[!is.infinite(x$TP_Retention_percent_new),]
 summary(x$TP_Retention_percent_new) 
 std.error(x$TP_Retention_percent_new)
