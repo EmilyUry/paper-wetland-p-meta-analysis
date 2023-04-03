@@ -7,7 +7,6 @@
 #' date: "March 31, 2023"
 #' ---
 
-setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis/")
 setwd("C:/Users/uryem/OneDrive - University of Waterloo/Wetlands_local/Data_files/Wetland_P_Analysis")  #laptop
 
 
@@ -20,24 +19,18 @@ library(ggpmisc)
 ## Data set-up
 x <- read.csv("Wetland_P_Clean3.csv", header = T)
 {
-  x$Water_regime <- as.factor(x$Water_regime)
-  lX<-log(x[,c(11,13, 16,17)])
-  colnames(lX)<-paste("log",colnames(lX),sep="")
-  x<-cbind(x,lX); rm(lX)
-  x$ratio <- (x$SRP_outflow_mg_L/x$TP_outflow_mg_L)/(x$SRP_Inflow_mg_L/x$TP_Inflow_mg_L)
-  
+  #x$Water_regime <- as.factor(x$Water_regime)
+  # lX<-log(x[,c(11,13, 16,17)])
+  # colnames(lX)<-paste("log",colnames(lX),sep="")
+  # x<-cbind(x,lX); rm(lX)
+
   
   ## mass at outflow
-  x$TP_load_out <- x$TP_load_in_g_m2_yr*(1 - x$TP_Retention_percent/100)
-  x$SRP_load_out <- x$SRP_load_in_g_m2_yr*(1- x$SRP_Retention_percent/100)
-  
+
   ### Hydraulic loading rate
   x$HLR <- x$Inflow_m3_yr/x$Area_m2
   x$CWRatio <- x$Catchment_area_ha/x$Area_m2*10000
-  x$water_atten <- x$Inflow_m3_yr - x$Outflow_m3_yr
-  x$water_atten_percent <- 100*x$water_atten/x$Inflow_m3_yr
-  x$CAWA <- x$Catchment_area_ha/x$Area_m2*10000
-  
+
 }
 
 
@@ -181,12 +174,12 @@ h <- x %>%
 
 
 
-#### figure for pub (Fig 7)
+#### figure for pub (Fig 6)
 
 tiff(filename = "figures/scatter_stats3.tif", height=6.5, width=6, units= "in", res=800, compression= "lzw")
 
 plot_grid(g, h, a,b, e, f,  nrow = 3, label_size = 10,
-          labels = c("A", "B", "C", "D", "E", "F", "G", "H"), rel_heights = c(1,0.9, 0.9))
+          labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"), rel_heights = c(1,0.9, 0.9), label_fontface = 1)
 
 dev.off()
 
@@ -205,7 +198,7 @@ c <- x %>%
   geom_segment(aes(x = 0.01, y = 0, xend = 8000000, yend = 0), lty = 2, col = "black") +
   theme_classic(base_size = 9) +
   annotate("rect", xmin = 0.02, xmax = 22, ymin = -180, ymax = -70, color = "black", alpha = 0)+
-  annotate("text", x = 0.9, y = -100, label = "sink", color = "blue")+
+  annotate("text", x = 0.5, y = -100, label = "sink", color = "blue")+
   annotate("text", x = 1.1, y = -150, label = "source", color = "red") +
   annotate("point", x = 0.06, y = -100, pch = 21, color = "blue", fill = "blue", alpha = 0.6) +
   annotate("point", x = 0.06, y = -150, pch = 21, color = "red", fill = "red", alpha = 0.6) +
@@ -278,7 +271,7 @@ j <- x %>%
 tiff(filename = "figures/Supp_scatter_stats.tif", height=4.5, width=6, units= "in", res=800, compression= "lzw")
 
 plot_grid(i, j, c, d,  nrow = 2, label_size = 10,
-          labels = c("A", "B", "C", "D"), rel_heights = c(1,0.9))
+          labels = c("(a)", "(b)", "(c)", "(d)"), rel_heights = c(1,0.9), label_fontface = 1)
 
 dev.off()
 

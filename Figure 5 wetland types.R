@@ -190,8 +190,8 @@ a <- ggplot(y, aes(x = group, y = TP_Retention_percent, fill = group )) +
   theme(plot.margin = unit(c(t = 0.3, r = 0.5, b = 0, l = 0.5), "cm"),
         legend.position = "none",
         legend.title = element_blank(),
-        plot.title = element_text( hjust = 0, vjust = 1, size = 13, face = "bold")) +
-  ggtitle("A                                                          B")
+        plot.title = element_text( hjust = 0, vjust = 1, size = 13)) +
+  ggtitle("(a)                                                        (b)")
 
 
 b <- ggplot(y, aes(x = group, y = SRP_Retention_percent, fill = group )) +
@@ -214,8 +214,8 @@ b <- ggplot(y, aes(x = group, y = SRP_Retention_percent, fill = group )) +
         legend.title = element_blank(),
         legend.margin=margin(0,0,0,0),
         legend.box.margin=margin(-10,-10,5,-10),
-        plot.title = element_text( hjust = 0.0, size = 13, face = "bold")) +
-  ggtitle("C                                                         D")
+        plot.title = element_text( hjust = 0.0, size = 13)) +
+  ggtitle("(c)                                                        (d)")
 
 
 plot_grid(a,b, nrow = 2, labels = c(" ", " "), rel_heights = c(0.85, 1))

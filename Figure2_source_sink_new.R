@@ -201,9 +201,9 @@ dist
 #### updated version
 
 top <- plot_grid(a, b, nrow = 1,  rel_widths = c(1.5,2),
-                 labels = c("A", "B"), label_size = 10)
+                 labels = c("(a)", "(b)"), label_fontface = 1, label_size = 10)
 bottom <- plot_grid(C, dist, nrow = 1,  rel_widths = c(2, 1.7),
-                    labels = c( "C", "D"), label_size = 10)
+                    labels = c( "(c)", "(d)"), label_fontface = 1, label_size = 10)
 
 
 tiff(filename = "figures/Source_sink_v5.tif", height=4, width=5.5, units= "in", res=800, compression= "lzw")

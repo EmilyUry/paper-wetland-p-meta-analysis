@@ -49,7 +49,8 @@ scatter <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   xlim(-100, 160) +
   ylim(-100, 105) + 
   theme_classic(base_size = 7) +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) +
   geom_abline(slope = 1, intercept = 0) +
   #geom_hline(yintercept = 0, lty = 2) +
   #geom_vline(xintercept = 0, lty = 2) +
@@ -91,7 +92,8 @@ m <- as.data.frame(summary)
     labs(x = "  ", y = "Frequency ", fill = "Wetland \nType") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6))
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm"))
   WT
 }
 
@@ -113,7 +115,8 @@ m <- as.data.frame(summary)
     labs(x = " ", y = " ", fill = "Hydrologic\n Regime") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) +
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) +
     guides(fill=guide_legend(ncol=1))
   FlowR
 }
@@ -132,7 +135,8 @@ m <- as.data.frame(summary)
                                                                           atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) 
+          axis.text.x = element_text(size = 6),  
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) 
   TP
 }
 
@@ -151,7 +155,8 @@ m <- as.data.frame(summary)
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +    
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) 
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) 
   SRP
 }
 
@@ -168,7 +173,8 @@ m <- as.data.frame(summary)
     labs(x = "  ", y = " ", fill = "Wetland \nSize") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) 
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) 
   size
 }
 
@@ -187,7 +193,9 @@ m <- as.data.frame(summary)
     labs(x = "Retention bins (%) ",y = "Frequency ", fill = "Wetland \nAge") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) 
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm"))
+  
   age
 }
 
@@ -206,7 +214,9 @@ m <- as.data.frame(summary)
                                                                 atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) 
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.2), "cm"))
+  
   hlr
 }
 
@@ -225,7 +235,9 @@ m <- as.data.frame(summary)
     labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6)) 
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.2), "cm"))
+  
   ratio
 }
 sum(is.na(x$CWRatio))
@@ -237,7 +249,7 @@ sum(is.na(x$CWRatio))
 tiff(filename = "figures/Figure4_NEW.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
 
 plot_grid(scatter, WT, FlowR, age, size, ratio, TP, SRP, hlr, 
-          labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"), 
+          labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)"), label_fontface = 1,
           ncol = 3, label_size = 8)
 
 dev.off()
@@ -267,7 +279,8 @@ dev.off()
     labs(x = "  ", y = "Frequency ", fill = "Wetland \nType") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6))
+          axis.text.x = element_text(size = 6),
+          plot.margin = unit(c(t = 0.15, r = 0.0, b = 0, l = 0.3), "cm"))
   WT
   
 }
@@ -400,7 +413,9 @@ dev.off()
     labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
+          axis.text.x = element_text(size = 6, family = "serif", face = "bold"),
+          plot.margin = unit(c(t = 0.0, r = 0.0, b = 0, l = 0.2), "cm"))
+          
   ratio
 }
 
@@ -410,7 +425,7 @@ dev.off()
 tiff(filename = "figures/Figure4_NEW_supp.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
 
 plot_grid(scatter, WT, FlowR, age, size, ratio, TP, SRP, hlr,  
-          labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"), 
+          labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)"), label_fontface = 1,
           ncol = 3, label_size = 8)
 
 dev.off()

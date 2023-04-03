@@ -34,8 +34,8 @@ world <- borders("world", colour="#B9D0D9", fill="#2c728eff") # create a layer o
 map <- ggplot() + world + ylim(-55,100) + theme_void(base_size = 14) +
   geom_point(aes(x=x$Long, y = x$Lat), color = "black", pch = 21, fill = "white", size = 1) +
  # labs(title="(a) Location of studied wetlands ")+
-  theme(plot.margin = margin(t = 0.5, r = 0.1, b = 1.25, l = 0, unit = "cm")) +
-  theme(plot.title = element_text(hjust = 1, size = 7, face = "bold"))
+  theme(plot.margin = margin(t = 0.5, r = 0.1, b = 1.25, l = 0, unit = "cm")) 
+  #theme(plot.title = element_text(hjust = 1, size = 7, face = "bold"))
 
 map
 
@@ -114,7 +114,7 @@ D
 
 tiff(filename = "figures/Figure1.tif", height=5, width=6.5, units= "in", res=800, compression= "lzw")
 
-plot_grid(map, B, c, D, labels = c("A", "B", "C", "D"), label_size = 12, rel_widths = c(1, 1), ncol = 2)
+plot_grid(map, B, c, D, labels = c("(a)", "(b)", "(c)", "(d)"), label_fontface = 1, label_size = 12, rel_widths = c(1, 1), ncol = 2)
 
 dev.off()
 
