@@ -80,7 +80,7 @@ n <- as.data.frame(quad.sum)
 
 {x$Catchment_Type <- as.factor(x$Catchment_Type)
 x$group <- ifelse(x$Catchment_Type == "WWTP", "WWT", 
-                  ifelse(x$Wetland_Type == "Mesocosm", "Mesocosm", "Restored/\nConstructed"))
+                  ifelse(x$Wetland_Type == "Mesocosm", "Mesocosm", "Restored/\nConstruct."))
 
 table(x$quad, x$group)
 summary <- table(x$quad, x$group)
@@ -110,7 +110,7 @@ m <- as.data.frame(summary)
   FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c("C. regulated", "I. regulated", "C.  unregulated", "I. unregulated", "Not specified" ),
+    scale_fill_manual(labels = c("C. reg.", "I. reg.", "C.  unreg.", "I. unreg.", "N.S." ),
                       values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
     labs(x = " ", y = " ", fill = "Hydrologic\n Regime") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
@@ -129,9 +129,9 @@ m <- as.data.frame(summary)
   TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
+    scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7  ", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
-    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
+    labs(x = "Retention bins (%)",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
                                                                           atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -151,7 +151,7 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
+    labs(x = "Retention bins (%) ",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +    
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -168,7 +168,7 @@ m <- as.data.frame(summary)
   size <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c("smallest", " ", " ", "largest"),
+    scale_fill_manual(labels = c("smallest    ", " ", " ", "largest    "),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
     labs(x = "  ", y = " ", fill = "Wetland \nSize") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
@@ -190,7 +190,7 @@ m <- as.data.frame(summary)
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
-    labs(x = "Retention bins (%) ",y = "Frequency ", fill = "Wetland \nAge") +
+    labs(x = " ",y = "Frequency ", fill = "Wetland \nAge") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6),
@@ -207,10 +207,10 @@ m <- as.data.frame(summary)
   hlr <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
+    scale_fill_manual(labels = c("< 7", "7 - 14", "14 - 36    ", "36 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    #labs(x = "Retention bins (%) ", y = " ", fill = "Hydraulic \nLoading Rate\n (m/yr)") +
-    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nLoading Rate",
+    #labs(x = "Retention bins (%) ", y = " ", fill = "HLR\n (m/yr)") +
+    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("HLR",
                                                                 atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -230,9 +230,9 @@ m <- as.data.frame(summary)
   ratio <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
     theme_classic(base_size = 7) +
-    scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
+    scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200  ", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
+    labs(x = " ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6),
@@ -317,7 +317,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
-    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
+    labs(x = "Retention bins (%)",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -336,7 +336,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = "  ",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
+    labs(x = "Retention bins (%)",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) + 
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -373,7 +373,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
-    labs(x = "Retention bins (%) ", y = "Frequency", fill = "Wetland \nAge") +
+    labs(x = " ", y = "Frequency", fill = "Wetland \nAge") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
@@ -390,7 +390,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
-    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("Hydraulic\nLoading Rate",
+    labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("HLR",
                                                                     atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
@@ -410,7 +410,7 @@ dev.off()
     theme_classic(base_size = 7) +
     scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
-    labs(x = "Retention bins (%) ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
+    labs(x = " ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
     theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
           legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
           axis.text.x = element_text(size = 6, family = "serif", face = "bold"),
