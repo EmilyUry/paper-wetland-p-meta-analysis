@@ -48,7 +48,7 @@ scatter <- ggplot(x, aes(x = SRP_Retention_percent, y = TP_Retention_percent)) +
   theme(legend.position = "none") +
   xlim(-100, 160) +
   ylim(-100, 105) + 
-  theme_classic(base_size = 7) +
+  theme_classic(base_size = 9) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) +
   geom_abline(slope = 1, intercept = 0) +
@@ -87,12 +87,12 @@ summary <- table(x$quad, x$group)
 m <- as.data.frame(summary)
   WT <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(values = c("#440154FF", "#44015477","#2c728eFF"  )) +
-    labs(x = "  ", y = "Frequency ", fill = "Wetland \nType") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    labs(x = "  ", y = "  ", fill = "Wetland \nType") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm"))
   WT
 }
@@ -109,13 +109,13 @@ m <- as.data.frame(summary)
   
   FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("C. reg.", "I. reg.", "C.  unreg.", "I. unreg.", "N.S." ),
                       values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
     labs(x = " ", y = " ", fill = "Hydrologic\n Regime") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) +
     guides(fill=guide_legend(ncol=1))
   FlowR
@@ -128,14 +128,14 @@ m <- as.data.frame(summary)
   m <- as.data.frame(summary)
   TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7  ", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
     labs(x = "Retention bins (%)",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
                                                                           atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),  
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),  
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) 
   TP
 }
@@ -148,14 +148,14 @@ m <- as.data.frame(summary)
   m <- as.data.frame(summary)
   SRP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = "Retention bins (%) ",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
+    labs(x = "Retention bins (%) ",y = "  ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +    
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) 
   SRP
 }
@@ -167,13 +167,13 @@ m <- as.data.frame(summary)
   m <- as.data.frame(summary)
   size <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("smallest    ", " ", " ", "largest    "),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
     labs(x = "  ", y = " ", fill = "Wetland \nSize") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm")) 
   size
 }
@@ -187,13 +187,13 @@ m <- as.data.frame(summary)
   
   age <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
     labs(x = " ",y = "Frequency ", fill = "Wetland \nAge") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.3), "cm"))
   
   age
@@ -206,15 +206,15 @@ m <- as.data.frame(summary)
   m <- as.data.frame(summary)
   hlr <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("< 7", "7 - 14", "14 - 36    ", "36 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
     #labs(x = "Retention bins (%) ", y = " ", fill = "HLR\n (m/yr)") +
     labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("HLR",
                                                                 atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.2), "cm"))
   
   hlr
@@ -229,13 +229,13 @@ m <- as.data.frame(summary)
   
   ratio <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(position = "fill", stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200  ", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
     labs(x = " ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.1, r = 0.0, b = 0, l = 0.2), "cm"))
   
   ratio
@@ -246,7 +246,9 @@ sum(is.na(x$CWRatio))
 
 #### full plot
 
-tiff(filename = "figures/Figure4_NEW.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
+#tiff(filename = "figures/Figure4_NEW.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
+
+tiff(filename = "figures/Figure4_NEW_size.tif", height=5, width=9, units= "in", res=800, compression= "lzw")
 
 plot_grid(scatter, WT, FlowR, age, size, ratio, TP, SRP, hlr, 
           labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)"), label_fontface = 1,
@@ -274,12 +276,12 @@ dev.off()
   m <- as.data.frame(summary)
   WT <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(values = c("#440154FF", "#44015477","#2c728eFF"  )) +
-    labs(x = "  ", y = "Frequency ", fill = "Wetland \nType") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6),
+    labs(x = "  ", y = "  ", fill = "Wetland \nType") +
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.15, r = 0.0, b = 0, l = 0.3), "cm"))
   WT
   
@@ -296,14 +298,13 @@ dev.off()
   
   FlowR <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar(stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("C. regulated", "I. regulated", "C.  unregulated", "I. unregulated", "Not specified" ),
                       values = c("#440154FF",   "#44015477", "#2c728eFF","#2c728e55",  "#31313122")) +
     labs(x = " ", y = " ", fill = "Hydrologic\n Regime") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold")) +
-    guides(fill=guide_legend(ncol=1))
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8))
   FlowR
 }
 
@@ -314,14 +315,15 @@ dev.off()
   m <- as.data.frame(summary)
   TP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar( stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c(" < 0.1", "0.1 - 0.2", "0.2 - 1.7", "1.7+"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF") ) +
     labs(x = "Retention bins (%)",y = "Frequency ", parse = TRUE, fill = expression(atop("Influent [TP]",
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8))
+  
   TP
 }
 
@@ -333,14 +335,14 @@ dev.off()
   m <- as.data.frame(summary)
   SRP <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar( stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c(" < 0.05", "0.05 - 0.1", "0.1 - 0.6", "0.6+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF") ) +
-    labs(x = "Retention bins (%)",y = "Frequency ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
+    labs(x = "Retention bins (%)",y = "  ", parse = TRUE, fill = expression(atop(paste("Influent [PO"[4]^"3-","]"), 
                                                                          atop(textstyle(paste("(mg" %.% "L"^-1, ")")))))) + 
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8)) 
   SRP
 }
 
@@ -351,13 +353,13 @@ dev.off()
   m <- as.data.frame(summary)
   size <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar( stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("smallest", " ", " ", "largest"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
     labs(x = "  ", y = " ", fill = "Wetland \nSize") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold"))
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8))
   size
 }
 
@@ -370,13 +372,13 @@ dev.off()
   
   age <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar( stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("<2 year", "2 years", "3-4 years", "5+ years"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF"  )) +
     labs(x = " ", y = "Frequency", fill = "Wetland \nAge") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8)) 
   age
 }
 
@@ -387,14 +389,14 @@ dev.off()
   m <- as.data.frame(summary)
   hlr <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar( stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("< 7.1", "7.1 - 14.3", "14.3 - 36.6", "36.6 +"),
                       values = c("#2c728e33", "#2c728e77", "#2c728ebb",  "#2c728eFF"  )) +
     labs(x = "Retention bins (%) ", y = " ", fill = expression(atop("HLR",
                                                                     atop(textstyle(paste("(m" %.% "yr"^-1,")")))))) +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold")) 
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8)) 
   hlr
 }
 
@@ -407,13 +409,13 @@ dev.off()
   
   ratio <- ggplot(m, aes(x = Var1, y = Freq, fill = Var2)) +
     geom_bar( stat = "identity") +
-    theme_classic(base_size = 7) +
+    theme_classic(base_size = 9) +
     scale_fill_manual(labels = c("< 3.3", "19 - 36", "36 - 200", "200+"),
                       values = c("#44015433", "#44015477", "#440154bb",  "#440154FF")) +
     labs(x = " ", y = " ", fill = "Catchment \nto Wetland\nArea Ratio") +
-    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 6),
-          legend.title = element_text(size = 7), legend.key.size = unit(0.4, 'cm'),
-          axis.text.x = element_text(size = 6, family = "serif", face = "bold"),
+    theme(legend.position= "right", legend.direction = "vertical", legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8), legend.key.size = unit(0.4, 'cm'),
+          axis.text.x = element_text(size = 8),
           plot.margin = unit(c(t = 0.0, r = 0.0, b = 0, l = 0.2), "cm"))
           
   ratio
@@ -422,7 +424,7 @@ dev.off()
 
 #### full plot
 
-tiff(filename = "figures/Figure4_NEW_supp.tif", height=4, width=7, units= "in", res=800, compression= "lzw")
+tiff(filename = "figures/Figure4_NEW_supp.tif", height=5, width=9, units= "in", res=800, compression= "lzw")
 
 plot_grid(scatter, WT, FlowR, age, size, ratio, TP, SRP, hlr,  
           labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)"), label_fontface = 1,
